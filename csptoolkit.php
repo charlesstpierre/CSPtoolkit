@@ -14,29 +14,8 @@
 
  */
 
-include 'includes/GitHub-Plugin-Updater/updater.php';
 
-include 'includes/debug.php';
-include 'includes/security.php';
-include 'includes/theme_helper.class.php';
 
-include 'includes/tinymce.php';
-include 'includes/welcomeemail.php';
-include 'includes/dashboardwidget.php';
-include 'includes/emailshield.php';
-include 'includes/upload-processor.php';
-
-include 'includes/wpml-compatibility.php';
-
-if (CSP_DO_SOCIALMETAS) {
-    include 'includes/socialmetas.php';
-}
-if (CSP_DO_GEOTAGGING) {
-    include 'includes/geotagging.php';
-}
-if (CSP_DO_WIDGETS) {
-    include 'includes/better-widgets.php';
-}
 
 /**
  * CSP Plugin Init
@@ -51,7 +30,31 @@ function cspplugin_init() {
 
     // loading text domain
     load_plugin_textdomain('csp', false, dirname(plugin_basename(__FILE__)) . '/lang/');
+    
 
+    include 'includes/debug.php';
+    include 'includes/security.php';
+    include 'includes/theme_helper.class.php';
+
+    include 'includes/tinymce.php';
+    include 'includes/welcomeemail.php';
+    include 'includes/dashboardwidget.php';
+    include 'includes/emailshield.php';
+    include 'includes/upload-processor.php';
+
+    include 'includes/wpml-compatibility.php';
+
+    if (CSP_DO_SOCIALMETAS) {
+        include 'includes/socialmetas.php';
+    }
+    if (CSP_DO_GEOTAGGING) {
+        include 'includes/geotagging.php';
+    }
+    if (CSP_DO_WIDGETS) {
+        include 'includes/better-widgets.php';
+    }
+
+    include 'includes/GitHub-Plugin-Updater/updater.php';
     //activating auto update from github
     if (is_admin()) {
         $config = array(
@@ -67,7 +70,7 @@ function cspplugin_init() {
             'readme' => 'README.md', // which file to use as the readme for the version number
             'access_token' => '', // Access private repositories by authorizing under Appearance > Github Updates when this example plugin is installed
         );
-        new WPGitHubUpdater($config);
+        new WP_GitHub_Updater($config);
     }
 }
 
