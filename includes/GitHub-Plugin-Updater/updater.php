@@ -194,7 +194,6 @@ class WP_GitHub_Updater {
 			$query = add_query_arg( array( 'access_token' => $this->config['access_token'] ), $query );
 
 			$raw_response = wp_remote_get( $query, array( 'sslverify' => $this->config['sslverify'] ) );
-
 			if ( is_wp_error( $raw_response ) )
 				return $version;
 
@@ -205,7 +204,7 @@ class WP_GitHub_Updater {
 				if ( -1 == version_compare( $version, $version_readme ) )
 					$version = $version_readme;
 			}
-
+                        
 			// refresh every 6 hours
 			if ( false !== $version )
 				set_site_transient( $this->config['slug'].'_new_version', $version, 60*60*6 );
@@ -242,7 +241,7 @@ class WP_GitHub_Updater {
 				set_site_transient( $this->config['slug'].'_github_data', $github_data, 60*60*6 );
 			}
 
-			// Store the data in this class instance for future calls
+                        // Store the data in this class instance for future calls
 			$this->github_data = $github_data;
 		}
 
@@ -270,7 +269,14 @@ class WP_GitHub_Updater {
 	 */
 	public function get_description() {
 		$_description = $this->get_github_data();
-		return ( !empty( $_description->description ) ) ? $_description->description : false;
+                
+                        // get update description WhatsNew
+                        preg_match( '/#WhatsNew(.+)###/m', $_description, $__section );
+                        if ( isset( $__section[1] ) ){
+                            $section_readme = $__section[1];
+                        }
+                        return ( !empty( $section_readme ) ) ? $section_readme : 'bummer';
+		//return ( !empty( $_description->description ) ) ? $_description->description : 'bummer';//false;
 	}
 
 
@@ -332,7 +338,8 @@ class WP_GitHub_Updater {
 	public function get_plugin_info( $false, $action, $response ) {
 
 		// Check if this call API is for the right plugin
-		if ( $response->slug != $this->config['slug'] )
+//		if ( $response->slug != $this->config['slug'] )
+		if ( !isset( $response->slug ) || $response->slug != $this->config['proper_folder_name'] )
 			return false;
 
 		$response->slug = $this->config['slug'];
