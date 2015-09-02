@@ -212,7 +212,7 @@ class WP_GitHub_Updater {
                 $github_readme->version = $version;
                 */
                 // changelog from readme
-                preg_match('/(== Changelog ==(\r?\n){2}= ([\d\.]*) =.*)== /ms',$readme_response['body'],$__matches);
+                preg_match('/== Changelog ==((\r?\n){2}= ([\d\.]*) =.*)== /ms',$readme_response['body'],$__matches);
 
                 if ( isset($__matches[3] ) ){
                     $version = (float) $__matches[3];
@@ -221,10 +221,12 @@ class WP_GitHub_Updater {
                 }
                 
                 if ( isset($__matches[1] ) ){
-                    $changelog = $this->markdown(trim( $__matches[1] ));
+                    $changelog = $this->markdown( $__matches[1] );
                 }else{
                     $changelog = false;
                 }
+                
+                $github_readme->version = $version;
                 $github_readme->changelog = $changelog;
                 
                 // refresh every 6 hours
@@ -453,15 +455,17 @@ class WP_GitHub_Updater {
         return $result;
     }
 
-    private function markdown($string) {
+    public function markdown($string) {
         $patterns = array(
-            '/== (.*) ==/'=>'<h2>$1</h2>\n',
-            '/= (.*) =/'=>'<h3>$1</h3>\n',
-            '/* (.*)/m'=>'<li>$1</li>\n',
-            '/(\r?\n)(<li>.*<\/li>)(\r?\n){2}/m'=>'<ul>\n$2\n</ul>\n',
+            '/== (.*) ==/'=>"<h2>$1</h2>\n",
+            '/= (.*) =/'=>"<h4>$1</h4>\n",
+            '/\* (.*)/m'=>"<li>$1</li>\n",
+            '/(\r?\n)(<li>.*<\/li>)(\r?\n){2}/m'=>"<ul>\n$2\n</ul>\n",
         );
         
-        preg_replace(array_keys($patterns), array_values($patterns), $string);
+        $string = preg_replace(array_keys($patterns), array_values($patterns), $string);
+        debug_log($string);
+        return trim( $string );
     }
     
 }
