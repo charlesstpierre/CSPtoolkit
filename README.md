@@ -1,4 +1,4 @@
-CSP Toolkit
+=== CSP Toolkit ===
 
 Outils généraux pour les sites WordPress gérés et maintenus par Charles St-Pierre.
 
@@ -6,16 +6,17 @@ Auteur: Charles St-Pierre
 parlez@charlesstpierre.com
 
 
-#Changelog
+== Changelog ==
 
-~Latest Version:1.0~
-Publication initiale
+= 1.0 =
+* Publication initiale
 
-###Previous versions
+= 0.8 =
+* dummy
 
 
-License
-===========
+== License ==
+
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 

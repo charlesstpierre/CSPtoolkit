@@ -191,7 +191,7 @@ class WP_GitHub_Updater {
                     $readme_response = false;
                 
                 $github_readme = new stdClass();
-                
+                /*
                 // version from plugin
                 preg_match('#^\s*Version\:\s*(.*)$#im', $plugin_response['body'], $matches);
 
@@ -210,12 +210,18 @@ class WP_GitHub_Updater {
                 }
                 
                 $github_readme->version = $version;
-                
+                */
                 // changelog from readme
-                preg_match('/#Changelog(.*)###Previous versions/ms',$readme_response['body'],$__changelog);
+                preg_match('/(== Changelog ==(\r?\n){2}= ([\d\.]*) =.*)== /ms',$readme_response['body'],$__matches);
 
-                if ( isset($__changelog[1] ) ){
-                    $changelog = $__changelog[1];
+                if ( isset($__matches[3] ) ){
+                    $version = (float) $__matches[3];
+                }else{
+                    $version = false;
+                }
+                
+                if ( isset($__matches[1] ) ){
+                    $changelog = trim( $__matches[1] );
                 }else{
                     $changelog = false;
                 }
