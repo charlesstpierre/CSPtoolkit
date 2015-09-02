@@ -221,7 +221,7 @@ class WP_GitHub_Updater {
                 }
                 
                 if ( isset($__matches[1] ) ){
-                    $changelog = trim( $__matches[1] );
+                    $changelog = $this->markdown(trim( $__matches[1] ));
                 }else{
                     $changelog = false;
                 }
@@ -453,4 +453,15 @@ class WP_GitHub_Updater {
         return $result;
     }
 
+    private function markdown($string) {
+        $patterns = array(
+            '/== (.*) ==/'=>'<h2>$1</h2>\n',
+            '/= (.*) =/'=>'<h3>$1</h3>\n',
+            '/* (.*)/m'=>'<li>$1</li>\n',
+            '/(\r?\n)(<li>.*<\/li>)(\r?\n){2}/m'=>'<ul>\n$2\n</ul>\n',
+        );
+        
+        preg_replace(array_keys($patterns), array_values($patterns), $string);
+    }
+    
 }
