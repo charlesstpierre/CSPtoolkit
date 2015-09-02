@@ -5,15 +5,13 @@ Outils généraux pour les sites WordPress gérés et maintenus par Charles St-P
 Auteur: Charles St-Pierre
 parlez@charlesstpierre.com
 
-Changelog
 
-~Current Version:1.0~
+#Changelog
 
-#WhatsNew
-
+~Latest Version:1.0~
 Publication initiale
 
-###
+###Previous versions
 
 
 License
