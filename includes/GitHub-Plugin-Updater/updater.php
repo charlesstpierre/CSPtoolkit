@@ -164,6 +164,9 @@ class WP_GitHub_Updater {
     /**
      * Get Github readme file
      * 
+     * Get readme file and base Version on last entry in Changelog
+     * Use strict WordPress format for readme.txt
+     * 
      * @since 1.5
      */
     public function get_github_readme() {
@@ -174,14 +177,6 @@ class WP_GitHub_Updater {
 
             if ($this->overrule_transients() || (!isset($github_readme) || !$github_readme || '' == $github_readme )) {
 
-                $plugin_query = trailingslashit($this->config['raw_url']) . basename($this->config['slug']);
-                if ('' != $this->config['access_token']) {
-                    $plugin_query = add_query_arg(array('access_token' => $this->config['access_token']), $plugin_query);
-                }
-                $plugin_response = wp_remote_get($plugin_query, array('sslverify' => $this->config['sslverify']));
-                if (is_wp_error($plugin_response))
-                    $plugin_response = false;
-
                 // back compat for older readme version handling
                 $readme_query = trailingslashit($this->config['raw_url']) . $this->config['readme'];
                 $readme_query = add_query_arg(array('access_token' => $this->config['access_token']), $readme_query);
@@ -190,27 +185,7 @@ class WP_GitHub_Updater {
                 if (is_wp_error($readme_response))
                     $readme_response = false;
                 
-                $github_readme = new stdClass();
-                /*
-                // version from plugin
-                preg_match('#^\s*Version\:\s*(.*)$#im', $plugin_response['body'], $matches);
-
-                if (empty($matches[1]))
-                    $version = false;
-                else
-                    $version = $matches[1];
                 
-                // version from readme
-                preg_match('#^\s*`*~Latest Version\:\s*([^~]*)~#im', $readme_response['body'], $__version);
-
-                if (isset($__version[1])) {
-                    $version_readme = $__version[1];
-                    if (-1 == version_compare($version, $version_readme))
-                        $version = $version_readme;
-                }
-                
-                $github_readme->version = $version;
-                */
                 // changelog from readme
                 preg_match('/== Changelog ==((\r?\n){2}= ([\d\.]*) =.*)== /ms',$readme_response['body'],$__matches);
 
@@ -226,6 +201,7 @@ class WP_GitHub_Updater {
                     $changelog = false;
                 }
                 
+                $github_readme = new stdClass();
                 $github_readme->version = $version;
                 $github_readme->changelog = $changelog;
                 
@@ -246,51 +222,12 @@ class WP_GitHub_Updater {
     public function get_new_version() {
         $_version = $this->get_github_readme();
         return (!empty($_version->version) ) ? $_version->version : $this->config['version'];
-
-        /*
-        $version = get_site_transient($this->config['slug'] . '_new_version');
-
-        if ($this->overrule_transients() || (!isset($version) || !$version || '' == $version )) {
-
-            $query = trailingslashit($this->config['raw_url']) . basename($this->config['slug']);
-            $query = add_query_arg(array('access_token' => $this->config['access_token']), $query);
-
-            $raw_response = wp_remote_get($query, array('sslverify' => $this->config['sslverify']));
-
-            if (is_wp_error($raw_response))
-                $version = false;
-
-            preg_match('#^\s*Version\:\s*(.*)$#im', $raw_response['body'], $matches);
-
-            if (empty($matches[1]))
-                $version = false;
-            else
-                $version = $matches[1];
-
-            // back compat for older readme version handling
-            $query = trailingslashit($this->config['raw_url']) . $this->config['readme'];
-            $query = add_query_arg(array('access_token' => $this->config['access_token']), $query);
-
-            $raw_response = wp_remote_get($query, array('sslverify' => $this->config['sslverify']));
-            if (is_wp_error($raw_response))
-                return $version;
-
-            preg_match('#^\s*`*~Current Version\:\s*([^~]*)~#im', $raw_response['body'], $__version);
-
-            if (isset($__version[1])) {
-                $version_readme = $__version[1];
-                if (-1 == version_compare($version, $version_readme))
-                    $version = $version_readme;
-            }
-
-            // refresh every 6 hours
-            if (false !== $version)
-                set_site_transient($this->config['slug'] . '_new_version', $version, 60 * 60 * 6);
-        }
-
-        return $version;
-*/    }
-
+    }
+    /**
+     * Get Changelog
+     * 
+     * @return string HTML formed changelog
+     */
     public function get_changelog() {
         $_changelog = $this->get_github_readme();
         return (!empty($_changelog->changelog) ) ? $_changelog->changelog : __('Information unavailable','csp');
@@ -409,7 +346,6 @@ class WP_GitHub_Updater {
     public function get_plugin_info($false, $action, $response) {
 
         // Check if this call API is for the right plugin
-//		if ( $response->slug != $this->config['slug'] )
         if (!isset($response->slug) || $response->slug != $this->config['proper_folder_name'])
             return false;
 
@@ -464,7 +400,6 @@ class WP_GitHub_Updater {
         );
         
         $string = preg_replace(array_keys($patterns), array_values($patterns), $string);
-        debug_log($string);
         return trim( $string );
     }
     
