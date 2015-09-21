@@ -8,7 +8,7 @@ parlez@charlesstpierre.com
 
 == Changelog ==
 
-= 1.1 =
+= 2.1 =
 * Corrections fonctionnalités de sécurité
 
 = 1.0 =
