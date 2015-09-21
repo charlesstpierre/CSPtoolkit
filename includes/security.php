@@ -124,7 +124,10 @@ function csp_setup_security_htaccess(){
     $lines[] = 'Deny from all';
     // allowed file types
     $allowed_mime_types = get_allowed_mime_types();
-    $allowed_file_types = array_merge(array_keys($allowed_mime_types), array('woff','eot','ttf','otf','svg') );
+    $allowed_file_types = array_merge( 
+                                        array_keys($allowed_mime_types),
+                                        array('svg','woff','ttf','oet')// fonts
+            );
     $lines[] = '<Files ~ ".('.implode('|',$allowed_file_types).')$">';
     $lines[] = 'Allow from all';
     $lines[] = '</Files>';
@@ -341,13 +344,8 @@ function csp_authenticate($user, $username, $password) {
         elseif ($blacklist) {
             $blacklist++;
             $test_update = update_option( '_blacklist' . $_ip, $blacklist );
-            
-            error_log('inside blacklist');
-            error_log( var_export($blacklist, true));
-            error_log( CSP_SECURITY_MAX_BLACKLIST );
-            
+                        
             if ( CSP_SECURITY_MAX_BLACKLIST < $blacklist ){
-                error_log('PAST SECURITY');
                 csp_gandalf_protocol_add_ip( $_SERVER['REMOTE_ADDR'] );
             }
             $error->add('blacklisted', __('Vous êtes sur la liste noir. Contactez l’administrateur du site.', 'csp'));
@@ -437,6 +435,36 @@ function csp_security_404(){
 
     if (is_main_query() && is_404()){
 
+        //not for media
+        $uri = $_SERVER['REQUEST_URI'];
+        if ( strpos($uri,'.jpg') || strpos($uri,'.gif') || strpos($uri,'.png') || strpos($uri,'.jpeg') ){
+            return;
+        }
+        
+        // not for legitimate pages
+        global $wpdb;
+        // by id?
+        $pattern = '/(\?|&)p=(\d+)/';
+        if (preg_match($pattern, $uri, $matches)){
+            if ( false !== get_post_status( intval($matches[2]))){
+                return;
+            }
+        }
+        // by slug?
+        $pattern = '/\/([\w-%]+)\/$/';
+        if (preg_match($pattern, $uri, $matches)){
+            $post_name = esc_sql($matches[1]);
+            $sql = "SELECT ID, post_name, post_status, post_type
+                    FROM $wpdb->posts
+                    WHERE post_name IN (%s)";
+
+            $check = $wpdb->get_results( $wpdb->prepare($sql, $post_name) );
+            if (!empty($check)){
+                return;
+            }
+        }
+        
+        
         $_ip = csp_get_ip();
         $blacklist = get_option( '_blacklist' . $_ip );
         $four_oh_four = get_transient( 'four_oh_four' . $_ip );

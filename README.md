@@ -8,11 +8,11 @@ parlez@charlesstpierre.com
 
 == Changelog ==
 
+= 1.0.1 =
+* Corrections fonctionnalités de sécurité
+
 = 1.0 =
 * Publication initiale
-
-= 0.8 =
-* dummy
 
 
 == License ==

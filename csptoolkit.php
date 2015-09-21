@@ -10,7 +10,9 @@
 
   Changelog
 
-  v1.0     Base. Ajout de gestion de courriel de bienvenue
+  v1.0.1   Corrections fonctionnalités de sécurité
+
+  v1.0.0     Base. Ajout de gestion de courriel de bienvenue
 
  */
 

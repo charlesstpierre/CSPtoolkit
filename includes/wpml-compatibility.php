@@ -18,7 +18,7 @@ function create_WPML_dummy_function() {
     }
 }
 
-add_action('init', 'create_WPML_dummy_function', 100);
+add_action('init', 'create_WPML_dummy_function', 100); 
 
 function wpml_language_select($args = '') {
     if (function_exists('icl_get_languages')) {
@@ -78,11 +78,12 @@ function filter_language_menu_item($nav_menu) {
             return $nav_menu;
 
         $languages = icl_get_languages('skip_missing=0');
+
         foreach ($langs[1] as $lang_code) {
             if (isset($languages[$lang_code])) {
 
                 global $wp_query, $sitepress;
-                $new_url = $languages[$lang_code]['url'];
+                $new_url = apply_filters('csp_wpml_language_menu_url',$languages[$lang_code]['url'],$languages,$lang_code);
 
                 $nav_menu = str_replace("#lang_{$lang_code}#", $new_url, $nav_menu);
             }
