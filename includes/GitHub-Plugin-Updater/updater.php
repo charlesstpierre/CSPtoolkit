@@ -86,6 +86,7 @@ class WP_GitHub_Updater {
      * @return bool overrule or not
      */
     private function overrule_transients() {
+    return true;
         return ( defined('WP_DEBUG') && WP_DEBUG ) || ( defined('WP_GITHUB_FORCE_UPDATE') || WP_GITHUB_FORCE_UPDATE );
     }
 
@@ -187,10 +188,10 @@ class WP_GitHub_Updater {
                 
                 
                 // changelog from readme
-                preg_match('/== Changelog ==((\r?\n){2}= ([\d\.]*) =.*)== /ms',$readme_response['body'],$__matches);
+                preg_match('/== Changelog ==((\r?\n){2}= (\d\.\d\.\d) =.*)== /ms',$readme_response['body'],$__matches);
 
                 if ( isset($__matches[3] ) ){
-                    $version = (float) $__matches[3];
+                    $version = $__matches[3];
                 }else{
                     $version = false;
                 }
@@ -204,7 +205,7 @@ class WP_GitHub_Updater {
                 $github_readme = new stdClass();
                 $github_readme->version = $version;
                 $github_readme->changelog = $changelog;
-                
+
                 // refresh every 6 hours
                 set_site_transient($this->config['slug'] . '_github_readme', $github_readme, HOUR_IN_SECONDS * 6);
             }
@@ -317,6 +318,7 @@ class WP_GitHub_Updater {
             return $transient;
 
         // check the version and decide if it's new
+
         $update = version_compare($this->config['new_version'], $this->config['version']);
 
         if (1 === $update) {
