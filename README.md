@@ -8,6 +8,9 @@ parlez@charlesstpierre.com
 
 == Changelog ==
 
+= 1.0.2 =
+* Ajout d’une interface pour la gestion des listes blanches et noirs: Réglage>Sécurité
+
 = 1.0.1 =
 * Corrections fonctionnalités de sécurité
 

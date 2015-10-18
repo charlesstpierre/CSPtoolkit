@@ -4,19 +4,20 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.0.1
+  Version: 1.0.2
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
 
   Changelog
+  v1.0.2   Interface Sécurité, meilleur gestion des attaques
 
   v1.0.1   Corrections fonctionnalités de sécurité
 
-  v1.0.0     Base. Ajout de gestion de courriel de bienvenue
+  v1.0.0   Base. Ajout de gestion de courriel de bienvenue
 
  */
 
-
+define('TOOLKIT_URL', plugin_dir_url(__FILE__));
 
 
 /**
@@ -86,6 +87,7 @@ add_action('plugins_loaded', 'cspplugin_init');
  * @see function csp_update_user_database() in includes/security.php
  */
 function csp_activation() {
+    include 'includes/security.php';
     csp_update_user_database();
     csp_setup_security_htaccess();
     csp_delete_insecure_files();
