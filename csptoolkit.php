@@ -4,11 +4,13 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.0.2
+  Version: 1.0.3
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
 
   Changelog
+  v1.0.3   Retrait de Welcome Email, code incompatible avec nouvelles versions de WP
+ 
   v1.0.2   Interface Sécurité, meilleur gestion des attaques
 
   v1.0.1   Corrections fonctionnalités de sécurité

@@ -1,27 +1,25 @@
 <?php
-
-function create_WPML_dummy_function() {
+/**
+ * @since 1.0.2 Remove function override since icl_* will disappear.
+ * @since 1.0.0
+ */
+function csp_WPML_init() {
     if (defined( 'ICL_SITEPRESS_VERSION' )){
-        if (!function_exists('icl_object_id')) {
-            /**
-             * Empty function prevent accident if CSP Plugin not present.
-             * 
-             * Does nothing.
-             */
-            function icl_object_id($element_id, $element_type = 'post', $return_original_if_missing = false, $ulanguage_code = null) {
-                return $element_id;
-            }
-
-        }
         add_filter('body_class', 'add_lang_to_body_class');
         add_filter('wp_nav_menu', 'filter_language_menu_item');
+        add_action('admin_head', 'csp_wpml_remove_icl_metabox');
     }
 }
+add_action('init', 'csp_WPML_init', 100); 
 
-add_action('init', 'create_WPML_dummy_function', 100); 
+function csp_wpml_remove_icl_metabox() {
+    $screen = get_current_screen();
+    remove_meta_box('icl_div_config',$screen->post_type,'normal');
+}
+
 
 function wpml_language_select($args = '') {
-    if (function_exists('icl_get_languages')) {
+    if (defined('ICL_SITEPRESS_VERSION')) {
 
         $defaults = array('display_active' => false,
             'skip_missing' => false,
@@ -36,7 +34,8 @@ function wpml_language_select($args = '') {
         extract($r, EXTR_SKIP);
 
         $output = '';
-        $languages = icl_get_languages('skip_missing=' . (int) $skip_missing);
+        $languages = apply_filters('wpml_active_languages',NULL,array('skip_missing' => (int) $skip_missing) );
+        
         foreach ($languages as $language) {
             $classes = array('lang-' . $language['language_code']);
 
@@ -77,8 +76,7 @@ function filter_language_menu_item($nav_menu) {
         if (empty($langs))
             return $nav_menu;
 
-        $languages = icl_get_languages('skip_missing=0');
-
+        $languages = apply_filters('wpml_active_languages',NULL);
         foreach ($langs[1] as $lang_code) {
             if (isset($languages[$lang_code])) {
 

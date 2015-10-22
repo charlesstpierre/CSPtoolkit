@@ -8,6 +8,9 @@ parlez@charlesstpierre.com
 
 == Changelog ==
 
+= 1.0.3 =
+* Retrait de Welcome Email, code incompatible avec nouvelles versions de WP. La fonctionnalité sera recodé sous peu.
+
 = 1.0.2 =
 * Ajout d’une interface pour la gestion des listes blanches et noirs: Réglage>Sécurité
 
