@@ -305,7 +305,7 @@ add_action('admin_enqueue_scripts','csp_security_enqueue_head');
 function csp_output_security_interface() {
     
     // submitted form
-    if (wp_verify_nonce($_POST['_wpnonce'],'csp-security-interface')){
+    if (isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'],'csp-security-interface')){
         if (!isset($_POST['what'])){
             $_POST['what'] = false;
         }
