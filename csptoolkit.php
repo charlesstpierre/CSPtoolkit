@@ -9,6 +9,8 @@
   Author URI: http://charlesstpierre.com
 
   Changelog
+  v1.0.4   Ajout de l’élément de menu Formulaire de recherche
+
   v1.0.3   Retrait de Welcome Email, code incompatible avec nouvelles versions de WP
  
   v1.0.2   Interface Sécurité, meilleur gestion des attaques
@@ -20,6 +22,7 @@
  */
 
 define('TOOLKIT_URL', plugin_dir_url(__FILE__));
+define('TOOLKIT_CONFIG', WP_CONTENT_DIR.'/csp-config.php');
 
 
 /**
@@ -36,6 +39,7 @@ function cspplugin_init() {
     // loading text domain
     load_plugin_textdomain('csp', false, dirname(plugin_basename(__FILE__)) . '/lang/');
     
+    include TOOLKIT_CONFIG;
 
     include 'includes/debug.php';
     include 'includes/security.php';
@@ -47,6 +51,7 @@ function cspplugin_init() {
     include 'includes/emailshield.php';
     include 'includes/upload-processor.php';
 
+    include 'includes/menu-items.php';
     include 'includes/wpml-compatibility.php';
 
     if (CSP_DO_SOCIALMETAS) {
@@ -59,9 +64,9 @@ function cspplugin_init() {
         include 'includes/better-widgets.php';
     }
 
-    include 'includes/GitHub-Plugin-Updater/updater.php';
     //activating auto update from github
     if (is_admin()) {
+        include 'includes/GitHub-Plugin-Updater/updater.php';
         $config = array(
             'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
             'proper_folder_name' => 'csptoolkit', // this is the name of the folder your plugin lives in
@@ -89,10 +94,64 @@ add_action('plugins_loaded', 'cspplugin_init');
  * @see function csp_update_user_database() in includes/security.php
  */
 function csp_activation() {
+    csp_write_options_to_config();
     include 'includes/security.php';
     csp_update_user_database();
     csp_setup_security_htaccess();
     csp_delete_insecure_files();
+}
+
+function csp_write_options_to_config(){
+    
+    if (file_exists(TOOLKIT_CONFIG)) {
+        $file = implode(' ', file(TOOLKIT_CONFIG));
+    }else{
+        $file = '';
+        file_put_contents(TOOLKIT_CONFIG, "<?php\n\n");
+    }
+    if (false === strpos($file, '# BEGIN ConfigurationCSPToolkit')) {
+
+        $lines = array();
+        //$lines[] = '#comment';
+        //$lines[] = 'define("CONSTANT",value);';
+        
+        
+        $lines[] = '# Security';
+        $lines[] = 'define("CSP_SECURITY_MAX_404",50);';
+        $lines[] = 'define("CSP_SECURITY_MAX_BLACKLIST",50);';
+        $lines[] = '# pipe separated list of parked domains';
+        $server_name = $_SERVER['SERVER_NAME'];
+        $lines[] = 'define("CSP_SITE_DOMAINS","'. $server_name .'" );';
+
+        $lines[] = 'define("CSP_DO_RSS",true);';
+        $lines[] = 'define("CSP_DO_WIDGETS",true);';
+        $lines[] = 'define("CSP_DO_GEOTAGGING",true);';
+        $lines[] = 'define("CSP_DO_SOCIALMETAS",true);';
+        
+        $lines[] = '# Developper’s email: Used to confirm identity of developper.';
+        $lines[] = 'define("DEVELOPPER_EMAIL","parlez@charlesstpierre.com");';
+        $lines[] = '# Twitter account name: Define twitter account name for the site, or site owner';
+        $lines[] = '//define("CSP_twittername","@something");';
+        $lines[] = '# Google Site Verification: Code for Google Webmaster Tools';
+        $lines[] = 'define("GOOGLE_SITE_VERIFICATION_CODE","WA3YXZIjfRgomaqTvXgvRBs0Q7OTwolSKU0pF2R8UH8");';
+        $lines[] = '# Microsoft ownership verification: Code for Bing Webmaster Tools';
+        $lines[] = '//define("MICROSOFT_OWNERSHIP_VERIFICATION_CODE","code");';
+        
+        
+        $lines[] = '# Geocalisation: http://www.gps-coordinates.net for coordinates (2015-07)';
+        $lines[] = 'define("CSP_MAIN_LAT","45.5");';
+        $lines[] = 'define("CSP_MAIN_LONG","-73.6");';
+        $lines[] = 'define("CSP_MAIN_PLACENAME","Montréal, Québec, Canada");';
+        $lines[] = 'define("CSP_MAIN_REGION","ca-qc");';
+        
+        $lines[] = '# Pre-upload image processing: maximum size and quality';
+        $lines[] = 'define("CSP_IMAGE_MAX_WIDTH",3840);';
+        $lines[] = 'define("CSP_IMAGE_MAX_HEIGHT",2160);';
+        $lines[] = 'define("CSP_IMAGE_QUALITY",90);';
+        
+        insert_with_markers(TOOLKIT_CONFIG, 'ConfigurationCSPToolkit', $lines);
+    }
+
 }
 
 register_activation_hook(__FILE__, 'csp_activation');

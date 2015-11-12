@@ -7,6 +7,8 @@ parlez@charlesstpierre.com
 
 
 == Changelog ==
+= 1.0.4 =
+* Ajout de l’élément de menu Formulaire de recherche
 
 = 1.0.3 =
 * Retrait de Welcome Email, code incompatible avec nouvelles versions de WP. La fonctionnalité sera recodé sous peu.

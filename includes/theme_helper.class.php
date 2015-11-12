@@ -265,6 +265,7 @@ class CSP_theme_helper {
                 }
             }
             // add current term
+            if (is_array($ancestors)){
             array_push($ancestors, $chosen_term->term_id);
             $ancestor_items = array();
             foreach ($ancestors as $ancestor) {
@@ -275,6 +276,7 @@ class CSP_theme_helper {
                     'name' => ucfirst($current_term->name)
                 ));
             }
+        }
         }
         // post_type archive
         $post_type_archive_item = array();
