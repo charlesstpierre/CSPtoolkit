@@ -1,5 +1,78 @@
 <?php
 
+add_action('manage_nav-menus_columns','csp_add_menu_items_metabox');
+
+
+function csp_add_menu_items_metabox(){
+    global $wp_post_types;
+    //debug($wp_post_types);
+    $posttypes = get_post_types( array( 'public'=>true, '_builtin'=>false) );
+    if ( !empty($posttypes)){
+        add_meta_box('csp_menu_item_posttype_archive',__('Archive de contenus','csp'),'csp_menu_item_posttype_archive_metabox','nav-menus','side','low');
+    }
+    add_meta_box('csp_menu_item_utilities',__('Utilitaires','csp'),'csp_menu_item_utilities_metabox','nav-menus','side','low');
+}
+
+function csp_menu_item_posttype_archive_metabox(){
+    $posttypes = get_post_types( array( 'public'=>true, '_builtin'=>false), 'objects' );
+    ?>
+        	<div id="posttype-ptarchive" class="posttypediv">
+        		<div id="tabs-panel-posttype-archive" class="tabs-panel tabs-panel-active">
+        			<ul id ="posttype-archive-checklist" class="categorychecklist form-no-clear">
+                                    <?php $i=-1; foreach ($posttypes as $pt): ?>
+        				<li>
+        					<label class="menu-item-title">
+        						<input type="checkbox" class="menu-item-checkbox" name="menu-item[<?php echo esc_attr( $i ) ?>][menu-item-object-id]" value="<?php echo $i ?>"> <?php echo $pt->label; ?>
+        					</label>
+        					<input type="hidden" class="menu-item-type" name="menu-item[<?php echo esc_attr( $i )?>][menu-item-type]" value="custom">
+        					<input type="hidden" class="menu-item-title" name="menu-item[<?php echo esc_attr( $i ) ?>][menu-item-title]" value="<?php echo $pt->label; ?>">
+                                                <input type="hidden" class="menu-item-url" name="menu-item[<?php echo esc_attr( $i ) ?>][menu-item-url]" value="<?php echo get_post_type_archive_link($pt->name) ?>">
+        					<input type="hidden" class="menu-item-classes" name="menu-item[<?php echo esc_attr( $i ) ?>][menu-item-classes]" value="<?php echo $pt->name ?>-archive">
+        				</li>
+                                    <?php $i--; endforeach; ?>
+        			</ul>
+        		</div>
+        		<p class="button-controls">
+        			<span class="list-controls">
+        				<a href="<?php echo admin_url( 'nav-menus.php?page-tab=all&selectall=1#posttype-ptarchive' ); ?>" class="select-all"><?php _e('Select All') ?></a>
+        			</span>
+        			<span class="add-to-menu">
+        				<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e('Add to Menu') ?>" name="add-post-type-menu-item" id="submit-posttype-ptarchive">
+        				<span class="spinner"></span>
+        			</span>
+        		</p>
+        	</div>
+<?php
+}
+
+function csp_menu_item_utilities_metabox(){
+    ?>
+        	<div id="posttype-utilities" class="posttypediv">
+        		<div id="tabs-panel-utilities" class="tabs-panel tabs-panel-active">
+        			<ul id ="utilities-checklist" class="categorychecklist form-no-clear">
+        				<li>
+        					<label class="menu-item-title">
+        						<input type="checkbox" class="menu-item-checkbox" name="menu-item[-1][menu-item-object-id]" value="-1"> <?php _e('Formulaire de recherche','cs['); ?>
+        					</label>
+        					<input type="hidden" class="menu-item-type" name="menu-item[-1][menu-item-type]" value="custom">
+                                                <input type="hidden" class="menu-item-title" name="menu-item[-1][menu-item-title]" value="<?php esc_attr_e('Formulaire de recherche','cs['); ?>">
+                                                <input type="hidden" class="menu-item-url" name="menu-item[-1][menu-item-url]" value="#search_form#">
+        					<input type="hidden" class="menu-item-classes" name="menu-item[-1][menu-item-classes]" value="">
+        				</li>
+        			</ul>
+        		</div>
+        		<p class="button-controls">
+        			<span class="list-controls">
+        				<a href="<?php echo admin_url( 'nav-menus.php?page-tab=all&selectall=1#posttype-utilities' ); ?>" class="select-all"><?php _e('Select All') ?></a>
+        			</span>
+        			<span class="add-to-menu">
+        				<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e('Add to Menu') ?>" name="add-post-type-menu-item" id="submit-posttype-utilities">
+        				<span class="spinner"></span>
+        			</span>
+        		</p>
+        	</div>
+<?php
+}
 /*
  *  Put search form in menu
  */

@@ -222,7 +222,7 @@ class WP_GitHub_Updater {
      */
     public function get_new_version() {
         $_version = $this->get_github_readme();
-        return (!empty($_version->version) ) ? $_version->version : $this->config['version'];
+        return (!empty($_version->version) ) ? $_version->version : @$this->config['version'];
     }
     /**
      * Get Changelog

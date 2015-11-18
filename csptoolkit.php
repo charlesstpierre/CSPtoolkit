@@ -4,11 +4,15 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.0.3
+  Version: 1.0.5
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
 
   Changelog
+  v1.0.5   Ajout de l’élément de menu Archive de type de post
+           Corrections de Notice PHP
+           Amélioration de la gestion des configurations
+
   v1.0.4   Ajout de l’élément de menu Formulaire de recherche
 
   v1.0.3   Retrait de Welcome Email, code incompatible avec nouvelles versions de WP
@@ -39,7 +43,7 @@ function cspplugin_init() {
     // loading text domain
     load_plugin_textdomain('csp', false, dirname(plugin_basename(__FILE__)) . '/lang/');
     
-    include TOOLKIT_CONFIG;
+    require_once TOOLKIT_CONFIG;
 
     include 'includes/debug.php';
     include 'includes/security.php';

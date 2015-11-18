@@ -7,6 +7,11 @@ parlez@charlesstpierre.com
 
 
 == Changelog ==
+= 1.0.5 =
+* Ajout de l’élément de menu Archive de type de post
+* Corrections de Notice PHP
+* Amélioration de la gestion des configurations
+
 = 1.0.4 =
 * Ajout de l’élément de menu Formulaire de recherche
 
