@@ -757,7 +757,7 @@ function csp_gandalf_protocol_add_ip($ip=false){
  */
 function csp_gandalf_protocol_write_ips($ips = array()) {
     
-    if (emtpy($ips))
+    if (empty($ips))
         return false;
     
     require_once ABSPATH.'wp-admin/includes/misc.php';

@@ -160,7 +160,9 @@ class CSP_theme_helper {
         }
         if (!$this->breadcrumb_items) {
             $method = '_breadcrumb_' . $this->is;
+            if (method_exists($this, $method) ){
             $this->breadcrumb_items = $this->$method();
+        }
         }
         //home
         $home_item = array(
