@@ -7,6 +7,7 @@ parlez@charlesstpierre.com
 
 
 == Changelog ==
+
 = 1.0.7 =
 * Retour de Welcome Email, maintenant Messages système
 * Ajout WPML Config.xml pour gérer les traductions
