@@ -29,9 +29,9 @@ class Better_Widget_Recent_Posts extends WP_Widget {
     function __construct() {
         $widget_ops = array(
             'classname' => 'widget_better_recent_posts',
-            'description' => __('The most recent posts on your site, with extras', 'csp')
+            'description' => __('Les contenus les plus récents de votre site.', 'csp')
         );
-        parent::__construct('better-recent-posts', __('Recent Posts', 'csp'), $widget_ops);
+        parent::__construct('better-recent-posts', __('Contenus récents', 'csp'), $widget_ops);
         $this->alt_option_name = 'widget_better_recent_posts';
 
         add_action('save_post', array(&$this, 'flush_widget_cache'));
@@ -53,7 +53,7 @@ class Better_Widget_Recent_Posts extends WP_Widget {
         ob_start();
         extract($args);
 
-        $title = apply_filters('widget_title', empty($instance['title']) ? __('Recent Posts', 'csp') : $instance['title'], $instance, $this->id_base);
+        $title = apply_filters('widget_title', empty($instance['title']) ? __('Articles récents', 'csp') : $instance['title'], $instance, $this->id_base);
         if (!$number = absint($instance['number']))
             $number = 10;
         $display_date = $instance['display_date'] ? true : false;
@@ -156,18 +156,18 @@ class Better_Widget_Recent_Posts extends WP_Widget {
         $available_taxonomies = get_taxonomies(array('public' => true, 'object_type' => array($post_type)), 'objects');
         $available_terms = get_terms($taxonomy);
         ?>
-        <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:', 'csp'); ?></label>
+        <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Titre:', 'csp'); ?></label>
             <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></p>
 
-        <p><label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Number of item to show:', 'csp'); ?></label>
+        <p><label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Nombre d’éléments à afficher:', 'csp'); ?></label>
             <input id="<?php echo $this->get_field_id('number'); ?>" name="<?php echo $this->get_field_name('number'); ?>" type="text" value="<?php echo $number; ?>" size="3" /></p>
 
-        <p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_date'); ?>" name="<?php echo $this->get_field_name('display_date'); ?>"<?php checked($display_date); ?> /> <label for="<?php echo $this->get_field_id('display_date'); ?>"><?php _e('Display date', 'csp'); ?></label></p>
-        <p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_excerpt'); ?>" name="<?php echo $this->get_field_name('display_excerpt'); ?>"<?php checked($display_excerpt); ?> /> <label for="<?php echo $this->get_field_id('display_excerpt'); ?>"><?php _e('Display excerpt', 'csp'); ?></label></p>
-        <p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_featureimg'); ?>" name="<?php echo $this->get_field_name('display_featureimg'); ?>"<?php checked($display_featureimg); ?> /> <label for="<?php echo $this->get_field_id('display_featureimg'); ?>"><?php _e('Display featured image', 'csp'); ?></label></p>
+        <p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_date'); ?>" name="<?php echo $this->get_field_name('display_date'); ?>"<?php checked($display_date); ?> /> <label for="<?php echo $this->get_field_id('display_date'); ?>"><?php _e('Afficher la date', 'csp'); ?></label></p>
+        <p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_excerpt'); ?>" name="<?php echo $this->get_field_name('display_excerpt'); ?>"<?php checked($display_excerpt); ?> /> <label for="<?php echo $this->get_field_id('display_excerpt'); ?>"><?php _e('Afficher l’extrait', 'csp'); ?></label></p>
+        <p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_featureimg'); ?>" name="<?php echo $this->get_field_name('display_featureimg'); ?>"<?php checked($display_featureimg); ?> /> <label for="<?php echo $this->get_field_id('display_featureimg'); ?>"><?php _e('Afficher l’image à la une', 'csp'); ?></label></p>
 
         <p>
-            <label for="<?php echo $this->get_field_id('post_type'); ?>"><?php _e('What type of content:', 'csp'); ?></label>
+            <label for="<?php echo $this->get_field_id('post_type'); ?>"><?php _e('Type de contenus:', 'csp'); ?></label>
             <select id="<?php echo $this->get_field_id('post_type'); ?>" name="<?php echo $this->get_field_name('post_type'); ?>">
                 <option value="-1" >---</option>
         <?php foreach ($available_post_types as $pt => $pt_object): ?>
@@ -177,7 +177,7 @@ class Better_Widget_Recent_Posts extends WP_Widget {
         </p>
         <?php if (!empty($available_taxonomies)): ?>
             <p>
-                <label for="<?php echo $this->get_field_id('taxonomy'); ?>"><?php _e('Restrict to a taxonomy:', 'csp'); ?></label>
+                <label for="<?php echo $this->get_field_id('taxonomy'); ?>"><?php _e('Restreindre à une taxonomy:', 'csp'); ?></label>
                 <select id="<?php echo $this->get_field_id('taxonomy'); ?>" name="<?php echo $this->get_field_name('taxonomy'); ?>">
                     <option value="-1" >---</option>
             <?php foreach ($available_taxonomies as $tax => $tax_object): ?>
@@ -190,7 +190,7 @@ class Better_Widget_Recent_Posts extends WP_Widget {
         if (!is_wp_error($available_terms)):
             ?>
             <p>
-                <label for="<?php echo $this->get_field_id('term'); ?>"><?php _e('Choose term:', 'csp'); ?></label>
+                <label for="<?php echo $this->get_field_id('term'); ?>"><?php _e('Choisir le terme:', 'csp'); ?></label>
             <?php wp_dropdown_categories('show_option_none=---&name=' . $this->get_field_name('term') . '&id=' . $this->get_field_id('term') . '&selected=' . $term . '&taxonomy=' . $taxonomy) ?>
             </p>
         <?php endif; ?>
@@ -209,7 +209,7 @@ class Better_Widget_Categories extends WP_Widget {
     function __construct() {
         $widget_ops = array(
             'classname' => 'widget_better_categories', 
-            'description' => __("A list or dropdown of categories, keywords, or other taxonomies", 'csp'));
+            'description' => __('Une liste ou un menu déroulant des termes d’une taxonomie.', 'csp'));
         parent::__construct('better-categories', __('Taxonomies', 'csp'), $widget_ops);
     }
 
@@ -296,32 +296,29 @@ class Better_Widget_Categories extends WP_Widget {
 
         $available_taxonomies = get_taxonomies(array('public' => true), 'objects');
         ?>
-        <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:', 'csp'); ?></label>
+        <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Titre:', 'csp'); ?></label>
             <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></p>
 
         <input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('count'); ?>" name="<?php echo $this->get_field_name('count'); ?>"<?php checked($count); ?> />
-        <label for="<?php echo $this->get_field_id('count'); ?>"><?php _e('Show post counts', 'csp'); ?></label><br />
+        <label for="<?php echo $this->get_field_id('count'); ?>"><?php _e('Afficher le nombre de termes', 'csp'); ?></label><br />
 
         <input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('hierarchical'); ?>" name="<?php echo $this->get_field_name('hierarchical'); ?>"<?php checked($hierarchical); ?> />
-        <label for="<?php echo $this->get_field_id('hierarchical'); ?>"><?php _e('Show hierarchy', 'csp'); ?></label></p>
-
-        <input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('link_to_all'); ?>" name="<?php echo $this->get_field_name('link_to_all'); ?>"<?php checked($link_to_all); ?> />
-        <label for="<?php echo $this->get_field_id('link_to_all'); ?>"><?php _e('Show link to taxonomy archive', 'csp'); ?></label></p>
+        <label for="<?php echo $this->get_field_id('hierarchical'); ?>"><?php _e('Afficher la hierarchie', 'csp'); ?></label></p>
 
         <p>
-            <label for="<?php echo $this->get_field_id('max_nb'); ?>"><?php _e('Number of terms:', 'csp'); ?></label>
+            <label for="<?php echo $this->get_field_id('max_nb'); ?>"><?php _e('Nombre de termes:', 'csp'); ?></label>
             <input id="<?php echo $this->get_field_id('max_nb'); ?>" name="<?php echo $this->get_field_name('max_nb'); ?>" type="text" size="2" value="<?php echo $max_nb; ?>" /><br />
 
-            <label for="<?php echo $this->get_field_id('orderby'); ?>"><?php _e('Order by:', 'csp'); ?></label>
+            <label for="<?php echo $this->get_field_id('orderby'); ?>"><?php _e('Classé par:', 'csp'); ?></label>
             <select id="<?php echo $this->get_field_id('orderby'); ?>" name="<?php echo $this->get_field_name('orderby'); ?>" >
-                <option value="ID" <?php selected('ID', $orderby) ?>><?php _e('Term ID', 'csp') ?></option>
-                <option value="name" <?php selected('name', $orderby) ?>><?php _e('Name', 'csp') ?></option>
-                <option value="count" <?php selected('count', $orderby) ?>><?php _e('Count', 'csp') ?></option>
+                <option value="ID" <?php selected('ID', $orderby) ?>><?php _e('ID du terme', 'csp') ?></option>
+                <option value="name" <?php selected('name', $orderby) ?>><?php _e('Nom', 'csp') ?></option>
+                <option value="count" <?php selected('count', $orderby) ?>><?php _e('Nombre', 'csp') ?></option>
             </select>
         </p>
 
         <p>
-            <label for="<?php echo $this->get_field_id('taxonomy'); ?>"><?php _e('Which taxonomy', 'csp'); ?></label>
+            <label for="<?php echo $this->get_field_id('taxonomy'); ?>"><?php _e('Choisir la taxonomie', 'csp'); ?></label>
             <select id="<?php echo $this->get_field_id('taxonomy'); ?>" name="<?php echo $this->get_field_name('taxonomy'); ?>">
         <?php foreach ($available_taxonomies as $tax => $tax_object): ?>
                     <option value="<?php echo $tax ?>" <?php selected($tax, $taxonomy); ?> ><?php echo $tax_object->label ?></option>
@@ -342,8 +339,8 @@ class Better_Widget_Categories extends WP_Widget {
 class Better_Widget_Search extends WP_Widget {
 
     function __construct() {
-        $widget_ops = array('classname' => 'widget_search', 'description' => __("A search form for your site", 'csp'));
-        parent::__construct('better-search', __('Search', 'csp'), $widget_ops);
+        $widget_ops = array('classname' => 'widget_search', 'description' => __("Un widget de recherche", 'csp'));
+        parent::__construct('better-search', __('Recherche', 'csp'), $widget_ops);
     }
 
     function widget($args, $instance) {
@@ -356,13 +353,13 @@ class Better_Widget_Search extends WP_Widget {
             echo $before_title . $title . $after_title;
         $id = $this->id;
         ?><form role="search" method="get" id="form-<?php echo $id ?>" action="<?php echo home_url('/') ?>" ><?php
-        ?><div><label class="screen-reader-text" for="s-<?php echo $id ?>"><?php _e('Search for:', 'csp') ?></label><?php
+        ?><label class="screen-reader-text" for="s-<?php echo $id ?>"><?php _e('Recherche:', 'csp') ?></label><?php
         ?><input type="text" value="<?php echo get_search_query() ?>" name="s" id="s-<?php echo $id ?>" /><?php
                     if (count($post_type) > 1):
-                        ?><span class="search_post_type_intro"><?php _e('Search in', 'csp'); ?></span><span class="search_post_type_list"><?php
+                        ?><span class="search_post_type_intro"><?php _ex('dans','Recherche... dans', 'csp'); ?></span><span class="search_post_type_list"><?php
                         foreach ($post_type as $pt):
                             if ($pt == 'any'):
-                                ?><label class="search_post_type_item" for="post_type_any-<?php echo $id ?>"><input type="radio" id="post_type_any-<?php echo $id ?>" name="post_type" value="any" /> <?php _e('Everything', 'csp'); ?></label> <?php
+                                ?><label class="search_post_type_item" for="post_type_any-<?php echo $id ?>"><input type="radio" id="post_type_any-<?php echo $id ?>" name="post_type" value="any" /> <?php _e('Tout le site', 'csp'); ?></label> <?php
                                 else:
                                     $pt_object = get_post_type_object($pt);
                                     ?><label class="search_post_type_item" for="post_type_<?php echo $pt ?>-<?php echo $id ?>"><input type="radio" id="post_type_<?php echo $pt ?>-<?php echo $id ?>" name="post_type" value="<?php echo $pt ?>" /> <?php echo $pt_object->labels->name; ?></label> <?php
@@ -372,8 +369,8 @@ class Better_Widget_Search extends WP_Widget {
                 elseif (count($post_type) == 1 && $post_type[0] !== 'any') :
                     ?><input type="hidden" value="<?php echo $post_type[0] ?>" name="post_type" id="post_type-<?php echo $id ?>" /><?php
         endif;
-        ?><input type="submit" id="submit-<?php echo $id ?>" value="<?php echo esc_attr__('Search', 'csp') ?>" /><?php
-        ?></div></form><?php
+        ?><button type="submit" id="submit-<?php echo $id ?>" ><?php _e('Chercher', 'csp') ?></button><?php
+        ?></form><?php
         echo $after_widget;
     }
 
@@ -384,10 +381,10 @@ class Better_Widget_Search extends WP_Widget {
 
         $available_post_types = get_post_types(array('public' => true, 'exclude_from_search' => false), 'objects');
         ?>
-        <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:', 'csp'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></label></p>
+        <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Titre:', 'csp'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></label></p>
         <p>
-                <?php _e('Search in which type of content:', 'csp'); ?><br />
-            <label for="<?php echo $this->get_field_id('post_type'); ?>_any"><input type="checkbox" id="<?php echo $this->get_field_id('post_type'); ?>_any" name="<?php echo $this->get_field_name('post_type'); ?>[]" value="any" <?php checked(in_array('any', $post_type)); ?> ><?php _e('Any', 'csp') ?></label><br />
+                <?php _e('Chercher dans quel type de contenu:', 'csp'); ?><br />
+            <label for="<?php echo $this->get_field_id('post_type'); ?>_any"><input type="checkbox" id="<?php echo $this->get_field_id('post_type'); ?>_any" name="<?php echo $this->get_field_name('post_type'); ?>[]" value="any" <?php checked(in_array('any', $post_type)); ?> ><?php _e('Tout', 'csp') ?></label><br />
         <?php foreach ($available_post_types as $pt => $pt_object): ?>
                 <label for="<?php echo $this->get_field_id('post_type'); ?>_<?php echo $pt; ?>"><input type="checkbox" id="<?php echo $this->get_field_id('post_type'); ?>_<?php echo $pt; ?>" name="<?php echo $this->get_field_name('post_type'); ?>[]" value="<?php echo $pt; ?>" <?php checked(in_array($pt, $post_type)); ?> ><?php echo $pt_object->label ?></label><br />
         <?php endforeach; ?>
@@ -431,8 +428,8 @@ class Better_Widget_Search extends WP_Widget {
 class Better_Widget_TextNLink extends WP_Widget {
 
 	function __construct() {
-		$widget_ops = array('classname' => 'widget_textnlink', 'description' => __( 'A text, followed by a link','csp') );
-		parent::__construct('widget-textnlink', __('Text’n Link','csp'), $widget_ops, array('width'=>400,'height'=>350) );
+		$widget_ops = array('classname' => 'widget_textnlink', 'description' => __( 'Un texte, suivi d’un lien.','csp') );
+		parent::__construct('widget-textnlink', __('Texte+lien','csp'), $widget_ops, array('width'=>400,'height'=>350) );
 		$this->alt_option_name = 'widget_textnlink';
 
 		add_action( 'save_post', array(&$this, 'flush_widget_cache') );
@@ -529,27 +526,27 @@ class Better_Widget_TextNLink extends WP_Widget {
 		$url = isset($instance['url']) ? esc_attr($instance['url']): '';
 ?>
 		<p>
-			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:','csp'); ?></label>
+			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Titre','csp'); ?>:</label>
 			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
 		</p>
 		<!-- Widget Box ID: Text Input -->
 		<p>
-			<label for="<?php echo $this->get_field_id( 'box_id' ); ?>"><?php _e( 'The Box Class','csp'); ?></label>
+			<label for="<?php echo $this->get_field_id( 'box_id' ); ?>"><?php _e( 'Classe de la boite','csp'); ?>:</label>
 			<input id="<?php echo $this->get_field_id( 'box_id' ); ?>" name="<?php echo $this->get_field_name( 'box_id' ); ?>" value="<?php echo $box_id; ?>" />
 		</p>
 		<!-- Widget Intro: Textarea -->
 		<p>
-			<label for="<?php echo $this->get_field_id( 'intro' ); ?>"><?php _e( 'The text','csp'); ?></label><br />
+			<label for="<?php echo $this->get_field_id( 'intro' ); ?>"><?php _e( 'Le texte','csp'); ?>:</label><br />
 			<textarea class="widefat" rows="16" cols="20" id="<?php echo $this->get_field_id( 'intro' ); ?>" name="<?php echo $this->get_field_name( 'intro' ); ?>" ><?php echo $intro; ?></textarea>
 		</p>
 		<!-- Widget Link text: Text Input -->
 		<p>
-			<label for="<?php echo $this->get_field_id( 'link_text' ); ?>"><?php _e( 'The link text','csp'); ?></label>
+			<label for="<?php echo $this->get_field_id( 'link_text' ); ?>"><?php _e( 'Le texte du lien','csp'); ?>:</label>
 			<input class="widefat" id="<?php echo $this->get_field_id( 'link_text' ); ?>" name="<?php echo $this->get_field_name( 'link_text' ); ?>" value="<?php echo $link_text; ?>" />
 		</p>
 		<!-- Widget Url: Text Input -->
 		<p>
-			<label for="<?php echo $this->get_field_id( 'url' ); ?>"><?php _e( 'The URL','csp'); ?></label>
+			<label for="<?php echo $this->get_field_id( 'url' ); ?>"><?php _e( 'L’URL du lien','csp'); ?>:</label>
 			<input class="widefat" id="<?php echo $this->get_field_id( 'url' ); ?>" name="<?php echo $this->get_field_name( 'url' ); ?>" value="<?php echo $url; ?>" />
 		</p>
 <?php
@@ -564,8 +561,8 @@ class Better_Widget_TextNLink extends WP_Widget {
 class Better_Widget_Button extends WP_Widget {
 
 	function __construct() {
-		$widget_ops = array('classname' => 'widget_button', 'description' => __( 'An image, a link and some text.','csp') );
-		parent::__construct('widget-button', __('Button image','csp'), $widget_ops, array('width'=>400,'height'=>350) );
+		$widget_ops = array('classname' => 'widget_button', 'description' => __( 'Image clicable, survolé d’une zone de texte.','csp') );
+		parent::__construct('widget-button', __('Bouton image','csp'), $widget_ops, array('width'=>400,'height'=>350) );
 		$this->alt_option_name = 'widget_button';
 
 		add_action( 'save_post', array(&$this, 'flush_widget_cache') );
@@ -663,8 +660,8 @@ class Better_Widget_Button extends WP_Widget {
 		/* register strings with WPML */
 		if(function_exists('icl_register_string')){
 			$wid = $this->number; //widget ID
-			icl_register_string('Widgets','Text-'.$wid,$instance['text']);
-			icl_register_string('Widgets','Url-'.$wid,$instance['url']);
+			wpml_register_string('Widgets','Text-'.$wid,$instance['text']);
+			wpml_register_string('Widgets','Url-'.$wid,$instance['url']);
 		}
 
 		$this->flush_widget_cache();
@@ -695,33 +692,33 @@ class Better_Widget_Button extends WP_Widget {
 
 ?>
 		<p>
-			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:','csp'); ?></label>
+			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Titre:','csp'); ?></label>
 			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
 		</p>
 		<!-- Widget Box ID: Text Input -->
 		<p>
-			<label for="<?php echo $this->get_field_id( 'box_id' ); ?>"><?php _e( 'The Box Class','csp'); ?></label>
+			<label for="<?php echo $this->get_field_id( 'box_id' ); ?>"><?php _e( 'Classe de la boite','csp'); ?></label>
 			<input id="<?php echo $this->get_field_id( 'box_id' ); ?>" name="<?php echo $this->get_field_name( 'box_id' ); ?>" value="<?php echo $box_id; ?>" />
 		</p>
 		<!-- Widget text: Textarea -->
 		<p>
-			<label for="<?php echo $this->get_field_id( 'text' ); ?>"><?php _e( 'The text','csp'); ?></label><br />
+			<label for="<?php echo $this->get_field_id( 'text' ); ?>"><?php _e( 'Le texte','csp'); ?></label><br />
 			<textarea class="widefat" rows="8" cols="20" id="<?php echo $this->get_field_id( 'text' ); ?>" name="<?php echo $this->get_field_name( 'text' ); ?>" ><?php echo $text; ?></textarea>
 		</p>
 		<!-- Widget Image: Text Input -->
 		<p>
-			<label for="<?php echo $this->get_field_id( 'image' ); ?>"><?php _e( 'The image ID','csp'); ?></label>
-			<input type="number" id="<?php echo $this->get_field_id( 'image' ); ?>" name="<?php echo $this->get_field_name( 'image' ); ?>" value="<?php echo $image; ?>" /> <b><?php _e('Required.','csp'); ?></b><br />
-			<em><?php _e('The ID of the image can be found in the Media list, by rolling over an image.','csp'); ?></em>
+			<label for="<?php echo $this->get_field_id( 'image' ); ?>"><?php _e( 'L’ID de l’image','csp'); ?></label>
+			<input type="number" id="<?php echo $this->get_field_id( 'image' ); ?>" name="<?php echo $this->get_field_name( 'image' ); ?>" value="<?php echo $image; ?>" /> <b><?php _e('Requis.','csp'); ?></b><br />
+			<em><?php _e('Les ID des images sont visibles dans la Liste des médias.','csp'); ?></em>
 			
 		</p>
 		<!-- Widget Url: Text Input -->
 		<p>
-			<label for="<?php echo $this->get_field_id( 'url' ); ?>"><?php _e( 'The URL','csp'); ?></label>
+			<label for="<?php echo $this->get_field_id( 'url' ); ?>"><?php _e( 'L’URL du lien','csp'); ?></label>
 			<input class="widefat" id="<?php echo $this->get_field_id( 'url' ); ?>" name="<?php echo $this->get_field_name( 'url' ); ?>" value="<?php echo $url; ?>" /><br />
-			<em><?php _e('Enter only a number for a post ID.','csp'); ?></em>
+			<em><?php _e('Si l’URL est interne au site, n’écrire que le ID du contenu.','csp'); ?></em>
 		</p>
-		<p> <?php _e('Padding','csp') ?><br />
+		<p> <?php _e('Espace','csp') ?><br />
 			<label for="<?php echo $this->get_field_id( 'paddingTop' ); ?>"><?php _e( 'Top','csp'); ?></label>
 			<input type="number" id="<?php echo $this->get_field_id( 'paddingTop' ); ?>" name="<?php echo $this->get_field_name( 'paddingTop' ); ?>" value="<?php echo $paddingTop; ?>" size="2" maxlength="2" />px
 			<label for="<?php echo $this->get_field_id( 'paddingLeft' ); ?>"><?php _e( 'Left','csp'); ?></label>
@@ -731,10 +728,10 @@ class Better_Widget_Button extends WP_Widget {
 		</p>
 		<!-- Widget text color: Color input -->
 		<p>
-			<label for="<?php echo $this->get_field_id( 'color' ); ?>"><?php _e( 'The text’s color','csp'); ?></label> 
+			<label for="<?php echo $this->get_field_id( 'color' ); ?>"><?php _e( 'Couleur du text','csp'); ?></label> 
 			#<input type="color" id="<?php echo $this->get_field_id( 'color' ); ?>" name="<?php echo $this->get_field_name( 'color' ); ?>" value="<?php echo $color; ?>" size="6" maxlength="6" />
 		</p>
-		<p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_shadow'); ?>" name="<?php echo $this->get_field_name('display_shadow'); ?>"<?php checked( $display_shadow ); ?> /> <label for="<?php echo $this->get_field_id('display_shadow'); ?>"><?php _e( 'Display text shadow' ,'csp'); ?></label></p>
+		<p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_shadow'); ?>" name="<?php echo $this->get_field_name('display_shadow'); ?>"<?php checked( $display_shadow ); ?> /> <label for="<?php echo $this->get_field_id('display_shadow'); ?>"><?php _e( 'Ombre de texte?' ,'csp'); ?></label></p>
 
 <?php
 	}

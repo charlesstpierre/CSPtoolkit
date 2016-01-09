@@ -1,0 +1,773 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Support CharlesStPierre.com\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: Fri Jan 08 2016 19:05:15 GMT-0500 (EST)\n"
+"PO-Revision-Date: Fri Jan 08 2016 21:06:36 GMT-0500 (EST)\n"
+"Last-Translator: Charles St-Pierre <parlez@charlesstpierre.com>\n"
+"Language-Team: \n"
+"Language: English (Canada)\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-KeywordsList: _:1;gettext:1;dgettext:2;ngettext:1,2;dngettext:2,3;"
+"__:1;_e:1;_c:1;_n:1,2;_n_noop:1,2;_nc:1,2;__ngettext:1,2;__ngettext_noop:1,2;"
+"_x:1,2c;_ex:1,2c;_nx:1,2,4c;_nx_noop:1,2,3c;_n_js:1,2;_nx_js:1,2,3c;"
+"esc_attr__:1;esc_html__:1;esc_attr_e:1;esc_html_e:1;esc_attr_x:1,2c;"
+"esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
+"X-Generator: Loco - https://localise.biz/\n"
+"X-Loco-Target-Locale: en_CA"
+
+#. Name of the plugin
+msgid "Support CharlesStPierre.com"
+msgstr "Support CharlesStPierre.com"
+
+#. URI of the plugin
+msgid "http://charlesstpierre.com"
+msgstr "http://charlesstpierre.com"
+
+#. Description of the plugin
+msgid "Fonctionnalités de support et personnalisation"
+msgstr ""
+
+#. Author of the plugin
+msgid "Charles St-Pierre"
+msgstr ""
+
+#: ../includes/better-widgets.php:32
+msgid "Les contenus les plus récents de votre site."
+msgstr ""
+
+#: ../includes/better-widgets.php:34
+msgid "Contenus récents"
+msgstr ""
+
+#: ../includes/better-widgets.php:56
+msgid "Articles récents"
+msgstr ""
+
+#: ../includes/better-widgets.php:159 ../includes/better-widgets.php:299 ..
+#: includes/better-widgets.php:384 ../includes/better-widgets.php:695
+msgid "Titre:"
+msgstr ""
+
+#: ../includes/better-widgets.php:162
+msgid "Nombre d’éléments à afficher:"
+msgstr ""
+
+#: ../includes/better-widgets.php:165
+msgid "Afficher la date"
+msgstr ""
+
+#: ../includes/better-widgets.php:166
+msgid "Afficher l’extrait"
+msgstr ""
+
+#: ../includes/better-widgets.php:167
+msgid "Afficher l’image à la une"
+msgstr ""
+
+#: ../includes/better-widgets.php:170
+msgid "Type de contenus:"
+msgstr ""
+
+#: ../includes/better-widgets.php:180
+msgid "Restreindre à une taxonomy:"
+msgstr ""
+
+#: ../includes/better-widgets.php:193
+msgid "Choisir le terme:"
+msgstr ""
+
+#: ../includes/better-widgets.php:212
+msgid "Une liste ou un menu déroulant des termes d’une taxonomie."
+msgstr ""
+
+#: ../includes/better-widgets.php:213
+msgid "Taxonomies"
+msgstr ""
+
+#: ../includes/better-widgets.php:219
+msgid "Categories"
+msgstr ""
+
+#: ../includes/better-widgets.php:263
+#, php-format
+msgid "See %s"
+msgstr ""
+
+#: ../includes/better-widgets.php:303
+msgid "Afficher le nombre de termes"
+msgstr ""
+
+#: ../includes/better-widgets.php:306
+msgid "Afficher la hierarchie"
+msgstr ""
+
+#: ../includes/better-widgets.php:309
+msgid "Nombre de termes:"
+msgstr ""
+
+#: ../includes/better-widgets.php:312
+msgid "Classé par:"
+msgstr ""
+
+#: ../includes/better-widgets.php:314
+msgid "ID du terme"
+msgstr ""
+
+#: ../includes/better-widgets.php:315
+msgid "Nom"
+msgstr ""
+
+#: ../includes/better-widgets.php:316
+msgid "Nombre"
+msgstr ""
+
+#: ../includes/better-widgets.php:321
+msgid "Choisir la taxonomie"
+msgstr ""
+
+#: ../includes/better-widgets.php:342
+msgid "Un widget de recherche"
+msgstr ""
+
+#: ../includes/better-widgets.php:343 ../includes/menu-items.php:85
+msgid "Recherche"
+msgstr ""
+
+#: ../includes/better-widgets.php:356
+msgid "Recherche:"
+msgstr ""
+
+#: ../includes/better-widgets.php:359
+msgctxt "Recherche... dans"
+msgid "dans"
+msgstr ""
+
+#: ../includes/better-widgets.php:362
+msgid "Tout le site"
+msgstr ""
+
+#: ../includes/better-widgets.php:372
+msgid "Chercher"
+msgstr ""
+
+#: ../includes/better-widgets.php:386
+msgid "Chercher dans quel type de contenu:"
+msgstr ""
+
+#: ../includes/better-widgets.php:387
+msgid "Tout"
+msgstr ""
+
+#: ../includes/better-widgets.php:431
+msgid "Un texte, suivi d’un lien."
+msgstr ""
+
+#: ../includes/better-widgets.php:432
+msgid "Texte+lien"
+msgstr ""
+
+#: ../includes/better-widgets.php:529
+msgid "Titre"
+msgstr ""
+
+#: ../includes/better-widgets.php:534 ../includes/better-widgets.php:700
+msgid "Classe de la boite"
+msgstr ""
+
+#: ../includes/better-widgets.php:539 ../includes/better-widgets.php:705
+msgid "Le texte"
+msgstr ""
+
+#: ../includes/better-widgets.php:544
+msgid "Le texte du lien"
+msgstr ""
+
+#: ../includes/better-widgets.php:549 ../includes/better-widgets.php:717
+msgid "L’URL du lien"
+msgstr ""
+
+#: ../includes/better-widgets.php:564
+msgid "Image clicable, survolé d’une zone de texte."
+msgstr ""
+
+#: ../includes/better-widgets.php:565
+msgid "Bouton image"
+msgstr ""
+
+#: ../includes/better-widgets.php:710
+msgid "L’ID de l’image"
+msgstr ""
+
+#: ../includes/better-widgets.php:711
+msgid "Requis."
+msgstr ""
+
+#: ../includes/better-widgets.php:712
+msgid "Les ID des images sont visibles dans la Liste des médias."
+msgstr ""
+
+#: ../includes/better-widgets.php:719
+msgid "Si l’URL est interne au site, n’écrire que le ID du contenu."
+msgstr ""
+
+#: ../includes/better-widgets.php:721
+msgid "Espace"
+msgstr ""
+
+#: ../includes/better-widgets.php:722
+msgid "Top"
+msgstr ""
+
+#: ../includes/better-widgets.php:724
+msgid "Left"
+msgstr ""
+
+#: ../includes/better-widgets.php:726
+msgid "Right"
+msgstr ""
+
+#: ../includes/better-widgets.php:731
+msgid "Couleur du text"
+msgstr ""
+
+#: ../includes/better-widgets.php:734
+msgid "Ombre de texte?"
+msgstr ""
+
+#: ../includes/dashboardwidget.php:29
+msgid "Besoin d’un coup de main? Je demeure à votre disposition."
+msgstr ""
+
+#: ../includes/dashboardwidget.php:31
+msgid "Espace client"
+msgstr ""
+
+#: ../includes/dashboardwidget.php:32
+msgid "Demande de support"
+msgstr ""
+
+#: ../includes/dashboardwidget.php:33
+msgid "Base de connaissances"
+msgstr ""
+
+#: ../includes/dashboardwidget.php:33
+msgid "Bientôt"
+msgstr ""
+
+#: ../includes/emailshield.php:55
+msgctxt "Bot protect @ symbole replacement"
+msgid "à"
+msgstr ""
+
+#: ../includes/emailshield.php:55
+msgctxt "Bot protect dot symbole replacement"
+msgid "point"
+msgstr ""
+
+#: ../includes/menu-items.php:11
+msgctxt "Post type archive menu item"
+msgid "Archive de contenus"
+msgstr ""
+
+#: ../includes/menu-items.php:13
+msgid "Utilitaires"
+msgstr ""
+
+#: ../includes/menu-items.php:37 ../includes/menu-items.php:66
+msgid "Select All"
+msgstr ""
+
+#: ../includes/menu-items.php:40 ../includes/menu-items.php:69
+msgid "Add to Menu"
+msgstr ""
+
+#: ../includes/menu-items.php:55 ../includes/menu-items.php:58
+msgid "Formulaire de recherche"
+msgstr ""
+
+#: ../includes/menu-items.php:84 ../includes/menu-items.php:93
+msgid "Rechercher"
+msgstr ""
+
+#: ../includes/menu-items.php:86
+msgid "Lancer la recherche"
+msgstr ""
+
+#: ../includes/security.php:219
+msgid "<b>Risque de sécurité:</b>"
+msgstr ""
+
+#: ../includes/security.php:220
+#, php-format
+msgid "un utilisateur possède un pseudonyme identique à son identifiant."
+msgid_plural "%1$s utilisateurs possèdent des pseudonymes identiques à leur identifiants."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../includes/security.php:222
+msgid "Corriger la situation immédiatement."
+msgstr ""
+
+#: ../includes/security.php:283 ../includes/security.php:283
+msgid "Sécurité"
+msgstr ""
+
+#: ../includes/security.php:352
+msgid "Sécurité du site"
+msgstr ""
+
+#: ../includes/security.php:360
+msgid "Votre adresse IP"
+msgstr ""
+
+#: ../includes/security.php:363
+msgid "Ajouter à la liste blanche"
+msgstr ""
+
+#: ../includes/security.php:367
+msgid "Liste blanche"
+msgstr ""
+
+#: ../includes/security.php:369
+msgid ""
+"Les adresses IP de la liste blanche ne subiront aucune vérification de "
+"sécurité."
+msgstr ""
+
+#: ../includes/security.php:372 ../includes/security.php:393
+msgid "Add"
+msgstr ""
+
+#: ../includes/security.php:376
+msgid "Aucune adresse IP dans la liste blanche."
+msgstr ""
+
+#: ../includes/security.php:388
+msgid "Liste noire"
+msgstr ""
+
+#: ../includes/security.php:390
+msgid ""
+"Les adresses IP de la liste noire ne peuvent se connecter à l’admin et son "
+"passible d’un blocage complet à l’accès du site."
+msgstr ""
+
+#: ../includes/security.php:397
+msgid "Aucune adresse IP dans la liste noire."
+msgstr ""
+
+#: ../includes/security.php:517
+msgid "<strong>ERROR</strong>: The username field is empty."
+msgstr ""
+
+#: ../includes/security.php:520
+msgid "<strong>ERROR</strong>: The password field is empty."
+msgstr ""
+
+#: ../includes/security.php:575
+msgid "Vous êtes sur la liste noir. Contactez l’administrateur du site."
+msgstr ""
+
+#: ../includes/security.php:593
+#, php-format
+msgid ""
+"<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez "
+"attendre jusqu’à %s avant de tenter une connexion. Vous devez maintenant 15 "
+"minutes (jusqu’à %s) avant de tenter une connexion."
+msgstr ""
+
+#: ../includes/security.php:593 ../includes/security.php:593 ../includes/security.
+#: php:603 ../includes/security.php:603 ../includes/security.php:610
+msgctxt "Heure et minute"
+msgid "H\\hi"
+msgstr ""
+
+#: ../includes/security.php:603
+#, php-format
+msgid ""
+"<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez "
+"attendre jusqu’à %s avant de tenter une connexion. Vous devez maintenant 60 "
+"minutes (jusqu’à %s) avant de tenter une connexion."
+msgstr ""
+
+#: ../includes/security.php:610
+#, php-format
+msgid ""
+"<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez "
+"attendre jusqu’à %s avant de tenter une connexion. Vous êtes maintenant sur "
+"la liste noir. Contactez l’administrateur du site."
+msgstr ""
+
+#: ../includes/security.php:618
+#, php-format
+msgid ""
+"<strong>Mauvais identifiant ou mot de passe.</strong><br />Il vous reste 3 "
+"chances sur 5 de vous connecter. <a href=\"%1$s\">Mot de passe oublié ?</a>"
+msgstr ""
+
+#: ../includes/security.php:619
+#, php-format
+msgid ""
+"<strong>Mauvais identifiant ou mot de passe.</strong><br />Il ne vous reste "
+"que 2 chances sur 5 de vous connecter. Nous vous suggerons fortement "
+"d’utiliser la fonction <a href=\"%1$s\">Mot de passe oublié ?</a>."
+msgstr ""
+
+#: ../includes/security.php:620
+#, php-format
+msgid ""
+"<strong>Mauvais identifiant ou mot de passe.</strong><br />Il ne vous reste "
+"qu’une seule chance de vous connecter. Vous devrez attendre 5 minutes avant "
+"de réessayer. <a href=\"%1$s\">Mot de passe oublié ?</a>"
+msgstr ""
+
+#: ../includes/security.php:621
+#, php-format
+msgid ""
+"<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous avez atteint "
+"la limite de tentative de connexion. Vous devez maintenant attendre 5 "
+"minutes avant de réessayer. <a href=\"%1$s\">Mot de passe oublié ?</a>"
+msgstr ""
+
+#: ../includes/security.php:641
+#, php-format
+msgid ""
+"<strong>Mauvais identifiant ou mot de passe.</strong><br />Il vous reste 4 "
+"chances sur 5 de vous connecter. <a href=\"%1$s\">Mot de passe oublié ?</a>"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:171
+msgid "Accueil"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:199
+msgid "Vous êtes ici:"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:343 ../includes/theme_helper.class.php:356 .
+#: ./includes/theme_helper.class.php:376
+#, php-format
+msgid "<%1$s %2$s>Archive de </%1$s>%3$s"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:363 ../includes/theme_helper.class.php:383
+#, php-format
+msgid "<%1$s %2$s>Archive de </%1$s>%3$s<%1$s %2$s> %4$s</%1$s>"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:390
+#, php-format
+msgid "<%1$s %2$s>Archive du </%1$s>%3$s<%1$s %2$s> %4$s %5$s</%1$s>"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:425
+#, php-format
+msgid "Recherche pour «%s»"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:437 ../includes/theme_helper.class.php:508 .
+#: ./includes/theme_helper.class.php:602
+msgid "Page non trouvée"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:458
+#, php-format
+msgid "%2$s «%1$s»"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:465
+#, php-format
+msgid "Archive de %1$s"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:471
+#, php-format
+msgctxt "Month archive"
+msgid "Archive de %1$s"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:472 ../includes/theme_helper.class.php:560
+msgctxt "Month archive date pattern"
+msgid "F Y"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:478
+#, php-format
+msgctxt "Day archive"
+msgid "Archive du %1$s"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:479 ../includes/theme_helper.class.php:567
+msgctxt "Day archive date pattern"
+msgid "j F Y"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:485
+#, php-format
+msgctxt "Author archive"
+msgid "%s"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:492
+#, php-format
+msgctxt "Post type archive"
+msgid "%s"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:546
+#, php-format
+msgid "Les contenus dans %2$s «%1$s». %3$s"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:553
+#, php-format
+msgid "Archive de %1$s. %2$s"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:559
+#, php-format
+msgctxt "Month archive"
+msgid "Archive de %1$s. %2$s"
+msgstr ""
+
+#: ../includes/theme_helper.class.php:566
+#, php-format
+msgctxt "Day archive"
+msgid "Archive du %1$s. %2$s"
+msgstr ""
+
+#: ../includes/welcomeemail.php:13
+msgid "[site_name]| Vos informations de connexion"
+msgstr ""
+
+#: ../includes/welcomeemail.php:14
+msgid ""
+"Vous avez été inscrit au site [site_name].<br /><br />Votre nom "
+"d’utilisateur: [user_login]<br /><br />Configurez votre mot de passe à "
+"l’adresse suivante:<br />[set_pass_url]"
+msgstr ""
+
+#: ../includes/welcomeemail.php:15
+msgid "[site_name]| Incription d’un nouvel utilisateur"
+msgstr ""
+
+#: ../includes/welcomeemail.php:16
+msgid ""
+"Nouvel utilisateur sur votre site [site_name]<br /><br />Nom d’utilisateur: "
+"[user_login]<br />Courriel: [user_email]"
+msgstr ""
+
+#: ../includes/welcomeemail.php:25
+msgid "[site_name]| Mot de passe oublié"
+msgstr ""
+
+#: ../includes/welcomeemail.php:26
+msgid ""
+"Il a été demandé de réinitialiser votre mot de passe pour l’utilisateur "
+"[user_login] sur le site [site_name].<br /><br />Si vous n’avez pas fait "
+"cette demande, ignorez ce courriel et votre mot de passe demeurera inchangé."
+"<br /><br />Pour réinitialiser votre mot de passe, visitez le lien suivant: "
+"[reset_pass_url]"
+msgstr ""
+
+#: ../includes/welcomeemail.php:45 ../includes/welcomeemail.php:45 ..
+#: includes/welcomeemail.php:114
+msgid "Messages système"
+msgstr ""
+
+#: ../includes/welcomeemail.php:54
+msgid "Options générales"
+msgstr ""
+
+#: ../includes/welcomeemail.php:55
+msgid "Courriel «De»"
+msgstr ""
+
+#: ../includes/welcomeemail.php:56
+msgid "Nom «De»"
+msgstr ""
+
+#: ../includes/welcomeemail.php:58
+msgid "Courriel de bienvenue"
+msgstr ""
+
+#: ../includes/welcomeemail.php:59 ../includes/welcomeemail.php:65 ..
+#: includes/welcomeemail.php:70
+msgid "Sujet"
+msgstr ""
+
+#: ../includes/welcomeemail.php:60 ../includes/welcomeemail.php:66 ..
+#: includes/welcomeemail.php:71
+msgid "Message"
+msgstr ""
+
+#: ../includes/welcomeemail.php:61
+msgid "Courriel «Répondre à»"
+msgstr ""
+
+#: ../includes/welcomeemail.php:62
+msgid "Entêtes supplémentaires"
+msgstr ""
+
+#: ../includes/welcomeemail.php:64
+msgid "Notification de l’administrateur"
+msgstr ""
+
+#: ../includes/welcomeemail.php:67
+msgid "Send Admin Email To"
+msgstr ""
+
+#: ../includes/welcomeemail.php:69
+msgid "Rappel de mot de passe"
+msgstr ""
+
+#: ../includes/welcomeemail.php:98
+msgid "Messages tests envoyés."
+msgstr ""
+
+#: ../includes/welcomeemail.php:109
+msgid "You do not have sufficient permissions to manage options for this site."
+msgstr ""
+
+#: ../includes/welcomeemail.php:121
+msgid "Enregistrer les modifications et tester les messages"
+msgstr ""
+
+#. _e('These settings effect all of this plugin and, in some cases, all of your site.', 'csp');
+#: ../includes/welcomeemail.php:132
+msgid "Ces configurations affectent tous les courriels envoyés par le site."
+msgstr ""
+
+#. . __('Global option change the from email address for all site emails', 'csp')
+#: ../includes/welcomeemail.php:140
+msgid "Change l’adresse d’origine de tous les courriels du site."
+msgstr ""
+
+#. . __('Global option change the from name for all site emails', 'csp')
+#: ../includes/welcomeemail.php:148
+msgid "Change le nom d’origine de tous les courriels du site."
+msgstr ""
+
+#. _e('These settings are for the email sent to the new user on their signup.', 'csp');
+#: ../includes/welcomeemail.php:161
+msgid ""
+"Ces configurations s’appliquent aux courriels envoyés aux nouveaux "
+"utilisateurs."
+msgstr ""
+
+#. . __('Subject line for the welcome email sent to the user.', 'csp')
+#: ../includes/welcomeemail.php:168
+msgid "Sujet du courriel envoyé au nouvel utilisateur."
+msgstr ""
+
+#. . __('Body content for the welcome email sent to the user.', 'csp')
+#: ../includes/welcomeemail.php:185 ../includes/welcomeemail.php:305
+msgid "Message du courriel envoyé au nouvel utilisateur."
+msgstr ""
+
+#: ../includes/welcomeemail.php:192
+msgid "Optionnel. Adresse de réponse du courriel envoyé au nouvel utilisateur."
+msgstr ""
+
+#. . __('Optional field for advanced users to add more headers. Don’t forget to separate headers with \r\n.', 'csp')
+#: ../includes/welcomeemail.php:201
+msgid ""
+"Optionnel. Entêtes supplémentaires pour utilisateurs averties. Séparer "
+"chaque entêtes par \\r\\n."
+msgstr ""
+
+#. _e('These settings are for the email sent to the admin on a new user signup.', 'csp');
+#: ../includes/welcomeemail.php:211
+msgid ""
+"Ces configurations s’appliquent aux courriels envoyés aux administrateurs "
+"lors de l’inscription de nouveaux utilisateurs."
+msgstr ""
+
+#: ../includes/welcomeemail.php:217
+msgid "Sujet du courriel envoyé aux administrateurs sélectionnés."
+msgstr ""
+
+#: ../includes/welcomeemail.php:234
+msgid "Message du courriel envoyé aux administrateurs sélectionnés."
+msgstr ""
+
+#: ../includes/welcomeemail.php:274
+msgid "Sélectionnez les administrateurs qui recevront ce message."
+msgstr ""
+
+#. _e('These settings are for the email sent to the admin on a new user signup.', 'csp');
+#: ../includes/welcomeemail.php:283
+msgid ""
+"Ces configurations s’appliquent aux courriels envoyés pour renouveller les "
+"mots de passe."
+msgstr ""
+
+#: ../includes/welcomeemail.php:289
+msgid "Sujet du courriel envoyé à l’utilisateur."
+msgstr ""
+
+#. Name of the plugin
+msgid "WP Github Plugin Updater Test"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://github.com/jkudish/WordPress-GitHub-Plugin-Updater"
+msgstr ""
+
+#. Description of the plugin
+msgid "Semi-automated test for the Github Plugin Updater"
+msgstr ""
+
+#. Author of the plugin
+msgid "Joachim Kudish"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://jkudish.com"
+msgstr ""
+
+#: ../includes/GitHub-Plugin-Updater/plugin.php:119 ../includes/GitHub-Plugin-
+#: Updater/plugin.php:119
+msgid "Github Updates"
+msgstr ""
+
+#: ../includes/GitHub-Plugin-Updater/plugin.php:160
+msgid "Authorize with Github"
+msgstr ""
+
+#: ../includes/GitHub-Plugin-Updater/plugin.php:222
+msgid "Please input a Client ID before authorizing."
+msgstr ""
+
+#: ../includes/GitHub-Plugin-Updater/plugin.php:225
+msgid "Please input a Client Secret before authorizing."
+msgstr ""
+
+#: ../includes/GitHub-Plugin-Updater/plugin.php:238
+msgid "Setup"
+msgstr ""
+
+#: ../includes/GitHub-Plugin-Updater/plugin.php:255
+msgid "Setup Github Updates"
+msgstr ""
+
+#: ../includes/GitHub-Plugin-Updater/updater.php:234
+msgid "Information unavailable"
+msgstr ""
+
+#: ../includes/GitHub-Plugin-Updater/updater.php:390
+msgid ""
+"The plugin has been updated, but could not be reactivated. Please reactivate "
+"it manually."
+msgstr ""
+
+#: ../includes/GitHub-Plugin-Updater/updater.php:391
+msgid "Plugin reactivated successfully."
+msgstr ""

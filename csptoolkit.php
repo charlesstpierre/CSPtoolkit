@@ -10,6 +10,9 @@
 
   Changelog
   v1.0.6   Correction de coquille
+           Retour de Welcome Email, maintenant Messages système
+           Ajout WPML Config.xml pour gérer les traductions
+           Uniformisation linguistique (fr_CA)
 
   v1.0.5   Ajout de l’élément de menu Archive de type de post
            Corrections de Notice PHP
@@ -30,6 +33,30 @@
 define('TOOLKIT_URL', plugin_dir_url(__FILE__));
 define('TOOLKIT_CONFIG', WP_CONTENT_DIR.'/csp-config.php');
 
+require_once TOOLKIT_CONFIG;
+
+require_once 'includes/debug.php';
+require_once 'includes/theme_helper.class.php';
+
+require_once 'includes/tinymce.php';
+require_once 'includes/welcomeemail.php';
+require_once 'includes/dashboardwidget.php';
+require_once 'includes/emailshield.php';
+require_once 'includes/upload-processor.php';
+
+require_once 'includes/menu-items.php';
+require_once 'includes/wpml-compatibility.php';
+
+if (CSP_DO_SOCIALMETAS) {
+    require_once 'includes/socialmetas.php';
+}
+if (CSP_DO_GEOTAGGING) {
+    require_once 'includes/geotagging.php';
+}
+if (CSP_DO_WIDGETS) {
+    require_once 'includes/better-widgets.php';
+}
+
 
 /**
  * CSP Plugin Init
@@ -45,30 +72,8 @@ function cspplugin_init() {
     // loading text domain
     load_plugin_textdomain('csp', false, dirname(plugin_basename(__FILE__)) . '/lang/');
     
-    require_once TOOLKIT_CONFIG;
+    
 
-    include 'includes/debug.php';
-    include 'includes/security.php';
-    include 'includes/theme_helper.class.php';
-
-    include 'includes/tinymce.php';
-    include 'includes/welcomeemail.php';
-    include 'includes/dashboardwidget.php';
-    include 'includes/emailshield.php';
-    include 'includes/upload-processor.php';
-
-    include 'includes/menu-items.php';
-    include 'includes/wpml-compatibility.php';
-
-    if (CSP_DO_SOCIALMETAS) {
-        include 'includes/socialmetas.php';
-    }
-    if (CSP_DO_GEOTAGGING) {
-        include 'includes/geotagging.php';
-    }
-    if (CSP_DO_WIDGETS) {
-        include 'includes/better-widgets.php';
-    }
 
     //activating auto update from github
     if (is_admin()) {
@@ -90,7 +95,7 @@ function cspplugin_init() {
     }
 }
 
-add_action('plugins_loaded', 'cspplugin_init');
+add_action('plugins_loaded', 'cspplugin_init',2);
 
 /**
  * Trigger plugins activation functions

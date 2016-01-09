@@ -8,7 +8,7 @@ function csp_add_menu_items_metabox(){
     //debug($wp_post_types);
     $posttypes = get_post_types( array( 'public'=>true, '_builtin'=>false) );
     if ( !empty($posttypes)){
-        add_meta_box('csp_menu_item_posttype_archive',__('Archive de contenus','csp'),'csp_menu_item_posttype_archive_metabox','nav-menus','side','low');
+        add_meta_box('csp_menu_item_posttype_archive',_x('Archive de contenus','Post type archive menu item','csp'),'csp_menu_item_posttype_archive_metabox','nav-menus','side','low');
     }
     add_meta_box('csp_menu_item_utilities',__('Utilitaires','csp'),'csp_menu_item_utilities_metabox','nav-menus','side','low');
 }
@@ -52,10 +52,10 @@ function csp_menu_item_utilities_metabox(){
         			<ul id ="utilities-checklist" class="categorychecklist form-no-clear">
         				<li>
         					<label class="menu-item-title">
-        						<input type="checkbox" class="menu-item-checkbox" name="menu-item[-1][menu-item-object-id]" value="-1"> <?php _e('Formulaire de recherche','cs['); ?>
+        						<input type="checkbox" class="menu-item-checkbox" name="menu-item[-1][menu-item-object-id]" value="-1"> <?php _e('Formulaire de recherche','csp'); ?>
         					</label>
         					<input type="hidden" class="menu-item-type" name="menu-item[-1][menu-item-type]" value="custom">
-                                                <input type="hidden" class="menu-item-title" name="menu-item[-1][menu-item-title]" value="<?php esc_attr_e('Formulaire de recherche','cs['); ?>">
+                                                <input type="hidden" class="menu-item-title" name="menu-item[-1][menu-item-title]" value="<?php esc_attr_e('Formulaire de recherche','csp'); ?>">
                                                 <input type="hidden" class="menu-item-url" name="menu-item[-1][menu-item-url]" value="#search_form#">
         					<input type="hidden" class="menu-item-classes" name="menu-item[-1][menu-item-classes]" value="">
         				</li>
@@ -90,7 +90,7 @@ function replace_menu_item_with_search_form($item_output, $item, $depth, $args){
         $item_output .= '<form class="menu-search-form" role="search" method="get" id="menu_searchform" action="'.home_url( '/' ).'" >'
                 .'<label class="screen-reader-text" for="s_menu">'.$label.':</label>'
                 .'<input class="menu-search-input" type="text" value="'.get_search_query().'" name="s" id="s_menu" placeholder="'.$placeholder.'" />'
-                .'<button class="menu-search-submit" type="submit" id="submit_search_menu" value="'.esc_attr__('Rechercher','kaki').'" >'.$button.'</button>'
+                .'<button class="menu-search-submit" type="submit" id="submit_search_menu" value="'.esc_attr__('Rechercher','csp').'" >'.$button.'</button>'
                 .'</form>';
         
         $item_output .= $args->after;

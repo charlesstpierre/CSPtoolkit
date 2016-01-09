@@ -52,7 +52,7 @@ function shortcode_emailshield($atts){
 		}else{
 			$class='email';
 		}
-		return sprintf('<span class="'.$class.'">%s%s ['.__('à','csp').'] %s ['.__('point','csp').'] %s</span>',$to,$parts[1],$parts[3],$parts[5]);
+		return sprintf('<span class="'.$class.'">%s%s ['._x('à','Bot protect @ symbole replacement','csp').'] %s ['._x('point','Bot protect dot symbole replacement','csp').'] %s</span>',$to,$parts[1],$parts[3],$parts[5]);
 	}else{
 		return $email;
 	}
