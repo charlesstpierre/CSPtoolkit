@@ -7,11 +7,13 @@ parlez@charlesstpierre.com
 
 
 == Changelog ==
-= 1.0.6 =
-* Correction coquille
+= 1.0.7 =
 * Retour de Welcome Email, maintenant Messages système
 * Ajout WPML Config.xml pour gérer les traductions
 * Uniformisation linguistique (fr_CA)
+
+= 1.0.6 =
+* Correction coquille
 
 = 1.0.5 =
 * Ajout de l’élément de menu Archive de type de post

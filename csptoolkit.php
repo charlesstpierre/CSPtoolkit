@@ -4,15 +4,16 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.0.6
+  Version: 1.0.7
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
 
   Changelog
-  v1.0.6   Correction de coquille
-           Retour de Welcome Email, maintenant Messages système
+  v1.0.7   Retour de Welcome Email, maintenant Messages système
            Ajout WPML Config.xml pour gérer les traductions
            Uniformisation linguistique (fr_CA)
+
+  v1.0.6   Correction de coquille
 
   v1.0.5   Ajout de l’élément de menu Archive de type de post
            Corrections de Notice PHP
