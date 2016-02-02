@@ -447,7 +447,7 @@ class Better_Widget_TextNLink extends WP_Widget {
 			echo $cache[$args['widget_id']];
 			return;
 		}
-		$wid = $this->number; //widget ID
+		$wid = $this->id; //widget ID
 		ob_start();
 		extract($args);
 
@@ -459,9 +459,9 @@ class Better_Widget_TextNLink extends WP_Widget {
 		
 		/* get translations */
 		if (function_exists('icl_t')){
-			$intro = icl_t('Widgets','Intro-'.$wid,$intro);
-			$link_text = icl_t('Widgets','Link text-'.$wid,$link_text);
-			$url = icl_t('Widgets','Url-'.$wid,$url);
+			$intro = icl_t('Widgets','Intro '.$wid,$intro);
+			$link_text = icl_t('Widgets','Lien '.$wid,$link_text);
+			$url = icl_t('Widgets','Url '.$wid,$url);
 		}
 
 		/* Before widget (defined by themes). */
@@ -499,10 +499,10 @@ class Better_Widget_TextNLink extends WP_Widget {
 
 		/* register strings with WPML */
 		if(function_exists('icl_register_string')){
-			$wid = $this->number; //widget ID
-			icl_register_string('Widgets','Intro-'.$wid,$instance['intro']);
-			icl_register_string('Widgets','Link text-'.$wid,$instance['link_text']);
-			icl_register_string('Widgets','Url-'.$wid,$instance['url']);
+			$wid = $this->id; //widget ID
+			icl_register_string('Widgets','Intro '.$wid,$instance['intro']);
+			icl_register_string('Widgets','Link '.$wid,$instance['link_text']);
+			icl_register_string('Widgets','Url '.$wid,$instance['url']);
 		}
 
 		$this->flush_widget_cache();
@@ -580,7 +580,7 @@ class Better_Widget_Button extends WP_Widget {
 			echo $cache[$args['widget_id']];
 			return;
 		}
-		$wid = $this->number; //widget ID
+		$wid = $this->id; //widget ID
 
 		ob_start();
 		extract($args);
@@ -600,8 +600,8 @@ class Better_Widget_Button extends WP_Widget {
 		
 		/* get translations */
 		if (function_exists('icl_t')){
-			$text = icl_t('Widgets','Text-'.$wid,$text);
-			$url = icl_t('Widgets','Url-'.$wid,$url);
+			$text = icl_t('Widgets','Text '.$wid,$text);
+			$url = icl_t('Widgets','Url '.$wid,$url);
 		}
 		
 		if (is_numeric($url)){
@@ -659,9 +659,9 @@ class Better_Widget_Button extends WP_Widget {
 
 		/* register strings with WPML */
 		if(function_exists('icl_register_string')){
-			$wid = $this->number; //widget ID
-			wpml_register_string('Widgets','Text-'.$wid,$instance['text']);
-			wpml_register_string('Widgets','Url-'.$wid,$instance['url']);
+			$wid = $this->id; //widget ID
+			wpml_register_string('Widgets','Text '.$wid,$instance['text']);
+			wpml_register_string('Widgets','Url '.$wid,$instance['url']);
 		}
 
 		$this->flush_widget_cache();

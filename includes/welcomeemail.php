@@ -375,7 +375,9 @@ function wp_new_user_notification( $user_id, $deprecated = null, $notify = '' ) 
 	$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
 	$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user->user_login ) );
 
-        $set_pass_url = wp_login_url() . '?action=rp&key=' . $key . '&login=' . rawurlencode($user->user_login);
+        //$set_pass_url = wp_login_url() . '?action=rp&key=' . $key . '&login=' . rawurlencode($user->user_login);
+        $set_pass_url = network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user->user_login), 'login');
+        
         
         $user_body = str_replace('[set_pass_url]',$set_pass_url,$user_body);
         
@@ -408,8 +410,7 @@ function sm_lost_password_message($message, $key, $user_login, $user_data) {
     $settings = get_option('sm_settings');
 
     if (trim($settings['password_reminder_body'])) {
-        
-        $reset_pass_url = wp_login_url() . '?action=rp&key=' . $key . '&login=' . rawurlencode($user->user_login);
+        $reset_pass_url = network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login');
         $message = sm_placeholder_replace( $settings['password_reminder_body'], array('[reset_pass_url]'=>$reset_pass_url), $user_data );
     }
 
@@ -426,7 +427,8 @@ function sm_lost_password_message($message, $key, $user_login, $user_data) {
 
 
 function sm_from_email($from_email) {
-    if ( $new = sm_placeholder_replace( sm_get_option('header_from_email'), null, null ) ){
+    
+    if ( 0 === strpos('wordpress@',$from_email) && $new = sm_placeholder_replace( sm_get_option('header_from_email'), null, null ) ){
         return $new;
     }
     return $from_email;
@@ -434,7 +436,7 @@ function sm_from_email($from_email) {
 add_filter('wp_mail_from', 'sm_from_email',1);
 
 function sm_from_name($from_name) {
-    if ( $new = sm_placeholder_replace( sm_get_option('header_from_name'), null, null) ){
+    if ( 'WordPress'===$from_name && $new = sm_placeholder_replace( sm_get_option('header_from_name'), null, null) ){
         return $new;
     }
     return $from_name;
