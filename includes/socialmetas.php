@@ -20,6 +20,9 @@ function socialMetas() {
      */
     $icons_folder = apply_filters('csp_socialmetas_icons_folder',WP_CONTENT_URL.'/icons');
  
+    if (!file_exists($icons_folder))
+        return;
+    
     $og_site_name = get_bloginfo('name');
     $og_description = get_meta_description();
     

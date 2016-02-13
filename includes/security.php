@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Security.php
  * 
@@ -16,7 +15,6 @@
  * @since 1.0.0
  */
 function csp_security() {
-
     if (!CSP_DO_RSS) {
         remove_action('wp_head', 'feed_links', 2);
         remove_action('wp_head', 'feed_links_extra', 3);
@@ -28,9 +26,11 @@ function csp_security() {
     remove_action('wp_head', 'start_post_rel_link', 10, 0);
     remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0);
     remove_action('wp_head', 'wp_shortlink_wp_head', 10, 0);
-    remove_action('wp_head', 'wp_generator', 100);
+    remove_action('wp_head', 'wp_generator', 10);
+    if (isset($GLOBALS['sitepress'])) {
+        remove_action('wp_head', array($GLOBALS['sitepress'], 'meta_generator_tag'), 10);
+    }
 }
-
 add_action('plugins_loaded', 'csp_security');
 
 /**
@@ -88,20 +88,19 @@ function csp_update_user_database() {
  * @since 1.0.0
  * @see function csp_activation()
  */
-function csp_delete_insecure_files(){
-    
+function csp_delete_insecure_files() {
+
     $files = array(
-        ABSPATH.'license.txt',
-        ABSPATH.'readme.html',
-        ABSPATH.'wp-admin/install.php',
-        ABSPATH.'wp-config-sample.php'
+        ABSPATH . 'license.txt',
+        ABSPATH . 'readme.html',
+        ABSPATH . 'wp-admin/install.php',
+        ABSPATH . 'wp-config-sample.php'
     );
-    foreach($files as $file){
-        if (file_exists($file)){
+    foreach ($files as $file) {
+        if (file_exists($file)) {
             unlink($file);
         }
     }
-    
 }
 
 /**
@@ -109,65 +108,69 @@ function csp_delete_insecure_files(){
  * 
  * @see function csp_activation()
  */
-function csp_setup_security_htaccess(){
-    
-    $htaccess = get_home_path().'.htaccess';
-    
+function csp_setup_security_htaccess() {
+
+    $htaccess = get_home_path() . '.htaccess';
+
     $lines = array();
     //disallow directory browsing
-    $lines[]  = '# directory browsing';
-    $lines[]  = 'Options -Indexes';
+    $lines[] = '# directory browsing';
+    $lines[] = 'Options -Indexes';
     // protect wp-config.php
-    $lines[]  = '<Files "wp-config.php">';
-    $lines[]  = 'order allow,deny';
-    $lines[]  = 'deny from all';
-    $lines[]  = '</Files>';
+    $lines[] = '<Files "wp-config.php">';
+    $lines[] = 'order allow,deny';
+    $lines[] = 'deny from all';
+    $lines[] = '</Files>';
     // protect all .hta(ccess) files
-    $lines[]  = '<Files ~ "^.*\.([Hh][Tt][Aa])">';
-    $lines[]  = 'order allow,deny';
-    $lines[]  = 'deny from all';
-    $lines[]  = 'satisfy all';
-    $lines[]  = '</Files>';
+    $lines[] = '<Files ~ "^.*\.([Hh][Tt][Aa])">';
+    $lines[] = 'order allow,deny';
+    $lines[] = 'deny from all';
+    $lines[] = 'satisfy all';
+    $lines[] = '</Files>';
     // prevent hot linking
-    $lines[]  = '# Prevent image hotlinking script. Replace last URL with any image link you want.';
-    $lines[]  = 'RewriteEngine on';
-    $lines[]  = 'RewriteCond %{HTTP_REFERER} !^$';
-    
+    $lines[] = '# Prevent image hotlinking script. Replace last URL with any image link you want.';
+    $lines[] = 'RewriteEngine on';
+    $lines[] = 'RewriteCond %{HTTP_REFERER} !^$';
+
     // get all domain
-    $domains = explode('|',CSP_SITE_DOMAINS);
-    foreach ($domains as $domain){
-        $lines[]  = 'RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?' . $domain . ' [NC]';
+    if (defined('CSP_SITE_DOMAINS')) {
+        $domains = explode('|', CSP_SITE_DOMAINS);
+    } else {
+        $domains = array($_SERVER['SERVER_NAME']);
     }
-    $lines[]  = 'RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]';
+
+    foreach ($domains as $domain) {
+        $lines[] = 'RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?' . $domain . ' [NC]';
+    }
+    $lines[] = 'RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]';
     //$lines[]  = '';
-    
+
     insert_with_markers($htaccess, 'CSP_SECURITY', $lines);
-    
+
     // WP-content
-    $htaccess = WP_CONTENT_DIR.'/.htaccess';
-    
+    $htaccess = WP_CONTENT_DIR . '/.htaccess';
+
     $lines = array();
     $lines[] = 'Order deny,allow';
     $lines[] = 'Deny from all';
     // allowed file types
     $allowed_mime_types = get_allowed_mime_types();
-    $allowed_file_types = array_merge( 
-                                        array_keys($allowed_mime_types),
-                                        array('svg','woff','ttf','oet')// fonts
-            );
-    $lines[] = '<Files ~ ".('.implode('|',$allowed_file_types).')$">';
+    $allowed_file_types = array_merge(
+            array_keys($allowed_mime_types), array('svg', 'woff', 'woff2', 'ttf', 'oet', 'map')// fonts
+    );
+    $lines[] = '<Files ~ ".(' . implode('|', $allowed_file_types) . ')$">';
     $lines[] = 'Allow from all';
     $lines[] = '</Files>';
     //$lines[] = '';
     //$lines[] = '';
-    
+
     insert_with_markers($htaccess, 'CSP_SECURITY', $lines);
 
-    
-    
+
+
     // WP-includes
     $htaccess = get_home_path() . WPINC . '/.htaccess';
-    
+
     $lines = array();
     $lines[] = '# Block wp-includes folder and files';
     $lines[] = '<IfModule mod_rewrite.c>';
@@ -181,15 +184,12 @@ function csp_setup_security_htaccess(){
     $lines[] = '</IfModule>';
     //$lines[] = '';
     //$lines[] = '';
-    
+
     insert_with_markers($htaccess, 'CSP_SECURITY', $lines);
 
-    
+
     // the END!
-    
 }
-
-
 
 /**
  * Check user nicenames
@@ -280,21 +280,22 @@ add_action('user_register', 'csp_update_nicename_from_nickname', 10, 2);
  * @since 1.0.2
  */
 function csp_add_security_interface() {
-    add_options_page(__('Sécurité','csp'), __('Sécurité','csp'), 'manage_options', 'csp-security', 'csp_output_security_interface');
+    add_options_page(__('Sécurité', 'csp'), __('Sécurité', 'csp'), 'manage_options', 'csp-security', 'csp_output_security_interface');
 }
-add_action('admin_menu','csp_add_security_interface');
+
+add_action('admin_menu', 'csp_add_security_interface');
 
 /**
  * Enqueue admin security CSS and JS
  */
 function csp_security_enqueue_head($hook) {
-    if ($hook == 'settings_page_csp-security'){
-        wp_enqueue_script('csp-security',TOOLKIT_URL.'js/admin-security.js',array('jquery'), '1.0', true);
-        wp_enqueue_style('csp-security',TOOLKIT_URL.'css/admin-security.css');
+    if ($hook == 'settings_page_csp-security') {
+        wp_enqueue_script('csp-security', TOOLKIT_URL . 'js/admin-security.js', array('jquery'), '1.0', true);
+        wp_enqueue_style('csp-security', TOOLKIT_URL . 'css/admin-security.css');
     }
 }
-add_action('admin_enqueue_scripts','csp_security_enqueue_head');
 
+add_action('admin_enqueue_scripts', 'csp_security_enqueue_head');
 
 /**
  * Output Security interface
@@ -303,129 +304,127 @@ add_action('admin_enqueue_scripts','csp_security_enqueue_head');
  * @global object $wpdb
  */
 function csp_output_security_interface() {
-    
+
     // submitted form
-    if (isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'],'csp-security-interface')){
-        if (!isset($_POST['what'])){
+    if (isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'csp-security-interface')) {
+        if (!isset($_POST['what'])) {
             $_POST['what'] = false;
         }
-            switch ( $_POST['what']){
-                case 'add_my_ip_whitelist':
-                    if ( $new_whitelist = filter_var( $_POST['my_ip'], FILTER_VALIDATE_IP) ){
-                        add_option('_whitelist'.csp_get_ip( $new_whitelist ), $new_whitelist);
-                        delete_option('_blacklist'.csp_get_ip( $new_whitelist ));
-                    }
-                    
-                    break;
-                case 'add_ip_whitelist':
-                    if ( $new_whitelist = filter_var( $_POST['add_ip_whitelist'], FILTER_VALIDATE_IP) ){
-                        add_option('_whitelist'.csp_get_ip( $new_whitelist ), $new_whitelist);
-                        delete_option('_blacklist'.csp_get_ip( $new_whitelist ));
-                    }
-                    break;
-                case 'add_ip_blacklist':
-                    if ( $new_blacklist = filter_var( $_POST['add_ip_blacklist'], FILTER_VALIDATE_IP) ){
-                        add_option('_blacklist'.csp_get_ip( $new_blacklist ), 1);
-                        delete_option('_whitelist'.csp_get_ip( $new_blacklist ));
-                    }
-                    break;
-                default:
-                    // we are removing something
-                    $the_list = (in_array( $_POST['remove_list'], array('black','white'))) ? $_POST['remove_list'] : false;
-                    $the_ip = filter_var( $_POST['remove_ip'], FILTER_VALIDATE_IP);
-                    if ($the_list && $the_ip){
-                        delete_option( '_'.$the_list.'list'.csp_get_ip($the_ip) );
-                        csp_gandalf_protocol_remove_ip($the_ip);
-                    }
-                    
-                    break;
-            }
+        switch ($_POST['what']) {
+            case 'add_my_ip_whitelist':
+                if ($new_whitelist = filter_var($_POST['my_ip'], FILTER_VALIDATE_IP)) {
+                    add_option('_whitelist' . csp_get_ip($new_whitelist), $new_whitelist);
+                    delete_option('_blacklist' . csp_get_ip($new_whitelist));
+                }
+
+                break;
+            case 'add_ip_whitelist':
+                if ($new_whitelist = filter_var($_POST['add_ip_whitelist'], FILTER_VALIDATE_IP)) {
+                    add_option('_whitelist' . csp_get_ip($new_whitelist), $new_whitelist);
+                    delete_option('_blacklist' . csp_get_ip($new_whitelist));
+                }
+                break;
+            case 'add_ip_blacklist':
+                if ($new_blacklist = filter_var($_POST['add_ip_blacklist'], FILTER_VALIDATE_IP)) {
+                    add_option('_blacklist' . csp_get_ip($new_blacklist), 1);
+                    delete_option('_whitelist' . csp_get_ip($new_blacklist));
+                }
+                break;
+            default:
+                // we are removing something
+                $the_list = (in_array($_POST['remove_list'], array('black', 'white'))) ? $_POST['remove_list'] : false;
+                $the_ip = filter_var($_POST['remove_ip'], FILTER_VALIDATE_IP);
+                if ($the_list && $the_ip) {
+                    delete_option('_' . $the_list . 'list' . csp_get_ip($the_ip));
+                    csp_gandalf_protocol_remove_ip($the_ip);
+                }
+
+                break;
+        }
     }
-    
-    
+
+
     global $wpdb;
     $whitelist = $wpdb->get_col("SELECT `option_value` FROM $wpdb->options WHERE `option_name` LIKE '_whitelist%';");
     $blacklist = $wpdb->get_col("SELECT REPLACE(SUBSTRING(`option_name`,15),'_','.') AS 'ip' FROM $wpdb->options WHERE `option_name` LIKE '_blacklist%';");
-    
     ?>
-<div class="wrap">
-    <h1 class="csp-security-title"><span class="dashicons dashicons-vault"></span><?php _e('Sécurité du site','csp') ?></h1>
-<form id="csp-security-form" action="options-general.php?page=csp-security" method="post">
-    <?php wp_nonce_field('csp-security-interface') ?>
-    <input type="hidden" id="remove_list" name="remove_list" value="" />
-    <input type="hidden" id="remove_ip" name="remove_ip" value="" />
-    <table class="form-table">
-        <tbody>
-            <tr>
-                <th scope="row"><?php _e('Votre adresse IP','csp') ?></th>
-                <td>
-                    <input type="text" value="<?php echo $_SERVER['REMOTE_ADDR'] ?>" readonly="readonly" name="my_ip" />
-                    <button type="submit" name="what" value="add_my_ip_whitelist" class="button-primary"><?php _e('Ajouter à la liste blanche','csp'); ?></button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php _e('Liste blanche','csp') ?></th>
-                <td>
-                    <p><?php _e('Les adresses IP de la liste blanche ne subiront aucune vérification de sécurité.','csp') ?></p>
-                    <p>
-                        <input type="text" placeholder="###.###.###.###" name="add_ip_whitelist" />
-                        <button type="submit" name="what" value="add_ip_whitelist" class="button-primary"><?php _e('Add'); ?></button>
-                    </p>
-                    <ul class="scroll-list">
-<?php if (empty($whitelist)): ?>
-                        <li><?php _e('Aucune adresse IP dans la liste blanche.','csp') ?></li>
-<?php endif; ?>
-<?php foreach ($whitelist as $wip): ?>
-                        <li>
-                            <code class="security-ip-list-item"><?php echo $wip; ?></code>
-                            <a href="javascript:void(0);" data-list="white" data-ip="<?php echo $wip ?>" class="security-list-remove-item dashicons dashicons-trash"></a></li>
-                        </li>
-<?php endforeach; ?>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php _e('Liste noire','csp') ?></th>
-                <td>
-                    <p><?php _e('Les adresses IP de la liste noire ne peuvent se connecter à l’admin et son passible d’un blocage complet à l’accès du site.','csp') ?></p>
-                    <p>
-                        <input type="text" placeholder="###.###.###.###" name="add_ip_blacklist" />
-                        <button type="submit" name="what" value="add_ip_blacklist"  class="button-primary"><?php _e('Add'); ?></button>
-                    </p>
-                    <ul class="scroll-list blacklist">
-<?php if (empty($blacklist)): ?>
-                        <li><?php _e('Aucune adresse IP dans la liste noire.','csp') ?></li>
-<?php endif; ?>
-<?php foreach ($blacklist as $bip): 
-        if ( ! ( $geo_info = get_transient( 'geo_info_'.csp_get_ip($bip) ) ) ){
-            $geo_info = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$bip));
-            set_transient('geo_info_'.csp_get_ip($bip), $geo_info, DAY_IN_SECONDS);
-        }
-        
-    ?>
-                        <li><input type="hidden" value="<?php echo $bip; ?>" name="blacklist[]" readonly="readonly" />
-                            <code style="min-width:15en;display:inline-block;"><?php echo $bip; ?></code>
-                            <em class="geo-info"><?php echo '['
-            . $geo_info['geoplugin_city']
-            . ', '
-            . $geo_info['geoplugin_regionName']
-            . ', '
-            . $geo_info['geoplugin_countryName']
-            . ']' ?></em>
-                            <a href="javascript:void(0);" data-list="black" data-ip="<?php echo $bip ?>" class="security-list-remove-item dashicons dashicons-trash"></a></li>
-<?php endforeach; ?>
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</form>
-</div>
+    <div class="wrap">
+        <h1 class="csp-security-title"><span class="dashicons dashicons-vault"></span><?php _e('Sécurité du site', 'csp') ?></h1>
+        <form id="csp-security-form" action="options-general.php?page=csp-security" method="post">
+            <?php wp_nonce_field('csp-security-interface') ?>
+            <input type="hidden" id="remove_list" name="remove_list" value="" />
+            <input type="hidden" id="remove_ip" name="remove_ip" value="" />
+            <table class="form-table">
+                <tbody>
+                    <tr>
+                        <th scope="row"><?php _e('Votre adresse IP', 'csp') ?></th>
+                        <td>
+                            <input type="text" value="<?php echo $_SERVER['REMOTE_ADDR'] ?>" readonly="readonly" name="my_ip" />
+                            <button type="submit" name="what" value="add_my_ip_whitelist" class="button-primary"><?php _e('Ajouter à la liste blanche', 'csp'); ?></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Liste blanche', 'csp') ?></th>
+                        <td>
+                            <p><?php _e('Les adresses IP de la liste blanche ne subiront aucune vérification de sécurité.', 'csp') ?></p>
+                            <p>
+                                <input type="text" placeholder="###.###.###.###" name="add_ip_whitelist" />
+                                <button type="submit" name="what" value="add_ip_whitelist" class="button-primary"><?php _e('Add'); ?></button>
+                            </p>
+                            <ul class="scroll-list">
+                                <?php if (empty($whitelist)): ?>
+                                    <li><?php _e('Aucune adresse IP dans la liste blanche.', 'csp') ?></li>
+                                <?php endif; ?>
+                                <?php foreach ($whitelist as $wip): ?>
+                                    <li>
+                                        <code class="security-ip-list-item"><?php echo $wip; ?></code>
+                                        <a href="javascript:void(0);" data-list="white" data-ip="<?php echo $wip ?>" class="security-list-remove-item dashicons dashicons-trash"></a></li>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php _e('Liste noire', 'csp') ?></th>
+                        <td>
+                            <p><?php _e('Les adresses IP de la liste noire ne peuvent se connecter à l’admin et son passible d’un blocage complet à l’accès du site.', 'csp') ?></p>
+                            <p>
+                                <input type="text" placeholder="###.###.###.###" name="add_ip_blacklist" />
+                                <button type="submit" name="what" value="add_ip_blacklist"  class="button-primary"><?php _e('Add'); ?></button>
+                            </p>
+                            <ul class="scroll-list blacklist">
+                                <?php if (empty($blacklist)): ?>
+                                    <li><?php _e('Aucune adresse IP dans la liste noire.', 'csp') ?></li>
+                                <?php endif; ?>
+                                <?php
+                                foreach ($blacklist as $bip):
+                                    if (!( $geo_info = get_transient('geo_info_' . csp_get_ip($bip)) )) {
+                                        $geo_info = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip=' . $bip));
+                                        set_transient('geo_info_' . csp_get_ip($bip), $geo_info, DAY_IN_SECONDS);
+                                    }
+                                    ?>
+                                    <li><input type="hidden" value="<?php echo $bip; ?>" name="blacklist[]" readonly="readonly" />
+                                        <code style="min-width:15en;display:inline-block;"><?php echo $bip; ?></code>
+                                        <em class="geo-info"><?php
+                                            echo '['
+                                            . $geo_info['geoplugin_city']
+                                            . ', '
+                                            . $geo_info['geoplugin_regionName']
+                                            . ', '
+                                            . $geo_info['geoplugin_countryName']
+                                            . ']'
+                                            ?></em>
+                                        <a href="javascript:void(0);" data-list="black" data-ip="<?php echo $bip ?>" class="security-list-remove-item dashicons dashicons-trash"></a></li>
+                                    <?php endforeach; ?>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
     <?php
 }
-
-
-
 
 /**
  * 
@@ -442,7 +441,7 @@ function csp_output_security_interface() {
  * @return string IP
  */
 function csp_get_ip($ip = false) {
-    if ($ip === false){
+    if ($ip === false) {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
     $_ip = '_IP_' . str_replace('.', '_', $ip);
@@ -455,27 +454,27 @@ function csp_get_ip($ip = false) {
  * @since 1.0.2
  * @param IP Address $ip
  */
-function csp_add_to_whitelist($ip){
-    if ( filter_var($ip, FILTER_VALIDATE_IP)){
+function csp_add_to_whitelist($ip) {
+    if (filter_var($ip, FILTER_VALIDATE_IP)) {
         update_option('_whitelist' . $_ip, $_SERVER['REMOTE_ADDR'], false);
     }
 }
+
 /**
  * Remove IP from Whitelist
  *
  * @since 1.0.2
  * @param IP Address $ip
  */
-function csp_remove_from_whitelist($ip){
-    if ( filter_var($ip, FILTER_VALIDATE_IP)){
+function csp_remove_from_whitelist($ip) {
+    if (filter_var($ip, FILTER_VALIDATE_IP)) {
         delete_option('_whitelist' . $_ip);
     }
 }
 
-
-function csp_is_whitelist($ip = false){
+function csp_is_whitelist($ip = false) {
     $whitelist = get_option('_whitelist' . csp_get_ip($ip));
-    if ($whitelist){
+    if ($whitelist) {
         return true;
     }
     return false;
@@ -484,12 +483,11 @@ function csp_is_whitelist($ip = false){
 /**
  * Add filters and actions only if IP is not whitelisted
  */
-if ( false === csp_is_whitelist() ){
+if (false === csp_is_whitelist()) {
     remove_filter('authenticate', 'wp_authenticate_username_password', 20);
     add_filter('authenticate', 'csp_authenticate', 10, 3);
-    add_action( 'wp' , 'csp_security_404', 100 );
+    add_action('wp', 'csp_security_404', 100);
 }
-
 
 /**
  * Authenticate user
@@ -538,28 +536,28 @@ function csp_authenticate($user, $username, $password) {
     $_ip = csp_get_ip();
     $good_login = true;
     $blacklist = get_option('_blacklist' . $_ip);
-        
+
     // username exists?
     $user = get_user_by('login', $username);
-    if ($blacklist){
+    if ($blacklist) {
         $good_login = false;
-    }elseif ($user === false) {
+    } elseif ($user === false) {
         $good_login = false;
     }
     // password correct?
     elseif (!wp_check_password($password, $user->user_pass, $user->ID)) {
         $good_login = false;
     }
-    
+
     if (!$good_login) {
-        
+
         // if whitelist go through
         if (csp_is_whitelist()) {
             return $user;
         }
 
         $error = new WP_Error();
-        
+
         $wait_login_obj = get_transient('wait' . $_ip);
         $attempts = get_transient('attempt' . $_ip);
 
@@ -567,10 +565,10 @@ function csp_authenticate($user, $username, $password) {
         // if blacklist full stop
         if ($blacklist) {
             $blacklist++;
-            $test_update = update_option( '_blacklist' . $_ip, $blacklist );
-                        
-            if ( CSP_SECURITY_MAX_BLACKLIST < $blacklist ){
-                csp_gandalf_protocol_add_ip( $_SERVER['REMOTE_ADDR'] );
+            $test_update = update_option('_blacklist' . $_ip, $blacklist);
+
+            if (CSP_SECURITY_MAX_BLACKLIST < $blacklist) {
+                csp_gandalf_protocol_add_ip($_SERVER['REMOTE_ADDR']);
             }
             $error->add('blacklisted', __('Vous êtes sur la liste noir. Contactez l’administrateur du site.', 'csp'));
         }
@@ -639,15 +637,12 @@ function csp_authenticate($user, $username, $password) {
             set_transient('attempt' . $_ip, 1, 60 * 60);
             $error->add(
                     'attempt', sprintf(__('<strong>Mauvais identifiant ou mot de passe.</strong><br />Il vous reste 4 chances sur 5 de vous connecter. <a href="%1$s">Mot de passe oublié ?</a>', 'csp'), wp_lostpassword_url()));
-            
         }
-        csp_security_log('login',$error->get_error_codes());
+        csp_security_log('login', $error->get_error_codes());
         return $error;
-    } 
+    }
     return $user;
-    
 }
-
 
 /**
  * security 404
@@ -656,66 +651,64 @@ function csp_authenticate($user, $username, $password) {
  * 
  * @global object $wpdb
  */
-function csp_security_404(){
+function csp_security_404() {
 
-    if (csp_is_whitelist()){
+    if (csp_is_whitelist()) {
         return;
-    }elseif (is_main_query() && is_404()){
+    } elseif (is_main_query() && is_404()) {
 
         //not for media
         $uri = $_SERVER['REQUEST_URI'];
-        if ( strpos($uri,'.jpg') || strpos($uri,'.gif') || strpos($uri,'.png') || strpos($uri,'.jpeg') ){
+        if (strpos($uri, '.jpg') || strpos($uri, '.gif') || strpos($uri, '.png') || strpos($uri, '.jpeg')) {
             return;
         }
-        
+
         // not for legitimate pages
         global $wpdb;
         // by id?
         $pattern = '/(\?|&)p=(\d+)/';
-        if (preg_match($pattern, $uri, $matches)){
-            if ( false !== get_post_status( intval($matches[2]))){
+        if (preg_match($pattern, $uri, $matches)) {
+            if (false !== get_post_status(intval($matches[2]))) {
                 return;
             }
         }
         // by slug?
         $pattern = '/\/([\w-%]+)\/$/';
-        if (preg_match($pattern, $uri, $matches)){
+        if (preg_match($pattern, $uri, $matches)) {
             $post_name = esc_sql($matches[1]);
             $sql = "SELECT ID, post_name, post_status, post_type
                     FROM $wpdb->posts
                     WHERE post_name IN (%s)";
 
-            $check = $wpdb->get_results( $wpdb->prepare($sql, $post_name) );
-            if (!empty($check)){
+            $check = $wpdb->get_results($wpdb->prepare($sql, $post_name));
+            if (!empty($check)) {
                 return;
             }
         }
-        
-        
+
+
         $_ip = csp_get_ip();
-        $blacklist = get_option( '_blacklist' . $_ip );
-        $four_oh_four = get_transient( 'four_oh_four' . $_ip );
-        if( $blacklist ){
+        $blacklist = get_option('_blacklist' . $_ip);
+        $four_oh_four = get_transient('four_oh_four' . $_ip);
+        if ($blacklist) {
             // add blacklist
             $blacklist++;
-            update_option('_blacklist' . $_ip, $blacklist );
-            if ( CSP_SECURITY_MAX_BLACKLIST < $blacklist ){
-                csp_gandalf_protocol_add_ip( $_SERVER['REMOTE_ADDR'] );
+            update_option('_blacklist' . $_ip, $blacklist);
+            if (CSP_SECURITY_MAX_BLACKLIST < $blacklist) {
+                csp_gandalf_protocol_add_ip($_SERVER['REMOTE_ADDR']);
             }
-        }elseif ( $four_oh_four > CSP_SECURITY_MAX_404 ){
-             //blacklist
-            delete_transient( 'four_oh_four' . $_ip );
-            update_option('_blacklist' . $_ip, 1 );
+        } elseif ($four_oh_four > CSP_SECURITY_MAX_404) {
+            //blacklist
+            delete_transient('four_oh_four' . $_ip);
+            update_option('_blacklist' . $_ip, 1);
             return;
-        }else{
+        } else {
             $four_oh_four++;
-            set_transient( 'four_oh_four' . $_ip, $four_oh_four, 20 * 60 );
+            set_transient('four_oh_four' . $_ip, $four_oh_four, 20 * 60);
         }
         csp_security_log('four_oh_four');
     }
 }
-
-
 
 /**
  * Gandalf protocol Add IP
@@ -727,18 +720,18 @@ function csp_security_404(){
  * @uses function csp_gandalf_protocol_write_ips()
  * @return bool Success|Failure
  */
-function csp_gandalf_protocol_add_ip($ip=false){
-    
+function csp_gandalf_protocol_add_ip($ip = false) {
+
     if (!$ip)
         return false;
-    
+
     // add the ip to gandalf queue option
     $queue = get_option('csp_gandalf_queue', array());
-    
-    if ( !in_array($ip,$queue)){
+
+    if (!in_array($ip, $queue)) {
         $queue[] = $ip;
 
-        if (count($queue<5)){
+        if (count($queue < 5)) {
             csp_gandalf_protocol_write_ips($queue);
             $queue = array();
         }
@@ -756,26 +749,26 @@ function csp_gandalf_protocol_add_ip($ip=false){
  * @return bool Success|Failure
  */
 function csp_gandalf_protocol_write_ips($ips = array()) {
-    
+
     if (empty($ips))
         return false;
-    
-    require_once ABSPATH.'wp-admin/includes/misc.php';
-    
-    $htaccess = ABSPATH.'.htaccess';
+
+    require_once ABSPATH . 'wp-admin/includes/misc.php';
+
+    $htaccess = ABSPATH . '.htaccess';
     $gandalf_list = extract_from_markers($htaccess, 'GANDALF');
 
-    if (count($gandalf_list)){
-        $old_gandalf_denies = array_slice($gandalf_list, 2, count($gandalf_list)-4);
+    if (count($gandalf_list)) {
+        $old_gandalf_denies = array_slice($gandalf_list, 2, count($gandalf_list) - 4);
     }
 
     $new_denies = array();
-    for ($i=0;$i<count($ips);$i++){
-        $new_denies[] = 'deny from '.$ips[$i];
+    for ($i = 0; $i < count($ips); $i++) {
+        $new_denies[] = 'deny from ' . $ips[$i];
     }
-    
-    $update_gandalf_denies = array_unique( array_merge($new_denies,$gandalf_denies) );
-        
+
+    $update_gandalf_denies = array_unique(array_merge($new_denies, $old_gandalf_denies));
+
     $beginning = array(
         '<Limit GET POST>',
         'order allow,deny'
@@ -784,7 +777,7 @@ function csp_gandalf_protocol_write_ips($ips = array()) {
         'allow from all',
         '</Limit>'
     );
-    
+
     $new_gandalf_list = array_merge($beginning, $update_gandalf_denies, $end);
     insert_with_markers($htaccess, 'GANDALF', $new_gandalf_list);
     return true;
@@ -798,34 +791,34 @@ function csp_gandalf_protocol_write_ips($ips = array()) {
  * @param IP Address $ip
  * @return bool Success|Failure
  */
-function csp_gandalf_protocol_remove_ip($ip=false){
-    
+function csp_gandalf_protocol_remove_ip($ip = false) {
+
     if (!$ip)
         return false;
 
     $_ip = csp_get_ip($ip);
-    
-    delete_transient('four_oh_four' . $_ip );
+
+    delete_transient('four_oh_four' . $_ip);
     delete_transient('wait' . $_ip);
     delete_transient('attempt' . $_ip);
-    delete_option('_blacklist' . $_ip, 1 );
-    
-    require_once ABSPATH.'wp-admin/includes/misc.php';
-    
-    $htaccess = ABSPATH.'.htaccess';
+    delete_option('_blacklist' . $_ip, 1);
+
+    require_once ABSPATH . 'wp-admin/includes/misc.php';
+
+    $htaccess = ABSPATH . '.htaccess';
     $gandalf_list = extract_from_markers($htaccess, 'GANDALF');
     $gandalf_denies = array();
-    
-    if (count($gandalf_list)){
-        $gandalf_denies = array_slice($gandalf_list, 2, count($gandalf_list)-4);
+
+    if (count($gandalf_list)) {
+        $gandalf_denies = array_slice($gandalf_list, 2, count($gandalf_list) - 4);
     }
-    
-    foreach( $gandalf_denies as $key=>$deny){
-        if ( ($key = array_search( 'deny from ' . $ip, $gandalf_denies )) !== false){
+
+    foreach ($gandalf_denies as $key => $deny) {
+        if (($key = array_search('deny from ' . $ip, $gandalf_denies)) !== false) {
             unset($gandalf_denies[$key]);
         }
     }
-    
+
     $beginning = array(
         '<Limit GET POST>',
         'order allow,deny'
@@ -834,16 +827,14 @@ function csp_gandalf_protocol_remove_ip($ip=false){
         'allow from all',
         '</Limit>'
     );
-    if (!empty($gandalf_denies)){
+    if (!empty($gandalf_denies)) {
         $new_gandalf_list = array_merge($beginning, $gandalf_denies, $end);
-    }else{
+    } else {
         $new_gandalf_list = array();
     }
     insert_with_markers($htaccess, 'GANDALF', $new_gandalf_list);
     return true;
 }
-
-
 
 /**
  * Write security log
@@ -855,57 +846,55 @@ function csp_gandalf_protocol_remove_ip($ip=false){
  * @param string|array $data The actual data to write
  * @return bool Success|Failure
  */
-function csp_security_log($log,$data = false){
-    
-    if (empty($log)){
+function csp_security_log($log, $data = false) {
+
+    if (empty($log)) {
         return false;
     }
-    
+
     $array_log = array();
-    
-    $security_log = WP_CONTENT_DIR.'/security.log';
-    
+
+    $security_log = WP_CONTENT_DIR . '/security.log';
+
     $array_log = array($log);
-    
-    $array_log[] = '['.  date_i18n('c').']';
-    
-    $array_log[] = '['.$_SERVER['REMOTE_ADDR'].']';
-    
-    if ( ! ( $geo_info = get_transient( 'geo_info_'.csp_get_ip() ) ) ){
-        $geo_info = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$_SERVER['REMOTE_ADDR']));
-        set_transient('geo_info_'.csp_get_ip(), $geo_info, DAY_IN_SECONDS);
+
+    $array_log[] = '[' . date_i18n('c') . ']';
+
+    $array_log[] = '[' . $_SERVER['REMOTE_ADDR'] . ']';
+
+    if (!( $geo_info = get_transient('geo_info_' . csp_get_ip()) )) {
+        $geo_info = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip=' . $_SERVER['REMOTE_ADDR']));
+        set_transient('geo_info_' . csp_get_ip(), $geo_info, DAY_IN_SECONDS);
     }
-    
+
     $array_log[] = html_entity_decode('['
             . $geo_info['geoplugin_city']
             . ','
             . $geo_info['geoplugin_regionName']
             . ','
             . $geo_info['geoplugin_countryName']
-            . ']', 
-            ENT_QUOTES, "utf-8");
-    
-    if( $log == 'four_oh_four'){
-        $array_log[] = '[URI='.$_SERVER['REQUEST_URI'].']';
+            . ']', ENT_QUOTES, "utf-8");
+
+    if ($log == 'four_oh_four') {
+        $array_log[] = '[URI=' . $_SERVER['REQUEST_URI'] . ']';
     }
 
-    if (is_array($data)){
-        $array_log = array_merge($array_log,$data);
-    }elseif( false !== $data){
+    if (is_array($data)) {
+        $array_log = array_merge($array_log, $data);
+    } elseif (false !== $data) {
         $array_log[] = $data;
     }
-    
-    error_log( implode( ' ', $array_log )."\n", 3, $security_log );
+
+    error_log(implode(' ', $array_log) . "\n", 3, $security_log);
     return true;
 }
-
 
 /**
  * Temporary and utility function to run manual calls to functions on admin footer hook
  */
-function do_something(){
+function do_something() {
     //csp_gandalf_protocol_add_ip();
     //csp_gandalf_protocol_remove_ip( '200.200.200.200' );
 }
 
-add_action('admin_footer','do_something');
+add_action('admin_footer', 'do_something');

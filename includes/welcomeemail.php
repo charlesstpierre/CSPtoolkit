@@ -352,7 +352,9 @@ function wp_new_user_notification( $user_id, $deprecated = null, $notify = '' ) 
         foreach ($admin_notify_user_id as $admin_id){
             $admin_id = intval($admin_id);
             $admin_data = get_userdata($admin_id);
-            $admin_recipients[] = $admin_data->display_name.' <'.$admin_data->user_email.'>';
+            if (is_object($admin_data)){
+                $admin_recipients[] = $admin_data->display_name.' <'.$admin_data->user_email.'>';
+            }
         }
         @wp_mail( $admin_recipients, $admin_subject, $admin_body, $header_additional);
         

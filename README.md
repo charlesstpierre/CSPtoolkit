@@ -8,6 +8,11 @@ parlez@charlesstpierre.com
 
 == Changelog ==
 
+= 1.0.9 =
+* Correction Core
+* Ajout du format woff2 au HTaccess
+* Correction de Sécurité
+
 = 1.0.8 =
 * Correction de WelcomeEmail qui interceptait tous les From
 * Amélioration better widget
