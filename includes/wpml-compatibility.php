@@ -1,4 +1,7 @@
 <?php
+// Exit if accessed directly
+if (!defined('ABSPATH')) { exit; }
+
 /**
  * @since 1.0.2 Remove function override since icl_* will disappear.
  * @since 1.0.0

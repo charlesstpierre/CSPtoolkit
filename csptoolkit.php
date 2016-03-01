@@ -39,6 +39,9 @@
 
  */
 
+// Exit if accessed directly
+if (!defined('ABSPATH')) { exit; }
+
 define('TOOLKIT_URL', plugin_dir_url(__FILE__));
 define('TOOLKIT_CONFIG', WP_CONTENT_DIR . '/csp-config.php');
 
@@ -133,7 +136,7 @@ function csp_write_options_to_config() {
         $file = implode(' ', file(TOOLKIT_CONFIG));
     } else {
         $file = '';
-        file_put_contents(TOOLKIT_CONFIG, "<?php\n\n");
+        file_put_contents(TOOLKIT_CONFIG, csp_write_opening_config() );
     }
     if (false === strpos($file, '# BEGIN ConfigurationCSPToolkit')) {
 
@@ -177,6 +180,11 @@ function csp_write_options_to_config() {
 
         insert_with_markers(TOOLKIT_CONFIG, 'ConfigurationCSPToolkit', $lines);
     }
+}
+
+function csp_write_opening_config() {
+    $opening = "<?php\n\n// Exit if accessed directly\nif (!defined('ABSPATH')) { exit; }\n\n";
+    return $opening;
 }
 
 register_activation_hook(__FILE__, 'csp_activation');

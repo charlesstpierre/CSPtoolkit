@@ -25,6 +25,8 @@ class CSP_theme_helper {
         $this->_what_is();
         $this->_set_queried();
         add_action('registered_taxonomy', array($this, '_add_term_count_to_wp_taxonomies'), 5);
+        $this->_add_term_count_to_wp_taxonomies('category');
+        $this->_add_term_count_to_wp_taxonomies('post_tag');
     }
 
     /**
@@ -155,14 +157,14 @@ class CSP_theme_helper {
     }
 
     public function get_breadcrumb() {
-        if (is_front_page()){
+        if (is_front_page()) {
             return;
         }
         if (!$this->breadcrumb_items) {
             $method = '_breadcrumb_' . $this->is;
-            if (method_exists($this, $method) ){
-            $this->breadcrumb_items = $this->$method();
-        }
+            if (method_exists($this, $method)) {
+                $this->breadcrumb_items = $this->$method();
+            }
         }
         //home
         $home_item = array(
@@ -215,9 +217,9 @@ class CSP_theme_helper {
         $post_type = $this->queried_obj->post_type;
         $post_type_obj = get_post_type_object($post_type);
 
+        $ancestor_items = array();
         if ($post_type_obj->hierarchical) {
             $ancestors = get_ancestors($this->queried_id, $post_type, 'post_type');
-            $ancestor_items = array();
             foreach ($ancestors as $ancestor) {
                 array_unshift($ancestor_items, array(
                     'link' => get_permalink($ancestor),
@@ -225,60 +227,63 @@ class CSP_theme_helper {
                     'name' => get_the_title($ancestor)
                 ));
             }
-        } else {
+        } elseif ($chosen_tax = apply_filters("breadcrumb_tax_{$post_type}", false)) {
             global $wp_taxonomies;
 
-            if ($chosen_tax = apply_filters("breadcrumb_tax_{$post_type}", false)) {
-
-                $chosen_tax_hierarchical = false;
-                $chosen_tax_count = 0;
-                foreach ((array) $wp_taxonomies as $tax_name => $tax_obj) {
-                    if (array_intersect(array($post_type_obj->name), (array) $tax_obj->object_type)) {
-                        if ($chosen_tax_count >= $tax_obj->term_count) {
-                            continue;
-                        }
-                        if ($chosen_tax_hierarchical && $tax_obj->hierarchical === false) {
-                            continue;
-                        }
-                        $chosen_tax = $tax_name;
-                        $chosen_tax_hierarchical = $tax_obj->hierarchical;
-                        $chosen_tax_count = $tax_obj->term_count;
-                    }
-                }
-            }
             $terms = wp_get_post_terms($this->queried_id, $chosen_tax);
-            if (count($terms)) {
-                $chosen_term = false;
-                $ancestors = array();
-                $ancestor_count = 0;
-                if (count($terms) === 1) {
-                    $chosen_term = $terms[0];
+            $chosen_term = false;
+            $ancestors = $temp_ancestors = array();
+            
+                
+            if (false === is_wp_error($terms)) {
 
-                    if ($chosen_term->parent !== 0) {
+                if (1 === count($terms)) {
+                    
+                    $chosen_term = $terms[0];
+                    if (is_taxonomy_hierarchical($chosen_tax)) {
                         $ancestors = get_ancestors($chosen_term->term_id, $chosen_tax, 'taxonomy');
+                    }                    
+                } elseif (1 <= count($terms)) {
+
+                    $current_count = 0;
+
+                    if (is_taxonomy_hierarchical($chosen_tax)) {
+                        // find the deepest
+                        foreach ($terms as $term) {
+                            if (0 !== $term->parent) {
+                                $temp_ancestors = get_ancestors($term->term_id, $chosen_tax, 'taxonomy');
+                                if ($current_count < count($ancestors)) {
+                                    $chosen_term = $term;
+                                    $ancestors = $temp_ancestors;
+                                    $current_count = count($ancestors);
+                                }
+                            }
+                        }
+                    }
+                    if (false === $chosen_term) {
+                        // find the most popular
+                        $current_count = 0;
+
+                        foreach ($terms as $term) {
+                            if ($current_count < $term->count) {
+                                $chosen_term = $term;
+                                $current_count = $term->count;
+                            }
+                        }
                     }
                 }
-                foreach ($terms as $term) {
-                    $temp_ancestors = get_ancestors($term->term_id, $chosen_tax, 'taxonomy');
-                    if ($ancestor_count < count($temp_ancestors)) {
-                        $ancestors = $temps_ancestors;
-                        $chosen_term = $term;
-                    }
+                // add chosen term to ancestors array;
+                array_push($ancestors, $chosen_term->term_id);
+                foreach ($ancestors as $ancestor) {
+                    $current_term = get_term($ancestor, $chosen_tax);
+                    array_push($ancestor_items, array(
+                        'link' => get_term_link($ancestor, $chosen_tax),
+                        'classes' => 'breadcrumb-post-term-ancestor',
+                        'name' => ucfirst($current_term->name)
+                    ));
                 }
             }
-            // add current term
-            if (is_array($ancestors)){
-            array_push($ancestors, $chosen_term->term_id);
-            $ancestor_items = array();
-            foreach ($ancestors as $ancestor) {
-                $current_term = get_term($ancestor, $chosen_tax);
-                array_unshift($ancestor_items, array(
-                    'link' => get_term_link($ancestor, $chosen_tax),
-                    'classes' => 'breadcrumb-post-term-ancestor',
-                    'name' => ucfirst($current_term->name)
-                ));
-            }
-        }
+
         }
         // post_type archive
         $post_type_archive_item = array();
@@ -305,6 +310,9 @@ class CSP_theme_helper {
     private function _breadcrumb_term() {
         $taxonomy = $this->queried_obj->taxonomy_obj->name;
         $term_id = $this->queried_id;
+
+        $post_types = $this->queried_obj->taxonomy_obj->object_type;
+
         $itself = array(
             'link' => false,
             'classes' => 'breadcrumb-term',
@@ -329,8 +337,29 @@ class CSP_theme_helper {
         if (!empty($ancestor_items)) {
             $items = array_merge($items, $ancestor_items);
         }
+
+        // post type archive if single
+        // post_type archive
+        if (1 === count($post_types)) {
+            $post_type = $post_types[0];
+            $post_type_obj = get_post_type_object($post_type);
+            $post_type_archive_item = array();
+            if ($post_type_obj->has_archive) {
+                $post_type_archive_item = array(
+                    'link' => get_post_type_archive_link($post_type),
+                    'classes' => 'breadcrumb-posttype-archive',
+                    'name' => ucfirst($post_type_obj->label)
+                );
+            }
+        }
+
+        if (!empty($post_type_archive_item)) {
+            $items = array_merge(array($post_type_archive_item), $items );
+        }
+
         $items = array_merge($items, array($itself));
         $this->set_transient('breadcrumb_items_' . $this->transient_key, $items, DAY_IN_SECONDS);
+
         return $items;
     }
 
@@ -534,14 +563,14 @@ class CSP_theme_helper {
     }
 
     private function _description_singular() {
-        if (!($_description = strip_tags( $this->queried_obj->post_excerpt))) {
+        if (!($_description = strip_tags($this->queried_obj->post_excerpt))) {
             $_description = wp_trim_words(strip_tags(strip_shortcodes($this->queried_obj->post_content)), apply_filters('excerpt_length', 55));
         }
         return $_description;
     }
 
     private function _description_term() {
-        if ($_description = strip_tags( $this->queried_obj->description) ) {
+        if ($_description = strip_tags($this->queried_obj->description)) {
             $_description = sprintf(
                     apply_filters('theme_helper_description_pattern_term', __('Les contenus dans %2$s «%1$s». %3$s', 'csp')), $this->queried_obj->name, $this->queried_obj->taxonomy_obj->labels->singular_name, get_bloginfo('description'));
         }
@@ -618,7 +647,6 @@ class CSP_theme_helper {
     private function _add_term_count_to_wp_taxonomies($taxonomy) {
 
         global $wp_taxonomies;
-
         $term_count = wp_count_terms($taxonomy);
         $wp_taxonomies[$taxonomy]->term_count = $term_count;
     }
@@ -636,6 +664,7 @@ function init_theme_helper() {
     global $csp_theme_helper;
     $csp_theme_helper = new CSP_theme_helper();
 }
+
 add_action('wp', 'init_theme_helper');
 
 /**
@@ -706,8 +735,6 @@ function get_page_title() {
     return $csp_theme_helper->get_title();
 }
 
-
-
 // Adding hooks management
 function _csp_meta_description() {
     $description = get_meta_description();
@@ -717,3 +744,44 @@ function _csp_meta_description() {
 }
 
 add_action('wp_head', '_csp_meta_description', 5);
+
+/**
+ * array2string_enumaration
+ * 
+ * Receive an array and return a gramatically correct enumeration localized string
+ * 
+ * @param array $array
+ * @param array $args
+ * @return string
+ */
+function array2string_enumaration($array, $m = 'AND') {
+
+    if (!is_array($array)) {
+        return $array;
+    }
+    if (1 === count($array)) {
+        return $array[0];
+    }
+
+    $string = apply_filters('array2string_enumaration', $array);
+
+    if (is_string($string)) {
+        return $string;
+    }
+
+    switch ($m) {
+        case 'OR':
+            $marqueur = __('ou', 'csp');
+            break;
+        case 'AND':
+        default:
+            $marqueur = __('et', 'csp');
+            break;
+    }
+
+    $last = array_pop($array);
+
+    $string = implode(', ', $array) . ' ' . $marqueur . ' ' . $last;
+
+    return $string;
+}

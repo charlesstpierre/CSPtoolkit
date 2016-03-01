@@ -4,6 +4,9 @@
  * 
  * Functions and tasks to make WP more secure
  */
+// Exit if accessed directly
+if (!defined('ABSPATH')) { exit; }
+
 
 /**
  * Basic security actions and filters

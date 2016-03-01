@@ -1,4 +1,6 @@
 <?php
+// Exit if accessed directly
+if (!defined('ABSPATH')) { exit; }
 
 /**
  * Better widget_setup
@@ -21,9 +23,13 @@ function better_widgets_setup() {
     register_widget('Better_Widget_Button');
 
 }
-
 add_action('widgets_init', 'better_widgets_setup');
 
+/**
+ *  Recent posts widget
+ * 
+ * @since 1.0.10
+ */
 class Better_Widget_Recent_Posts extends WP_Widget {
 
     function __construct() {
@@ -240,8 +246,6 @@ class Better_Widget_Categories extends WP_Widget {
         }
 
         $taxonomy = (!empty($instance['taxonomy'])) ? $instance['taxonomy'] : 'category';
-
-
 
         echo $before_widget;
         if ($title)

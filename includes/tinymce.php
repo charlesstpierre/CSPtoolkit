@@ -1,4 +1,6 @@
 <?php
+// Exit if accessed directly
+if (!defined('ABSPATH')) { exit; }
 
 function customize_tiny_mce($in){
     // add &nbsp
