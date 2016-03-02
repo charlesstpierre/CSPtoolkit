@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Support CharlesStPierre.com\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Fri Jan 08 2016 19:05:15 GMT-0500 (EST)\n"
-"POT-Revision-Date: Tue Mar 01 2016 16:17:24 GMT-0500 (EST)\n"
+"POT-Revision-Date: Wed Mar 02 2016 18:47:30 GMT-0500 (EST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -38,6 +38,10 @@ msgstr ""
 
 #. Author of the plugin
 msgid "Charles St-Pierre"
+msgstr ""
+
+#: ../csptoolkit.php:202
+msgid "Accueil"
 msgstr ""
 
 #: ../includes/better-widgets.php:38
@@ -243,32 +247,44 @@ msgstr ""
 msgid "Ombre de texte?"
 msgstr ""
 
-#: ../includes/dashboardwidget.php:30
+#: ../includes/dashboardwidget.php:35
+#, php-format
+msgid "Votre IP actuel (%s) n’est pas sur la liste blanche."
+msgstr ""
+
+#: ../includes/dashboardwidget.php:36
+#, php-format
+msgid ""
+"Si cette ordinateur n’est pas public, et que vous l’utilisez fréquemment, "
+"<%s>ajoutez votre IP à la liste blanche<%s>."
+msgstr ""
+
+#: ../includes/dashboardwidget.php:47
 #, php-format
 msgid "<strong>Erreur RSS</strong>: %s"
 msgstr ""
 
-#: ../includes/dashboardwidget.php:33
+#: ../includes/dashboardwidget.php:50
 msgid "Communiqués:"
 msgstr ""
 
-#: ../includes/dashboardwidget.php:53
+#: ../includes/dashboardwidget.php:72
 msgid "Besoin d’un coup de main? Je demeure à votre disposition."
 msgstr ""
 
-#: ../includes/dashboardwidget.php:55
+#: ../includes/dashboardwidget.php:74
 msgid "Espace client"
 msgstr ""
 
-#: ../includes/dashboardwidget.php:56
+#: ../includes/dashboardwidget.php:75
 msgid "Demande de support"
 msgstr ""
 
-#: ../includes/dashboardwidget.php:57
+#: ../includes/dashboardwidget.php:76
 msgid "Base de connaissances"
 msgstr ""
 
-#: ../includes/dashboardwidget.php:57
+#: ../includes/dashboardwidget.php:76
 msgid "Bientôt"
 msgstr ""
 
@@ -338,63 +354,84 @@ msgstr ""
 msgid "Sécurité"
 msgstr ""
 
-#: ../includes/security.php:355
+#: ../includes/security.php:309
+msgid "L’IP est invalide."
+msgstr ""
+
+#: ../includes/security.php:314
+msgid "L’IP n’est pas sur la liste noir."
+msgstr ""
+
+#: ../includes/security.php:317
+msgid "L’IP est présent sur la liste noir."
+msgstr ""
+
+#: ../includes/security.php:386
 msgid "Sécurité du site"
 msgstr ""
 
-#: ../includes/security.php:363
+#: ../includes/security.php:394
 msgid "Votre adresse IP"
 msgstr ""
 
-#: ../includes/security.php:366
+#: ../includes/security.php:397
 msgid "Ajouter à la liste blanche"
 msgstr ""
 
-#: ../includes/security.php:370
+#: ../includes/security.php:401
 msgid "Liste blanche"
 msgstr ""
 
-#: ../includes/security.php:372
+#: ../includes/security.php:403
 msgid ""
 "Les adresses IP de la liste blanche ne subiront aucune vérification de "
 "sécurité."
 msgstr ""
 
-#: ../includes/security.php:375 ../includes/security.php:396
+#: ../includes/security.php:406 ../includes/security.php:437
 msgid "Ajouter"
 msgstr ""
 
-#: ../includes/security.php:379
+#: ../includes/security.php:410
 msgid "Aucune adresse IP dans la liste blanche."
 msgstr ""
 
-#: ../includes/security.php:391
+#: ../includes/security.php:422
 msgid "Liste noire"
 msgstr ""
 
-#: ../includes/security.php:393
+#: ../includes/security.php:424
 msgid ""
 "Les adresses IP de la liste noire ne peuvent se connecter à l’admin et son "
 "passible d’un blocage complet à l’accès du site."
 msgstr ""
 
-#: ../includes/security.php:400
-msgid "Aucune adresse IP dans la liste noire."
+#: ../includes/security.php:425
+#, php-format
+msgid "Il y a présentement %s adresses IP sur la liste noir."
 msgstr ""
 
-#: ../includes/security.php:518
+#: ../includes/security.php:428
+msgid "Chercher dans la liste noir"
+msgstr ""
+
+#: ../includes/security.php:430
+msgid "Retirer de la liste noir"
+msgstr ""
+
+#: ../includes/security.php:534
 msgid "<strong>Erreur</strong>: L’identifiant est vide."
 msgstr ""
 
-#: ../includes/security.php:521
+#: ../includes/security.php:537
 msgid "<strong>Erreur</strong>: Le mot de passe est vide."
 msgstr ""
 
-#: ../includes/security.php:576
+#: ../includes/security.php:592
 msgid "Vous êtes sur la liste noir. Contactez l’administrateur du site."
 msgstr ""
 
-#: ../includes/security.php:594
+#: ../includes/security.php:610
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez "
@@ -402,13 +439,13 @@ msgid ""
 "minutes (jusqu’à %s) avant de tenter une connexion."
 msgstr ""
 
-#: ../includes/security.php:594 ../includes/security.php:594 ../includes/security.
-#: php:604 ../includes/security.php:604 ../includes/security.php:611
+#: ../includes/security.php:610 ../includes/security.php:610 ../includes/security.
+#: php:620 ../includes/security.php:620 ../includes/security.php:627
 msgctxt "Heure et minute"
 msgid "H\\hi"
 msgstr ""
 
-#: ../includes/security.php:604
+#: ../includes/security.php:620
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez "
@@ -416,7 +453,7 @@ msgid ""
 "minutes (jusqu’à %s) avant de tenter une connexion."
 msgstr ""
 
-#: ../includes/security.php:611
+#: ../includes/security.php:627
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez "
@@ -424,14 +461,14 @@ msgid ""
 "la liste noir. Contactez l’administrateur du site."
 msgstr ""
 
-#: ../includes/security.php:619
+#: ../includes/security.php:635
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Il vous reste 3 "
 "chances sur 5 de vous connecter. <a href=\"%1$s\">Mot de passe oublié ?</a>"
 msgstr ""
 
-#: ../includes/security.php:620
+#: ../includes/security.php:636
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Il ne vous reste "
@@ -439,7 +476,7 @@ msgid ""
 "d’utiliser la fonction <a href=\"%1$s\">Mot de passe oublié ?</a>."
 msgstr ""
 
-#: ../includes/security.php:621
+#: ../includes/security.php:637
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Il ne vous reste "
@@ -447,7 +484,7 @@ msgid ""
 "de réessayer. <a href=\"%1$s\">Mot de passe oublié ?</a>"
 msgstr ""
 
-#: ../includes/security.php:622
+#: ../includes/security.php:638
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous avez atteint "
@@ -455,15 +492,11 @@ msgid ""
 "minutes avant de réessayer. <a href=\"%1$s\">Mot de passe oublié ?</a>"
 msgstr ""
 
-#: ../includes/security.php:642
+#: ../includes/security.php:658
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Il vous reste 4 "
 "chances sur 5 de vous connecter. <a href=\"%1$s\">Mot de passe oublié ?</a>"
-msgstr ""
-
-#: ../includes/theme_helper.class.php:173
-msgid "Accueil"
 msgstr ""
 
 #: ../includes/theme_helper.class.php:201

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Support CharlesStPierre.com\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Fri Jan 08 2016 19:05:15 GMT-0500 (EST)\n"
-"PO-Revision-Date: Wed Mar 02 2016 09:44:53 GMT-0500 (EST)\n"
+"PO-Revision-Date: Wed Mar 02 2016 18:50:13 GMT-0500 (EST)\n"
 "Last-Translator: Charles St-Pierre <parlez@charlesstpierre.com>\n"
 "Language-Team: \n"
 "Language: English (Canada)\n"
@@ -22,25 +22,60 @@ msgstr ""
 "X-Generator: Loco - https://localise.biz/\n"
 "X-Loco-Target-Locale: en_CA"
 
-#: ../includes/welcomeemail.php:13
-msgid "[site_name]| Inscription d’un nouvel utilisateur"
-msgstr "[site_name]| New user subscription"
+#: ../includes/dashboardwidget.php:35
+#, php-format
+msgid "Votre IP actuel (%s) n’est pas sur la liste blanche."
+msgstr "Your current IP (%s) is not on the whitelist."
 
-#. Name of the plugin
+#: ../includes/dashboardwidget.php:36
+#, php-format
+msgid ""
+"Si cette ordinateur n’est pas public, et que vous l’utilisez fréquemment, "
+"<%s>ajoutez votre IP à la liste blanche<%s>."
+msgstr ""
+"If this computer is not public and you use it often, <%s>add your IP to the "
+"whitelist<%s>."
+
+#: ../includes/security.php:309
+msgid "L’IP est invalide."
+msgstr "The IP is invalid."
+
+#: ../includes/security.php:314
+msgid "L’IP n’est pas sur la liste noir."
+msgstr "The IP is NOT on the blacklist."
+
+#: ../includes/security.php:317
+msgid "L’IP est présent sur la liste noir."
+msgstr "The IP is on the blacklist."
+
+#: ../includes/security.php:425
+#, php-format
+msgid "Il y a présentement %s adresses IP sur la liste noir."
+msgstr "Currently %s IP addresses on the blacklist."
+
+#: ../includes/security.php:428
+msgid "Chercher dans la liste noir"
+msgstr "Search in blacklist"
+
+#: ../includes/security.php:430
+msgid "Retirer de la liste noir"
+msgstr "Remove from blacklist"
+
 msgid "Support CharlesStPierre.com"
 msgstr "Support CharlesStPierre.com"
 
-#. URI of the plugin
 msgid "http://charlesstpierre.com"
 msgstr "http://charlesstpierre.com"
 
-#. Description of the plugin
 msgid "Fonctionnalités de support et personnalisation"
 msgstr "Support and customization features"
 
-#. Author of the plugin
 msgid "Charles St-Pierre"
 msgstr "Charles St-Pierre"
+
+#: ../csptoolkit.php:202
+msgid "Accueil"
+msgstr "Home"
 
 #: ../includes/better-widgets.php:38
 msgid "Les contenus les plus récents de votre site."
@@ -245,32 +280,32 @@ msgstr "Text color"
 msgid "Ombre de texte?"
 msgstr "Drop shadow?"
 
-#: ../includes/dashboardwidget.php:30
+#: ../includes/dashboardwidget.php:47
 #, php-format
 msgid "<strong>Erreur RSS</strong>: %s"
 msgstr "<strong>Error RSS</strong>: %s"
 
-#: ../includes/dashboardwidget.php:33
+#: ../includes/dashboardwidget.php:50
 msgid "Communiqués:"
 msgstr "Announcements:"
 
-#: ../includes/dashboardwidget.php:53
+#: ../includes/dashboardwidget.php:72
 msgid "Besoin d’un coup de main? Je demeure à votre disposition."
 msgstr "Need a hand? I’m always available."
 
-#: ../includes/dashboardwidget.php:55
+#: ../includes/dashboardwidget.php:74
 msgid "Espace client"
 msgstr "Client area"
 
-#: ../includes/dashboardwidget.php:56
+#: ../includes/dashboardwidget.php:75
 msgid "Demande de support"
 msgstr "Support request"
 
-#: ../includes/dashboardwidget.php:57
+#: ../includes/dashboardwidget.php:76
 msgid "Base de connaissances"
 msgstr "Knowledge base"
 
-#: ../includes/dashboardwidget.php:57
+#: ../includes/dashboardwidget.php:76
 msgid "Bientôt"
 msgstr "Soon"
 
@@ -340,23 +375,23 @@ msgstr "Correct the situation immediately."
 msgid "Sécurité"
 msgstr "Security"
 
-#: ../includes/security.php:355
+#: ../includes/security.php:386
 msgid "Sécurité du site"
 msgstr "Website Security"
 
-#: ../includes/security.php:363
+#: ../includes/security.php:394
 msgid "Votre adresse IP"
 msgstr "Your IP address"
 
-#: ../includes/security.php:366
+#: ../includes/security.php:397
 msgid "Ajouter à la liste blanche"
 msgstr "Add IP address to whitelist"
 
-#: ../includes/security.php:370
+#: ../includes/security.php:401
 msgid "Liste blanche"
 msgstr "Whitelist"
 
-#: ../includes/security.php:372
+#: ../includes/security.php:403
 msgid ""
 "Les adresses IP de la liste blanche ne subiront aucune vérification de "
 "sécurité."
@@ -364,19 +399,19 @@ msgstr ""
 "The IP addresses of the whitelist will not be subject to security "
 "verification."
 
-#: ../includes/security.php:375 ../includes/security.php:396
+#: ../includes/security.php:406 ../includes/security.php:437
 msgid "Ajouter"
 msgstr "Add"
 
-#: ../includes/security.php:379
+#: ../includes/security.php:410
 msgid "Aucune adresse IP dans la liste blanche."
 msgstr "No IP address in the whitelist."
 
-#: ../includes/security.php:391
+#: ../includes/security.php:422
 msgid "Liste noire"
 msgstr "Blacklist"
 
-#: ../includes/security.php:393
+#: ../includes/security.php:424
 msgid ""
 "Les adresses IP de la liste noire ne peuvent se connecter à l’admin et son "
 "passible d’un blocage complet à l’accès du site."
@@ -384,23 +419,19 @@ msgstr ""
 "IP addresses from the blacklist can not connect to the admin and liable to a "
 "complete blockage to access the site."
 
-#: ../includes/security.php:400
-msgid "Aucune adresse IP dans la liste noire."
-msgstr "No IP address in the blacklist."
-
-#: ../includes/security.php:518
+#: ../includes/security.php:534
 msgid "<strong>Erreur</strong>: L’identifiant est vide."
 msgstr "<strong>Error</strong>: Username is empty."
 
-#: ../includes/security.php:521
+#: ../includes/security.php:537
 msgid "<strong>Erreur</strong>: Le mot de passe est vide."
 msgstr "<strong>Errrr</strong>: Password is empty."
 
-#: ../includes/security.php:576
+#: ../includes/security.php:592
 msgid "Vous êtes sur la liste noir. Contactez l’administrateur du site."
 msgstr "You are on the blacklist. Contact website administrator."
 
-#: ../includes/security.php:594
+#: ../includes/security.php:610
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez "
@@ -411,13 +442,13 @@ msgstr ""
 "before attempting a connection. You now have 15 minutes (until %s) before "
 "attempting a connection."
 
-#: ../includes/security.php:594 ../includes/security.php:594 ../includes/security.
-#: php:604 ../includes/security.php:604 ../includes/security.php:611
+#: ../includes/security.php:610 ../includes/security.php:610 ../includes/security.
+#: php:620 ../includes/security.php:620 ../includes/security.php:627
 msgctxt "Heure et minute"
 msgid "H\\hi"
 msgstr "H:i"
 
-#: ../includes/security.php:604
+#: ../includes/security.php:620
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez "
@@ -428,7 +459,7 @@ msgstr ""
 "before attempting a connection. You now have 60 minutes (until %s) before "
 "attempting a connection."
 
-#: ../includes/security.php:611
+#: ../includes/security.php:627
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez "
@@ -439,7 +470,7 @@ msgstr ""
 "before attempting a connection. You are now on the blacklist. Please contact "
 "website administrator."
 
-#: ../includes/security.php:619
+#: ../includes/security.php:635
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Il vous reste 3 "
@@ -448,7 +479,7 @@ msgstr ""
 "<Strong>Bad username or password.</ Strong> <br /> You have 3 chances out of "
 "5 to connect. <a href=\"%1$s\">Forgot your password?</a>"
 
-#: ../includes/security.php:620
+#: ../includes/security.php:636
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Il ne vous reste "
@@ -459,7 +490,7 @@ msgstr ""
 "5 to connect. We strongly suggest to use the <a href=\"%1$s\"> Forgot your "
 "password? </a> link."
 
-#: ../includes/security.php:621
+#: ../includes/security.php:637
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Il ne vous reste "
@@ -470,7 +501,7 @@ msgstr ""
 "chance to connect. You will have to wait 5 minutes before trying again. <a "
 "href=\"%1$s\"> Forgot your password? </a>"
 
-#: ../includes/security.php:622
+#: ../includes/security.php:638
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous avez atteint "
@@ -481,7 +512,7 @@ msgstr ""
 "login attempts. You must now wait 5 minutes before trying again. <a "
 "href=\"%1$s\"> Forgot your password? </a>"
 
-#: ../includes/security.php:642
+#: ../includes/security.php:658
 #, php-format
 msgid ""
 "<strong>Mauvais identifiant ou mot de passe.</strong><br />Il vous reste 4 "
@@ -489,10 +520,6 @@ msgid ""
 msgstr ""
 "<Strong>Bad username or password.</ Strong> <br /> You have 4 chances out of "
 "5 to connect. <a href=\"%1$s\">Forgot your password?</a>"
-
-#: ../includes/theme_helper.class.php:173
-msgid "Accueil"
-msgstr "Home"
 
 #: ../includes/theme_helper.class.php:201
 msgid "Vous êtes ici:"
@@ -612,6 +639,10 @@ msgstr ""
 "username. [user_login] <br /> <br /> Set your password to the following "
 "address: <br /> [set_pass_url]"
 
+#: ../includes/welcomeemail.php:13
+msgid "[site_name]| Inscription d’un nouvel utilisateur"
+msgstr "[site_name]| New user subscription"
+
 #: ../includes/welcomeemail.php:14
 msgid ""
 "Nouvel utilisateur sur votre site [site_name]<br /><br />Nom d’utilisateur: "
@@ -700,36 +731,30 @@ msgstr "You do not have sufficient permission to access this page"
 msgid "Enregistrer les modifications et tester les messages"
 msgstr "Update modifications and test the messages"
 
-#. _e('These settings effect all of this plugin and, in some cases, all of your site.', 'csp');
 #: ../includes/welcomeemail.php:131
 msgid "Ces configurations affectent tous les courriels envoyés par le site."
 msgstr ""
 "These settings effect all of this plugin and, in some cases, all of your "
 "site."
 
-#. . __('Global option change the from email address for all site emails', 'csp')
 #: ../includes/welcomeemail.php:139
 msgid "Change l’adresse d’origine de tous les courriels du site."
 msgstr "Global option change the from email address for all site emails"
 
-#. . __('Global option change the from name for all site emails', 'csp')
 #: ../includes/welcomeemail.php:147
 msgid "Change le nom d’origine de tous les courriels du site."
 msgstr "Global option change the from name for all site emails"
 
-#. _e('These settings are for the email sent to the new user on their signup.', 'csp');
 #: ../includes/welcomeemail.php:160
 msgid ""
 "Ces configurations s’appliquent aux courriels envoyés aux nouveaux "
 "utilisateurs."
 msgstr "These settings are for the email sent to the new user on their signup."
 
-#. . __('Subject line for the welcome email sent to the user.', 'csp')
 #: ../includes/welcomeemail.php:167
 msgid "Sujet du courriel envoyé au nouvel utilisateur."
 msgstr "Subject line for the welcome email sent to the user."
 
-#. . __('Body content for the welcome email sent to the user.', 'csp')
 #: ../includes/welcomeemail.php:184 ../includes/welcomeemail.php:304
 msgid "Message du courriel envoyé au nouvel utilisateur."
 msgstr "Body content for the welcome email sent to the user."
@@ -738,7 +763,6 @@ msgstr "Body content for the welcome email sent to the user."
 msgid "Optionnel. Adresse de réponse du courriel envoyé au nouvel utilisateur."
 msgstr "Optional. Email reply address sent to the new user."
 
-#. . __('Optional field for advanced users to add more headers. Don’t forget to separate headers with \r\n.', 'csp')
 #: ../includes/welcomeemail.php:200
 msgid ""
 "Optionnel. Entêtes supplémentaires pour utilisateurs averties. Séparer "
@@ -747,7 +771,6 @@ msgstr ""
 "Optional field for advanced users to add more headers. Don’t forget to "
 "separate headers with \\r\\n."
 
-#. _e('These settings are for the email sent to the admin on a new user signup.', 'csp');
 #: ../includes/welcomeemail.php:210
 msgid ""
 "Ces configurations s’appliquent aux courriels envoyés aux administrateurs "
@@ -766,7 +789,6 @@ msgstr "Message of the email sent to selected administrators."
 msgid "Sélectionnez les administrateurs qui recevront ce message."
 msgstr "Select which administrators will receive the message."
 
-#. _e('These settings are for the email sent to the admin on a new user signup.', 'csp');
 #: ../includes/welcomeemail.php:282
 msgid ""
 "Ces configurations s’appliquent aux courriels envoyés pour renouveller les "
@@ -777,23 +799,18 @@ msgstr "These settings are for the email sent to the admin on a new user signup.
 msgid "Sujet du courriel envoyé à l’utilisateur."
 msgstr "Subject of the email sent to the user."
 
-#. Name of the plugin
 msgid "WP Github Plugin Updater Test"
 msgstr "WP Github Plugin Updater Test"
 
-#. URI of the plugin
 msgid "https://github.com/jkudish/WordPress-GitHub-Plugin-Updater"
 msgstr "https://github.com/jkudish/WordPress-GitHub-Plugin-Updater"
 
-#. Description of the plugin
 msgid "Semi-automated test for the Github Plugin Updater"
 msgstr "Semi-automated test for the Github Plugin Updater"
 
-#. Author of the plugin
 msgid "Joachim Kudish"
 msgstr "Joachim Kudish"
 
-#. Author URI of the plugin
 msgid "http://jkudish.com"
 msgstr "http://jkudish.com"
 
