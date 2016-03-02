@@ -21,11 +21,13 @@ function socialMetas() {
      * 
      * @param string $icons_folder The absolute path to the icons folder.
      */
-    $icons_folder = apply_filters('csp_socialmetas_icons_folder',WP_CONTENT_URL.'/icons');
+    $icons_subfolder = apply_filters('csp_socialmetas_icons_folder','/icons');
  
-    if (!file_exists($icons_folder))
+    if (!file_exists( WP_CONTENT_DIR.$icons_subfolder ))
         return;
     
+    $icons_folder = WP_CONTENT_URL.$icons_subfolder;
+
     $og_site_name = get_bloginfo('name');
     $og_description = get_meta_description();
     
