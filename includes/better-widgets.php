@@ -183,7 +183,7 @@ class Better_Widget_Recent_Posts extends WP_Widget {
         </p>
         <?php if (!empty($available_taxonomies)): ?>
             <p>
-                <label for="<?php echo $this->get_field_id('taxonomy'); ?>"><?php _e('Restreindre à une taxonomy:', 'csp'); ?></label>
+                <label for="<?php echo $this->get_field_id('taxonomy'); ?>"><?php _e('Restreindre à une taxonomie:', 'csp'); ?></label>
                 <select id="<?php echo $this->get_field_id('taxonomy'); ?>" name="<?php echo $this->get_field_name('taxonomy'); ?>">
                     <option value="-1" >---</option>
             <?php foreach ($available_taxonomies as $tax => $tax_object): ?>
@@ -222,7 +222,7 @@ class Better_Widget_Categories extends WP_Widget {
     function widget($args, $instance) {
         extract($args);
 
-        $title = apply_filters('widget_title', empty($instance['title']) ? __('Categories', 'csp') : $instance['title'], $instance, $this->id_base);
+        $title = apply_filters('widget_title', empty($instance['title']) ? __('Catégories', 'csp') : $instance['title'], $instance, $this->id_base);
         $c = (!empty($instance['count'])) ? true : false;
         $h = (!empty($instance['hierarchical'])) ? true : false;
 
@@ -264,7 +264,7 @@ class Better_Widget_Categories extends WP_Widget {
             $taxonomy = get_taxonomy($taxonomy);
             $url = get_bloginfo('url') . '/' . $taxonomy->rewrite['slug'] . '/';
             ?>
-            <p><a href="<?php echo $url ?>"><?php printf(__('See %s', 'csp'), strtolower($taxonomy->labels->all_items)); ?></a></p>
+            <p><a href="<?php echo $url ?>"><?php printf(__('Voir %s', 'csp'), strtolower($taxonomy->labels->all_items)); ?></a></p>
             <?php
         endif;
         echo $after_widget;

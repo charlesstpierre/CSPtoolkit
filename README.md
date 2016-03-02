@@ -8,6 +8,13 @@ parlez@charlesstpierre.com
 
 == Changelog ==
 
+= 1.1.0 =
+* Ajout du fil RSS des Communiqués
+* Traductions anglaises complétés
+* Correction de Bug htaccess
+* Amélioration de l’interface de Sécurité
+* Vérification de l’adresse IP sur le tableau de bord
+
 = 1.0.9 =
 * Correction Core
 * Ajout du format woff2 au HTaccess

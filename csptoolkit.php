@@ -4,11 +4,18 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.0.9
+  Version: 1.0.10
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
 
   Changelog
+  v1.1.0
+  Ajout du fil RSS des Communiqués
+  Traductions anglaises complétés
+  Correction de Bug htaccess
+  Amélioration de l’interface de Sécurité
+  Vérification de l’adresse IP sur le tableau de bord
+  
   v1.0.9
   Correction Core
   Ajout du format woff2 au HTaccess

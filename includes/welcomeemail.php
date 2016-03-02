@@ -10,7 +10,7 @@ function sm_init() {
         $sm_settings = array();
         $sm_settings['user_subject'] = __('[site_name]| Vos informations de connexion', 'csp');
         $sm_settings['user_body'] = __('Vous avez été inscrit au site [site_name].<br /><br />Votre nom d’utilisateur: [user_login]<br /><br />Configurez votre mot de passe à l’adresse suivante:<br />[set_pass_url]', 'csp');
-        $sm_settings['admin_subject'] = __('[site_name]| Incription d’un nouvel utilisateur', 'csp');
+        $sm_settings['admin_subject'] = __('[site_name]| Inscription d’un nouvel utilisateur', 'csp');
         $sm_settings['admin_body'] = __('Nouvel utilisateur sur votre site [site_name]<br /><br />Nom d’utilisateur: [user_login]<br />Courriel: [user_email]', 'csp');
         $sm_settings['admin_notify_user_id'] = array(1);
         $sm_settings['header_from_name'] = '[site_name]';
@@ -62,7 +62,7 @@ function sm_settings_setup() {
     add_settings_section('sm_settings_notification', __('Notification de l’administrateur', 'csp'), 'sm_admin_settings_output', 'system_messages');
     add_settings_field('sm_settings[admin_subject]', __('Sujet', 'csp'), 'sm_settings_admin_subject_output', 'system_messages', 'sm_settings_notification');
     add_settings_field('sm_settings[admin_body]', __('Message', 'csp'), 'sm_settings_admin_body_output', 'system_messages', 'sm_settings_notification');
-    add_settings_field('sm_settings[admin_notify_user_id]', __('Send Admin Email To', 'csp'), 'sm_settings_admin_notify_user_id_output', 'system_messages', 'sm_settings_notification');
+    add_settings_field('sm_settings[admin_notify_user_id]', __('Choix des administrateurs', 'csp'), 'sm_settings_admin_notify_user_id_output', 'system_messages', 'sm_settings_notification');
 
     add_settings_section('sm_settings_password_reminder', __('Rappel de mot de passe', 'csp'), 'sm_password_reminder_settings_output', 'system_messages');
     add_settings_field('sm_settings[password_reminder_subject]', __('Sujet', 'csp'), 'sm_settings_password_reminder_subject_output', 'system_messages', 'sm_settings_password_reminder');
@@ -104,7 +104,8 @@ add_filter('wp_redirect','system_messages_test');
 function system_messages_settings_page() {
 
     if (!current_user_can('manage_options')){
-        wp_die(__('You do not have sufficient permissions to manage options for this site.'));
+        /* Translator : 'You do not have sufficient permissions to manage options for this site.' */
+        wp_die(__('Vous n’avez pas les droits suffisants pour accéder à cette page','csp'));
     }
     
     ?>

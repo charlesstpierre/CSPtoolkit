@@ -159,7 +159,7 @@ function csp_setup_security_htaccess() {
     // allowed file types
     $allowed_mime_types = get_allowed_mime_types();
     $allowed_file_types = array_merge(
-            array_keys($allowed_mime_types), array('svg', 'woff', 'woff2', 'ttf', 'oet', 'map')// fonts
+            array_keys($allowed_mime_types), array('svg', 'woff', 'woff2', 'ttf', 'eot', 'map')// fonts
     );
     $lines[] = '<Files ~ ".(' . implode('|', $allowed_file_types) . ')$">';
     $lines[] = 'Allow from all';
@@ -297,8 +297,32 @@ function csp_security_enqueue_head($hook) {
         wp_enqueue_style('csp-security', TOOLKIT_URL . 'css/admin-security.css');
     }
 }
-
 add_action('admin_enqueue_scripts', 'csp_security_enqueue_head');
+
+function csp_search_ip_blacklist() {
+    
+    $response = array();
+    
+    $ip = filter_var($_POST['ip'], FILTER_VALIDATE_IP);
+    if (empty($ip)){
+        $response['code'] = 'invalid';
+        $response['message'] = __('L’IP est invalide.','csp');
+    }else{
+        $blacklist = get_option('_blacklist' . csp_get_ip($ip));
+        if ( false === $blacklist){
+            $response['code'] = 'missing';
+            $response['message'] = __('L’IP n’est pas sur la liste noir.','csp');
+        }else{
+            $response['code'] = 'found';
+            $response['message'] = __('L’IP est présent sur la liste noir.','csp');
+        }
+    }
+    $return = json_encode($response);
+    
+    wp_die($return);
+}
+add_action('wp_ajax_search_ip_blacklist','csp_search_ip_blacklist');
+
 
 /**
  * Output Security interface
@@ -310,6 +334,7 @@ function csp_output_security_interface() {
 
     // submitted form
     if (isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'csp-security-interface')) {
+        
         if (!isset($_POST['what'])) {
             $_POST['what'] = false;
         }
@@ -333,6 +358,12 @@ function csp_output_security_interface() {
                     delete_option('_whitelist' . csp_get_ip($new_blacklist));
                 }
                 break;
+            case 'delete_ip_blacklist':
+                if ($the_ip = filter_var($_POST['search_ip_blacklist'], FILTER_VALIDATE_IP)) {
+                    delete_option( '_blacklist' . csp_get_ip($the_ip));
+                    csp_gandalf_protocol_remove_ip($the_ip);
+                }
+                break;
             default:
                 // we are removing something
                 $the_list = (in_array($_POST['remove_list'], array('black', 'white'))) ? $_POST['remove_list'] : false;
@@ -349,7 +380,7 @@ function csp_output_security_interface() {
 
     global $wpdb;
     $whitelist = $wpdb->get_col("SELECT `option_value` FROM $wpdb->options WHERE `option_name` LIKE '_whitelist%';");
-    $blacklist = $wpdb->get_col("SELECT REPLACE(SUBSTRING(`option_name`,15),'_','.') AS 'ip' FROM $wpdb->options WHERE `option_name` LIKE '_blacklist%';");
+    $blacklist_count = $wpdb->get_var("SELECT count(*) FROM $wpdb->options WHERE `option_name` LIKE '_blacklist%';");
     ?>
     <div class="wrap">
         <h1 class="csp-security-title"><span class="dashicons dashicons-vault"></span><?php _e('Sécurité du site', 'csp') ?></h1>
@@ -372,7 +403,7 @@ function csp_output_security_interface() {
                             <p><?php _e('Les adresses IP de la liste blanche ne subiront aucune vérification de sécurité.', 'csp') ?></p>
                             <p>
                                 <input type="text" placeholder="###.###.###.###" name="add_ip_whitelist" />
-                                <button type="submit" name="what" value="add_ip_whitelist" class="button-primary"><?php _e('Add'); ?></button>
+                                <button type="submit" name="what" value="add_ip_whitelist" class="button-primary"><?php _e('Ajouter','csp'); ?></button>
                             </p>
                             <ul class="scroll-list">
                                 <?php if (empty($whitelist)): ?>
@@ -391,35 +422,20 @@ function csp_output_security_interface() {
                         <th scope="row"><?php _e('Liste noire', 'csp') ?></th>
                         <td>
                             <p><?php _e('Les adresses IP de la liste noire ne peuvent se connecter à l’admin et son passible d’un blocage complet à l’accès du site.', 'csp') ?></p>
+                            <p><em><?php printf( __('Il y a présentement %s adresses IP sur la liste noir.','csp'), '<b>'.$blacklist_count.'</b>') ?></em></p>
+                            <p>
+                                <input type="text" placeholder="###.###.###.###" name="search_ip_blacklist" id="search_ip_blacklist" />
+                                <button type="button" class="button-secondary" name="search_blacklist" value="search_blacklist" id="search_blacklist" ><?php _e('Chercher dans la liste noir','csp') ?></button>
+                                <span id="search_blacklist_code" class="dashicons"></span><i id="search_blacklist_reponse"></i>
+                                <button type="submit" class="button-primary hide-if-js" name="what" value="delete_ip_blacklist" id="delete_search_blacklist"><?php _e('Retirer de la liste noir','csp') ?></button>
+                            </p>
+                            
+                            
+                            
                             <p>
                                 <input type="text" placeholder="###.###.###.###" name="add_ip_blacklist" />
-                                <button type="submit" name="what" value="add_ip_blacklist"  class="button-primary"><?php _e('Add'); ?></button>
+                                <button type="submit" name="what" value="add_ip_blacklist"  class="button-primary"><?php _e('Ajouter','csp'); ?></button>
                             </p>
-                            <ul class="scroll-list blacklist">
-                                <?php if (empty($blacklist)): ?>
-                                    <li><?php _e('Aucune adresse IP dans la liste noire.', 'csp') ?></li>
-                                <?php endif; ?>
-                                <?php
-                                foreach ($blacklist as $bip):
-                                    if (!( $geo_info = get_transient('geo_info_' . csp_get_ip($bip)) )) {
-                                        $geo_info = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip=' . $bip));
-                                        set_transient('geo_info_' . csp_get_ip($bip), $geo_info, DAY_IN_SECONDS);
-                                    }
-                                    ?>
-                                    <li><input type="hidden" value="<?php echo $bip; ?>" name="blacklist[]" readonly="readonly" />
-                                        <code style="min-width:15en;display:inline-block;"><?php echo $bip; ?></code>
-                                        <em class="geo-info"><?php
-                                            echo '['
-                                            . $geo_info['geoplugin_city']
-                                            . ', '
-                                            . $geo_info['geoplugin_regionName']
-                                            . ', '
-                                            . $geo_info['geoplugin_countryName']
-                                            . ']'
-                                            ?></em>
-                                        <a href="javascript:void(0);" data-list="black" data-ip="<?php echo $bip ?>" class="security-list-remove-item dashicons dashicons-trash"></a></li>
-                                    <?php endforeach; ?>
-                            </ul>
                         </td>
                     </tr>
                 </tbody>
@@ -515,10 +531,10 @@ function csp_authenticate($user, $username, $password) {
         $error = new WP_Error();
 
         if (empty($username))
-            $error->add('empty_username', __('<strong>ERROR</strong>: The username field is empty.'));
+            $error->add('empty_username', __('<strong>Erreur</strong>: L’identifiant est vide.'));
 
         if (empty($password))
-            $error->add('empty_password', __('<strong>ERROR</strong>: The password field is empty.'));
+            $error->add('empty_password', __('<strong>Erreur</strong>: Le mot de passe est vide.'));
 
         return $error;
     }
