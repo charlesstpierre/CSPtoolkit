@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Support CharlesStPierre.com\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Fri Jan 08 2016 19:05:15 GMT-0500 (EST)\n"
-"PO-Revision-Date: Fri Mar 25 2016 15:11:13 GMT-0400 (EDT)\n"
+"PO-Revision-Date: Wed Mar 02 2016 18:50:13 GMT-0500 (EST)\n"
 "Last-Translator: Charles St-Pierre <parlez@charlesstpierre.com>\n"
 "Language-Team: \n"
 "Language: English (Canada)\n"
@@ -22,78 +22,44 @@ msgstr ""
 "X-Generator: Loco - https://localise.biz/\n"
 "X-Loco-Target-Locale: en_CA"
 
-#: ../includes/tinymce.php:27
-msgid "Paragraph"
-msgstr "Paragraph"
+#: ../includes/dashboardwidget.php:35
+#, php-format
+msgid "Votre IP actuel (%s) n’est pas sur la liste blanche."
+msgstr "Your current IP (%s) is not on the whitelist."
 
-#: ../includes/tinymce.php:31
-msgid "Heading 2"
-msgstr "Heading 2"
+#: ../includes/dashboardwidget.php:36
+#, php-format
+msgid ""
+"Si cette ordinateur n’est pas public, et que vous l’utilisez fréquemment, "
+"<%s>ajoutez votre IP à la liste blanche<%s>."
+msgstr ""
+"If this computer is not public and you use it often, <%s>add your IP to the "
+"whitelist<%s>."
 
-#: ../includes/tinymce.php:35
-msgid "Heading 3"
-msgstr "Heading 3"
+#: ../includes/security.php:309
+msgid "L’IP est invalide."
+msgstr "The IP is invalid."
 
-#: ../includes/tinymce.php:39
-msgid "Heading 4"
-msgstr "Heading 4"
+#: ../includes/security.php:314
+msgid "L’IP n’est pas sur la liste noir."
+msgstr "The IP is NOT on the blacklist."
 
-#: ../includes/tinymce.php:43
-msgid "Heading 5"
-msgstr "Heading 5"
+#: ../includes/security.php:317
+msgid "L’IP est présent sur la liste noir."
+msgstr "The IP is on the blacklist."
 
-#: ../includes/tinymce.php:47
-msgid "Heading 6"
-msgstr "Heading 6"
+#: ../includes/security.php:425
+#, php-format
+msgid "Il y a présentement %s adresses IP sur la liste noir."
+msgstr "Currently %s IP addresses on the blacklist."
 
-#: ../includes/tinymce.php:51
-msgid "Éléments blocs"
-msgstr "Block elements"
+#: ../includes/security.php:428
+msgid "Chercher dans la liste noir"
+msgstr "Search in blacklist"
 
-#: ../includes/tinymce.php:54
-msgid "Blockquote"
-msgstr "Blockquote"
-
-#: ../includes/tinymce.php:58
-msgid "Source code"
-msgstr "Source code"
-
-#: ../includes/tinymce.php:62
-msgctxt "HTML tag"
-msgid "Preformatted"
-msgstr "Preformatted"
-
-#: ../includes/tinymce.php:66 ../includes/tinymce.php:69
-msgid "Liste de définitions"
-msgstr "Definition list"
-
-#: ../includes/tinymce.php:73
-msgid "Terme"
-msgstr "Term"
-
-#: ../includes/tinymce.php:77
-msgid "Définition"
-msgstr "Definition"
-
-#: ../includes/tinymce.php:85
-msgid "Style de caractères"
-msgstr "Character style"
-
-#: ../includes/tinymce.php:88
-msgid "Couleur de contraste"
-msgstr "Contrast color"
-
-#: ../includes/tinymce.php:93
-msgid "Surligné"
-msgstr "Highlighted"
-
-#: ../includes/tinymce.php:98
-msgid "Petit texte"
-msgstr "Small text"
-
-#: ../includes/tinymce.php:102
-msgid "Citation à l’intérieur d’un texte"
-msgstr "Inline quote"
+#: ../includes/security.php:430
+msgid "Retirer de la liste noir"
+msgstr "Remove from blacklist"
 
 msgid "Support CharlesStPierre.com"
 msgstr "Support CharlesStPierre.com"
@@ -106,6 +72,10 @@ msgstr "Support and customization features"
 
 msgid "Charles St-Pierre"
 msgstr "Charles St-Pierre"
+
+#: ../csptoolkit.php:202
+msgid "Accueil"
+msgstr "Home"
 
 #: ../includes/better-widgets.php:38
 msgid "Les contenus les plus récents de votre site."
@@ -310,20 +280,6 @@ msgstr "Text color"
 msgid "Ombre de texte?"
 msgstr "Drop shadow?"
 
-#: ../includes/dashboardwidget.php:35
-#, php-format
-msgid "Votre IP actuel (%s) n’est pas sur la liste blanche."
-msgstr "Your current IP (%s) is not on the whitelist."
-
-#: ../includes/dashboardwidget.php:36
-#, php-format
-msgid ""
-"Si cette ordinateur n’est pas public, et que vous l’utilisez fréquemment, "
-"<%s>ajoutez votre IP à la liste blanche<%s>."
-msgstr ""
-"If this computer is not public and you use it often, <%s>add your IP to the "
-"whitelist<%s>."
-
 #: ../includes/dashboardwidget.php:47
 #, php-format
 msgid "<strong>Erreur RSS</strong>: %s"
@@ -419,18 +375,6 @@ msgstr "Correct the situation immediately."
 msgid "Sécurité"
 msgstr "Security"
 
-#: ../includes/security.php:309
-msgid "L’IP est invalide."
-msgstr "The IP is invalid."
-
-#: ../includes/security.php:314
-msgid "L’IP n’est pas sur la liste noir."
-msgstr "The IP is NOT on the blacklist."
-
-#: ../includes/security.php:317
-msgid "L’IP est présent sur la liste noir."
-msgstr "The IP is on the blacklist."
-
 #: ../includes/security.php:386
 msgid "Sécurité du site"
 msgstr "Website Security"
@@ -474,19 +418,6 @@ msgid ""
 msgstr ""
 "IP addresses from the blacklist can not connect to the admin and liable to a "
 "complete blockage to access the site."
-
-#: ../includes/security.php:425
-#, php-format
-msgid "Il y a présentement %s adresses IP sur la liste noir."
-msgstr "Currently %s IP addresses on the blacklist."
-
-#: ../includes/security.php:428
-msgid "Chercher dans la liste noir"
-msgstr "Search in blacklist"
-
-#: ../includes/security.php:430
-msgid "Retirer de la liste noir"
-msgstr "Remove from blacklist"
 
 #: ../includes/security.php:534
 msgid "<strong>Erreur</strong>: L’identifiant est vide."
@@ -589,10 +520,6 @@ msgid ""
 msgstr ""
 "<Strong>Bad username or password.</ Strong> <br /> You have 4 chances out of "
 "5 to connect. <a href=\"%1$s\">Forgot your password?</a>"
-
-#: ../includes/theme_helper.class.php:173
-msgid "Accueil"
-msgstr "Home"
 
 #: ../includes/theme_helper.class.php:201
 msgid "Vous êtes ici:"

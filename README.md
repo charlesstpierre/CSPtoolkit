@@ -7,6 +7,9 @@ parlez@charlesstpierre.com
 
 
 == Changelog ==
+=  v1.1.1 =
+* Amélioration de TinyMCE
+
 
 = 1.1.0 =
 * Ajout du fil RSS des Communiqués

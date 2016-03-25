@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Support CharlesStPierre.com\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Fri Jan 08 2016 19:05:15 GMT-0500 (EST)\n"
-"POT-Revision-Date: Wed Mar 02 2016 18:47:30 GMT-0500 (EST)\n"
+"POT-Revision-Date: Fri Mar 25 2016 15:09:27 GMT-0400 (EDT)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -38,10 +38,6 @@ msgstr ""
 
 #. Author of the plugin
 msgid "Charles St-Pierre"
-msgstr ""
-
-#: ../csptoolkit.php:202
-msgid "Accueil"
 msgstr ""
 
 #: ../includes/better-widgets.php:38
@@ -499,6 +495,10 @@ msgid ""
 "chances sur 5 de vous connecter. <a href=\"%1$s\">Mot de passe oublié ?</a>"
 msgstr ""
 
+#: ../includes/theme_helper.class.php:173
+msgid "Accueil"
+msgstr ""
+
 #: ../includes/theme_helper.class.php:201
 msgid "Vous êtes ici:"
 msgstr ""
@@ -601,6 +601,79 @@ msgstr ""
 
 #: ../includes/theme_helper.class.php:778
 msgid "et"
+msgstr ""
+
+#: ../includes/tinymce.php:27
+msgid "Paragraph"
+msgstr ""
+
+#: ../includes/tinymce.php:31
+msgid "Heading 2"
+msgstr ""
+
+#: ../includes/tinymce.php:35
+msgid "Heading 3"
+msgstr ""
+
+#: ../includes/tinymce.php:39
+msgid "Heading 4"
+msgstr ""
+
+#: ../includes/tinymce.php:43
+msgid "Heading 5"
+msgstr ""
+
+#: ../includes/tinymce.php:47
+msgid "Heading 6"
+msgstr ""
+
+#: ../includes/tinymce.php:51
+msgid "Éléments blocs"
+msgstr ""
+
+#: ../includes/tinymce.php:54
+msgid "Blockquote"
+msgstr ""
+
+#: ../includes/tinymce.php:58
+msgid "Source code"
+msgstr ""
+
+#: ../includes/tinymce.php:62
+msgctxt "HTML tag"
+msgid "Preformatted"
+msgstr ""
+
+#: ../includes/tinymce.php:66 ../includes/tinymce.php:69
+msgid "Liste de définitions"
+msgstr ""
+
+#: ../includes/tinymce.php:73
+msgid "Terme"
+msgstr ""
+
+#: ../includes/tinymce.php:77
+msgid "Définition"
+msgstr ""
+
+#: ../includes/tinymce.php:85
+msgid "Style de caractères"
+msgstr ""
+
+#: ../includes/tinymce.php:88
+msgid "Couleur de contraste"
+msgstr ""
+
+#: ../includes/tinymce.php:93
+msgid "Surligné"
+msgstr ""
+
+#: ../includes/tinymce.php:98
+msgid "Petit texte"
+msgstr ""
+
+#: ../includes/tinymce.php:102
+msgid "Citation à l’intérieur d’un texte"
 msgstr ""
 
 #: ../includes/welcomeemail.php:11

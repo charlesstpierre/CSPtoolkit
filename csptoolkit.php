@@ -4,11 +4,14 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.0.10
+  Version: 1.1.1
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
 
   Changelog
+  v1.1.1
+  Amélioration de TinyMCE
+
   v1.1.0
   Ajout du fil RSS des Communiqués
   Traductions anglaises complétés
