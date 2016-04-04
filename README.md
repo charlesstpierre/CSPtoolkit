@@ -7,9 +7,12 @@ parlez@charlesstpierre.com
 
 
 == Changelog ==
-=  v1.1.1 =
-* Amélioration de TinyMCE
 
+= 1.1.2 =
+* Augmentation de la taille de l’image pour le tag OG:IMAGE
+
+= 1.1.1 =
+* Amélioration de TinyMCE
 
 = 1.1.0 =
 * Ajout du fil RSS des Communiqués

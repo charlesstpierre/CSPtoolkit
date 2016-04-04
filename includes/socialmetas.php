@@ -47,7 +47,7 @@ function socialMetas() {
         $og_url = get_permalink();
     //image
         if (has_post_thumbnail($post->ID)) {
-            $image_src = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), 'medium');
+            $image_src = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), 'full');
             $og_image = $image_src[0];
         }
     }elseif(false){ // add more cases
