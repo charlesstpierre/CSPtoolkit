@@ -233,16 +233,16 @@ class CSP_theme_helper {
             $terms = wp_get_post_terms($this->queried_id, $chosen_tax);
             $chosen_term = false;
             $ancestors = $temp_ancestors = array();
-            
-                
+
+
             if (false === is_wp_error($terms)) {
 
                 if (1 === count($terms)) {
-                    
+
                     $chosen_term = $terms[0];
                     if (is_taxonomy_hierarchical($chosen_tax)) {
                         $ancestors = get_ancestors($chosen_term->term_id, $chosen_tax, 'taxonomy');
-                    }                    
+                    }
                 } elseif (1 <= count($terms)) {
 
                     $current_count = 0;
@@ -283,7 +283,6 @@ class CSP_theme_helper {
                     ));
                 }
             }
-
         }
         // post_type archive
         $post_type_archive_item = array();
@@ -354,7 +353,7 @@ class CSP_theme_helper {
         }
 
         if (!empty($post_type_archive_item)) {
-            $items = array_merge(array($post_type_archive_item), $items );
+            $items = array_merge(array($post_type_archive_item), $items);
         }
 
         $items = array_merge($items, array($itself));
@@ -666,6 +665,14 @@ function init_theme_helper() {
 }
 
 add_action('wp', 'init_theme_helper');
+
+/**
+ * Add excerpt to page
+ */
+function _add_excerpt_page_support() {
+    add_post_type_support('page', 'excerpt');
+}
+add_action('init', '_add_excerpt_page_support');
 
 /**
  * Outputs the breadcrumb, depending on what page we're on.

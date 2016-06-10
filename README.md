@@ -7,6 +7,8 @@ parlez@charlesstpierre.com
 
 
 == Changelog ==
+= 1.1.3 =
+* Ajout des descriptions pour les pages.
 
 = 1.1.2 =
 * Augmentation de la taille de l’image pour le tag OG:IMAGE
