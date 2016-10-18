@@ -7,6 +7,10 @@ parlez@charlesstpierre.com
 
 
 == Changelog ==
+= 1.1.4 =
+* Ajout TinyMCE classe Clear.
+* Interface des Meta Descriptions pour les archives de contenus, l’accueil et le blogue
+
 = 1.1.3 =
 * Ajout des descriptions pour les pages.
 

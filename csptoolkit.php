@@ -4,11 +4,18 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.1.3
+  Version: 1.1.4
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
+  Text Domain: csp
+  Domain Path: /lang
 
   Changelog
+  v1.1.4
+  Ajout TinyMCE Class clear
+  Interface des Meta Descriptions pour les archives de contenus, l’accueil et le blogue.
+  
+  
   v1.1.3
   Ajout du support des descriptions pour les Pages
   
@@ -71,6 +78,7 @@ function csp_include_files() {
     require_once 'includes/security.php';
 
     require_once 'includes/debug.php';
+    require_once 'includes/meta_descriptions.php';
     require_once 'includes/theme_helper.class.php';
 
     require_once 'includes/tinymce.php';

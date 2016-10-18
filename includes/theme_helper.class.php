@@ -35,7 +35,12 @@ class CSP_theme_helper {
      * Sets the $this->is value
      */
     private function _what_is() {
-        if (is_singular()) {
+        
+        if (is_front_page()) {
+            $this->is = 'front_page';
+        } elseif (is_home()) {
+            $this->is = 'home';
+        } elseif (is_singular()) {
             $this->is = 'singular';
         } elseif (is_tax() || is_category() || is_tag()) {
             $this->is = 'term';
@@ -47,6 +52,8 @@ class CSP_theme_helper {
             $this->is = 'day';
         } elseif (is_author()) {
             $this->is = 'author';
+        } elseif (is_post_type_archive()) {
+            $this->is = 'post_type_archive';
         } elseif (is_archive()) {
             $this->is = 'archive';
         } elseif (is_search()) {
@@ -103,11 +110,14 @@ class CSP_theme_helper {
                 $this->queried_obj->taxonomy_obj = $taxonomy;
                 $this->queried_id = get_queried_object_id();
                 break;
+            case 'post_type_archive':
             case 'archive':
             case 'singular':
                 $this->queried_obj = get_queried_object();
                 $this->queried_id = get_queried_object_id();
                 break;
+            case 'front_page':
+            case 'home':
             case '404':
             default:
                 break;
@@ -157,7 +167,7 @@ class CSP_theme_helper {
     }
 
     public function get_breadcrumb() {
-        if (is_front_page()) {
+        if (is_front_page() || is_home()) {
             return;
         }
         if (!$this->breadcrumb_items) {
@@ -433,6 +443,17 @@ class CSP_theme_helper {
         return $items;
     }
 
+    private function _breadcrumb_post_type_archive() {
+        $items = array(
+            array(
+                'link' => false,
+                'classes' => 'breadcrumb-post-type-archive',
+                'name' => $this->queried_obj->label
+            )
+        );
+        return $items;
+    }
+
     private function _breadcrumb_archive() {
         $items = array(
             array(
@@ -515,6 +536,13 @@ class CSP_theme_helper {
         return $_title;
     }
 
+    private function _title_post_type_archive() {
+        $_title = sprintf(
+                apply_filters('theme_helper_title_pattern_posttype_archive', _x('%s', 'Post type archive', 'csp')), $this->queried_obj->label
+        );
+        return $_title;
+    }
+
     private function _title_archive() {
         $_title = sprintf(
                 apply_filters('theme_helper_title_pattern_posttype_archive', _x('%s', 'Post type archive', 'csp')), $this->queried_obj->label
@@ -561,6 +589,14 @@ class CSP_theme_helper {
         }
     }
 
+    private function _description_front_page() {
+        return get_option('_csp_meta_description_front_page',get_bloginfo('description'));
+    }
+    
+    private function _description_home() {
+        return get_option('_csp_meta_description_home',get_bloginfo('description'));
+    }
+    
     private function _description_singular() {
         if (!($_description = strip_tags($this->queried_obj->post_excerpt))) {
             $_description = wp_trim_words(strip_tags(strip_shortcodes($this->queried_obj->post_content)), apply_filters('excerpt_length', 55));
@@ -603,6 +639,15 @@ class CSP_theme_helper {
             $_description = get_bloginfo('description');
         }
         $_description = $this->queried_obj->display_name . ' ' . $_description;
+        return $_description;
+    }
+
+    private function _description_post_type_archive() {
+        if ($this->queried_obj->description) {
+            $_description = $this->queried_obj->description;
+        } else {
+            $_description = $this->queried_obj->labels->archives;
+        }
         return $_description;
     }
 
@@ -746,7 +791,7 @@ function get_page_title() {
 function _csp_meta_description() {
     $description = get_meta_description();
     if ($description) {
-        echo '<meta type="description" content="' . $description . '" />';
+        echo '<meta name="description" content="' . $description . '" />';
     }
 }
 

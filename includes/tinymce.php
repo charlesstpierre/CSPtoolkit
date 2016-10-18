@@ -103,6 +103,11 @@ function csp_customize_tiny_mce($in) {
                     'inline' => 'q'
                 )
             )
+        ),
+        array(
+            'title'=>__('Ramener à la ligne (clear)','csp'),
+            'classes'=>'clear',
+            'selector'=>'p,h2,h3,h4,h5,h6,blockquote'
         )
     );
     $style_formats = apply_filters('csp_visualeditor_style_formats',$style_formats);
