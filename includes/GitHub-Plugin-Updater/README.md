@@ -1,51 +1,53 @@
-WordPress Github Plugin Updater
+# WordPress GitHub Plugin Updater
 
-This class is meant to be used with your Github hosted WordPress plugins. The purpose of the class is to allow your WordPress plugin to be updated whenever you push out a new version of your plugin; similarly to the experience users know and love with the WordPress.org plugin repository.
+This class is meant to be used with your GitHub hosted WordPress plugins. The purpose of the class is to allow your WordPress plugin to be updated whenever you push out a new version of your plugin, similar to the experience users know and love with the WordPress.org plugin repository.
 
-Not all plugins can or should be hosted on the WordPress.org plugin repository, or you may chose to host it on github only.
+Not all plugins can or should be hosted on the WordPress.org plugin repository, or you may chose to host it on GitHub only.
 
-The code is still in it's infancy, but [I am currently using it](https://github.com/jkudish/JigoShop-Software-Add-on) on a production plugin and production website, without any glitches. That being said, please consider this as a beta release. The project started off as a private client request, but is now public for anyone to collaborate on. I am open to any suggestions :)
+This class was originally developed by [Joachim Kudish](https://github.com/jkudish), but because he hasn't had a chance to update it in a while, we stepped in. We are using this class in a couple of our own plugins (dogfooding!) and will continue to develop it as we go.
 
-Usage instructions
-===========
-
+## Usage instructions
 * The class should be included somewhere in your plugin. You will need to require the file (example: `include_once('updater.php');`).
 * You will need to initialize the class using something similar to this:
 
-	<pre>
+```
 	if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
 		$config = array(
 			'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
 			'proper_folder_name' => 'plugin-name', // this is the name of the folder your plugin lives in
-			'api_url' => 'https://api.github.com/repos/username/repository-name', // the github API url of your github repo
-			'raw_url' => 'https://raw.github.com/username/repository-name/master', // the github raw url of your github repo
-			'github_url' => 'https://github.com/username/repository-name', // the github url of your github repo
-			'zip_url' => 'https://github.com/username/repository-name/zipball/master', // the zip url of the github repo
-			'sslverify' => true // wether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+			'api_url' => 'https://api.github.com/repos/username/repository-name', // the GitHub API url of your GitHub repo
+			'raw_url' => 'https://raw.github.com/username/repository-name/master', // the GitHub raw url of your GitHub repo
+			'github_url' => 'https://github.com/username/repository-name', // the GitHub url of your GitHub repo
+			'zip_url' => 'https://github.com/username/repository-name/zipball/master', // the zip url of the GitHub repo
+			'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
 			'requires' => '3.0', // which version of WordPress does your plugin require?
 			'tested' => '3.3', // which version of WordPress is your plugin tested up to?
 			'readme' => 'README.md', // which file to use as the readme for the version number
-			'access_token' => '', // Access private repositories by authorizing under Appearance > Github Updates when this example plugin is installed
+			'access_token' => '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
 		);
-		new WPGitHubUpdater($config);
+		new WP_GitHub_Updater($config);
 	}
-	</pre>
+```
 
-* In your Github repository, you will need to include the following line (formatted exactly like this) anywhere in your Readme file:
+* In your GitHub repository, you will need to include the following line (formatted exactly like this) anywhere in your Readme file:
 
 	`~Current Version:1.4~`
 
 * You will need to update the version number anytime you update the plugin, this will ultimately let the plugin know that a new version is available.
 
-* **Note**: this class will unfortunately not work with a private repository, your repository needs to be publicly accessible. If anyone knows how to make this work for private repositories, please get in touch!
+* From v1.6, the updater can pick up the version from the plugin header as well.
 
-Changelog
-===========
+* Support for private repository was added in v1.5
+
+## Changelog
 
 ### 1.6 (in development)
 * Get version from plugin header instead of readme with backwards compatibility support for readme, added by [@ninnypants](https://github.com/ninnypants)
 * Better ways to handle GitHub API calls and the way the data is stored, thanks to [@coenjacobs](https://github.com/coenjacobs)
 * Follow WordPress code standards and remove trailing whitespace
+* Fix a PHP notice in the Plugins admin screen, props [@ninnypants](https://github.com/ninnypants)
+* Use a central function for building the query used to communicate with the GitHub API, props [@davidmosterd](https://github.com/davidmosterd)
+
 
 ### 1.5
 * Support for private repositories added by [@pdclark](http://profiles.wordpress.org/pdclark)
@@ -77,14 +79,10 @@ Changelog
 ### 1.0
 * Initial Public Release
 
-Credits
-===========
+## Credits
+This class was originally built by [Joachim Kudish](http://jkudish.com "Joachim Kudish") and is now being maintained by [Radish Concepts](http://www.radishconcepts.com/).
 
-This class is built and maintained by [Joachim Kudish](http://jkudish.com "Joachim Kudish")
-
-License
-===========
-
+## License
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
