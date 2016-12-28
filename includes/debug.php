@@ -1,6 +1,9 @@
 <?php
+
 // Exit if accessed directly
-if (!defined('ABSPATH')) { exit; }
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 /**
  * Is Developper?
@@ -13,7 +16,7 @@ if (!defined('ABSPATH')) { exit; }
  */
 function is_dev() {
     global $current_user;
-    
+
     if (CSP_IS_DEBUG || $current_user->user_email === DEVELOPPER_EMAIL) {
         return true;
     } else {
@@ -54,13 +57,11 @@ function debug($var, $dump = false) {
  * @param mixed $var Any variable or scalar
  */
 function debug_log($var) {
-    if (is_dev()) {
-        if (true === WP_DEBUG) {
-            if (is_array($var) || is_object($var)) {
-                error_log(var_export($var, true));
-            } else {
-                error_log($var);
-            }
+    if (is_dev() && true === WP_DEBUG) {
+        if (is_array($var) || is_object($var)) {
+            error_log(var_export($var, true));
+        } else {
+            error_log($var);
         }
     }
 }
@@ -73,12 +74,35 @@ function debug_log($var) {
  * @uses filter wp_head
  * @since 1.0.0
  */
-function csp_output_webmaster_tools_site_verification(){
-    if (defined('GOOGLE_SITE_VERIFICATION_CODE')){
-        echo '<meta name="google-site-verification" content="'. GOOGLE_SITE_VERIFICATION_CODE .'" />';
+function csp_output_webmaster_tools_site_verification() {
+    if (defined('GOOGLE_SITE_VERIFICATION_CODE')) {
+        echo '<meta name="google-site-verification" content="' . GOOGLE_SITE_VERIFICATION_CODE . '" />';
     }
-    if (defined('MICROSOFT_OWNERSHIP_VERIFICATION_CODE')){
-        echo '<meta name="msvalidate.01" content="'. MICROSOFT_OWNERSHIP_VERIFICATION_CODE .'" />';        
+    if (defined('MICROSOFT_OWNERSHIP_VERIFICATION_CODE')) {
+        echo '<meta name="msvalidate.01" content="' . MICROSOFT_OWNERSHIP_VERIFICATION_CODE . '" />';
     }
 }
-add_action('wp_head','csp_output_webmaster_tools_site_verification');
+
+add_action('wp_head', 'csp_output_webmaster_tools_site_verification');
+
+
+/**
+ * Compress and delete log files
+ */
+function csp_compress_log_files() {
+    $logs = array(
+        'debug' => WP_CONTENT_DIR . '/debug.log',
+        'security' => WP_CONTENT_DIR . '/security.log',
+        '404' => WP_CONTENT_DIR . '/404.log'
+    );
+    foreach($logs as $log=>$file){
+        if ( file_exists($file) && filesize($file) > 1e+7 ){
+            $gzfile = WP_CONTENT_DIR . '/'.$log.'-'.date('Y-m-d-G\hi\ms').'.log.gz';
+            $fp = gzopen($gzfile,'w9');
+            gzwrite($fp, file_get_contents($file));
+            gzclose($fp);
+            unlink($file);
+        }
+    }
+}
+add_action('wp_dashboard_setup','csp_compress_log_files');

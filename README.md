@@ -7,6 +7,12 @@ parlez@charlesstpierre.com
 
 
 == Changelog ==
+= 1.1.5 =
+* Ré-écriture de la config
+* Securité: Ajout d’un paramètre pour appliquer le blocage des IPs
+* Compresse et archive les logs
+
+
 = 1.1.4 =
 * Ajout TinyMCE classe Clear.
 * Interface des Meta Descriptions pour les archives de contenus, l’accueil et le blogue

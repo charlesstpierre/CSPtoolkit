@@ -299,6 +299,9 @@ function csp_security_enqueue_head($hook) {
 }
 add_action('admin_enqueue_scripts', 'csp_security_enqueue_head');
 
+/**
+ * 
+ */
 function csp_search_ip_blacklist() {
     
     $response = array();
@@ -491,6 +494,11 @@ function csp_remove_from_whitelist($ip) {
     }
 }
 
+/**
+ * 
+ * @param type $ip
+ * @return boolean
+ */
 function csp_is_whitelist($ip = false) {
     $whitelist = get_option('_whitelist' . csp_get_ip($ip));
     if ($whitelist) {
@@ -549,9 +557,10 @@ function csp_authenticate($user, $username, $password) {
      * @param string           $password Password to check against the user.
      */
     $user = apply_filters('wp_authenticate_user', $user, $password);
-    if (is_wp_error($user))
+    if (is_wp_error($user)){
         return $user;
-
+    }
+    
     $_ip = csp_get_ip();
     $good_login = true;
     $blacklist = get_option('_blacklist' . $_ip);
@@ -568,7 +577,7 @@ function csp_authenticate($user, $username, $password) {
         $good_login = false;
     }
 
-    if (!$good_login) {
+    if (!$good_login && defined('CSP_DO_SECURITY') && CSP_DO_SECURITY) {
 
         // if whitelist go through
         if (csp_is_whitelist()) {
@@ -579,7 +588,6 @@ function csp_authenticate($user, $username, $password) {
 
         $wait_login_obj = get_transient('wait' . $_ip);
         $attempts = get_transient('attempt' . $_ip);
-
 
         // if blacklist full stop
         if ($blacklist) {

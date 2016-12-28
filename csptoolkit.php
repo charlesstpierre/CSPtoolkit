@@ -4,24 +4,29 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.1.4
+  Version: 1.1.5
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
   Text Domain: csp
   Domain Path: /lang
 
   Changelog
+  v.1.1.5
+  Ré-écriture de la config
+  Securité: Ajout d’un paramètre pour appliquer le blocage des IPs
+  Compresse et archive les logs
+
   v1.1.4
   Ajout TinyMCE Class clear
   Interface des Meta Descriptions pour les archives de contenus, l’accueil et le blogue.
-  
-  
+
+
   v1.1.3
   Ajout du support des descriptions pour les Pages
-  
+
   v1.1.2
   Augmentation de la taille de l’image pour le tag OG:IMAGE
-  
+
   v1.1.1
   Amélioration de TinyMCE
 
@@ -31,7 +36,7 @@
   Correction de Bug htaccess
   Amélioration de l’interface de Sécurité
   Vérification de l’adresse IP sur le tableau de bord
-  
+
   v1.0.9
   Correction Core
   Ajout du format woff2 au HTaccess
@@ -63,15 +68,17 @@
  */
 
 // Exit if accessed directly
-if (!defined('ABSPATH')) { exit; }
+if (!defined('ABSPATH')) {
+    exit;
+}
 
+define('TOOLKIT_VERSION', '1.1.4');
 define('TOOLKIT_URL', plugin_dir_url(__FILE__));
 define('TOOLKIT_CONFIG', WP_CONTENT_DIR . '/csp-config.php');
 
-
 function csp_include_files() {
     if (!file_exists(TOOLKIT_CONFIG)) {
-        file_put_contents(TOOLKIT_CONFIG, "<?php\n\n");
+        file_put_contents(TOOLKIT_CONFIG, csp_write_opening_config());
     }
     require_once TOOLKIT_CONFIG;
 
@@ -156,54 +163,55 @@ function csp_activation() {
 
 function csp_write_options_to_config() {
 
-    if (file_exists(TOOLKIT_CONFIG)) {
-        $file = implode(' ', file(TOOLKIT_CONFIG));
+    $lines = array();
+    //$lines[] = '#comment';
+    //$lines[] = 'define("CONSTANT",value);';
+
+    $lines[] = '# Security';
+    $lines[] = 'define("CSP_DO_SECURITY",' . (defined('CSP_DO_SECURITY') ? CSP_DO_SECURITY : 'true') . ');';
+    $lines[] = 'define("CSP_SECURITY_MAX_404",' . (defined('CSP_SECURITY_MAX_404') ? CSP_SECURITY_MAX_404 : '50') . ');';
+    $lines[] = 'define("CSP_SECURITY_MAX_BLACKLIST",' . (defined('CSP_SECURITY_MAX_BLACKLIST') ? CSP_SECURITY_MAX_BLACKLIST : '50') . ');';
+
+    $lines[] = '# pipe separated list of parked domains';
+    $lines[] = 'define("CSP_SITE_DOMAINS","' . (defined('CSP_SITE_DOMAINS') ? CSP_SITE_DOMAINS : $_SERVER['SERVER_NAME']) . '" );';
+
+    $lines[] = 'define("CSP_DO_RSS",' . (defined('CSP_DO_RSS') ? CSP_DO_RSS : 'true') . ');';
+    $lines[] = 'define("CSP_DO_WIDGETS",' . (defined('CSP_DO_WIDGETS') ? CSP_DO_WIDGETS : 'true') . ');';
+    $lines[] = 'define("CSP_DO_GEOTAGGING",' . (defined('CSP_DO_GEOTAGGING') ? CSP_DO_GEOTAGGING : 'true') . ');';
+    $lines[] = 'define("CSP_DO_SOCIALMETAS",' . (defined('CSP_DO_SOCIALMETAS') ? CSP_DO_SOCIALMETAS : 'true') . ');';
+
+    $lines[] = '# Developper’s email: Used to confirm identity of developper.';
+    $lines[] = 'define("DEVELOPPER_EMAIL","' . (defined('DEVELOPPER_EMAIL') ? DEVELOPPER_EMAIL : 'parlez@charlesstpierre.com') . '");';
+
+    $lines[] = '# Twitter account name: Define twitter account name for the site, or site owner';
+    if (defined('CSP_twittername')) {
+        $lines[] = 'define("CSP_twittername","' . CSP_twittername . '");';
     } else {
-        $file = '';
-        file_put_contents(TOOLKIT_CONFIG, csp_write_opening_config() );
-    }
-    if (false === strpos($file, '# BEGIN ConfigurationCSPToolkit')) {
-
-        $lines = array();
-        //$lines[] = '#comment';
-        //$lines[] = 'define("CONSTANT",value);';
-
-
-        $lines[] = '# Security';
-        $lines[] = 'define("CSP_SECURITY_MAX_404",50);';
-        $lines[] = 'define("CSP_SECURITY_MAX_BLACKLIST",50);';
-        $lines[] = '# pipe separated list of parked domains';
-        $server_name = $_SERVER['SERVER_NAME'];
-        $lines[] = 'define("CSP_SITE_DOMAINS","' . $server_name . '" );';
-
-        $lines[] = 'define("CSP_DO_RSS",true);';
-        $lines[] = 'define("CSP_DO_WIDGETS",true);';
-        $lines[] = 'define("CSP_DO_GEOTAGGING",true);';
-        $lines[] = 'define("CSP_DO_SOCIALMETAS",true);';
-
-        $lines[] = '# Developper’s email: Used to confirm identity of developper.';
-        $lines[] = 'define("DEVELOPPER_EMAIL","parlez@charlesstpierre.com");';
-        $lines[] = '# Twitter account name: Define twitter account name for the site, or site owner';
         $lines[] = '//define("CSP_twittername","@something");';
-        $lines[] = '# Google Site Verification: Code for Google Webmaster Tools';
-        $lines[] = 'define("GOOGLE_SITE_VERIFICATION_CODE","WA3YXZIjfRgomaqTvXgvRBs0Q7OTwolSKU0pF2R8UH8");';
-        $lines[] = '# Microsoft ownership verification: Code for Bing Webmaster Tools';
-        $lines[] = '//define("MICROSOFT_OWNERSHIP_VERIFICATION_CODE","code");';
-
-
-        $lines[] = '# Geocalisation: http://www.gps-coordinates.net for coordinates (2015-07)';
-        $lines[] = 'define("CSP_MAIN_LAT","45.5");';
-        $lines[] = 'define("CSP_MAIN_LONG","-73.6");';
-        $lines[] = 'define("CSP_MAIN_PLACENAME","Montréal, Québec, Canada");';
-        $lines[] = 'define("CSP_MAIN_REGION","ca-qc");';
-
-        $lines[] = '# Pre-upload image processing: maximum size and quality';
-        $lines[] = 'define("CSP_IMAGE_MAX_WIDTH",3840);';
-        $lines[] = 'define("CSP_IMAGE_MAX_HEIGHT",2160);';
-        $lines[] = 'define("CSP_IMAGE_QUALITY",90);';
-
-        insert_with_markers(TOOLKIT_CONFIG, 'ConfigurationCSPToolkit', $lines);
     }
+
+    $lines[] = '# Google Site Verification: Code for Google Webmaster Tools';
+    $lines[] = 'define("GOOGLE_SITE_VERIFICATION_CODE","' . (defined('GOOGLE_SITE_VERIFICATION_CODE') ? GOOGLE_SITE_VERIFICATION_CODE : 'WA3YXZIjfRgomaqTvXgvRBs0Q7OTwolSKU0pF2R8UH8') . '");';
+
+    $lines[] = '# Microsoft ownership verification: Code for Bing Webmaster Tools';
+    if (defined('MICROSOFT_OWNERSHIP_VERIFICATION_CODE')) {
+        $lines[] = 'define("MICROSOFT_OWNERSHIP_VERIFICATION_CODE","' . MICROSOFT_OWNERSHIP_VERIFICATION_CODE . '");';
+    } else {
+        $lines[] = '//define("MICROSOFT_OWNERSHIP_VERIFICATION_CODE","code");';
+    }
+
+    $lines[] = '# Geocalisation: http://www.gps-coordinates.net for coordinates (2015-07)';
+    $lines[] = 'define("CSP_MAIN_LAT","' . (defined('CSP_MAIN_LAT') ? CSP_MAIN_LAT : '45.5') . '");';
+    $lines[] = 'define("CSP_MAIN_LONG","' . (defined('CSP_MAIN_LONG') ? CSP_MAIN_LONG : '-73.6') . '");';
+    $lines[] = 'define("CSP_MAIN_PLACENAME","' . (defined('CSP_MAIN_PLACENAME') ? CSP_MAIN_PLACENAME : 'Montréal, Québec, Canada') . '");';
+    $lines[] = 'define("CSP_MAIN_REGION","' . (defined('CSP_MAIN_REGION') ? CSP_MAIN_REGION : 'ca-qc') . '");';
+
+    $lines[] = '# Pre-upload image processing: maximum size and quality';
+    $lines[] = 'define("CSP_IMAGE_MAX_WIDTH",' . (defined('CSP_IMAGE_MAX_WIDTH') ? CSP_IMAGE_MAX_WIDTH : '3840') . ');';
+    $lines[] = 'define("CSP_IMAGE_MAX_HEIGHT",' . (defined('CSP_IMAGE_MAX_HEIGHT') ? CSP_IMAGE_MAX_HEIGHT : '2160') . ');';
+    $lines[] = 'define("CSP_IMAGE_QUALITY",' . (defined('CSP_IMAGE_QUALITY') ? CSP_IMAGE_QUALITY : '90') . ');';
+
+    insert_with_markers(TOOLKIT_CONFIG, 'ConfigurationCSPToolkit', $lines);
 }
 
 function csp_write_opening_config() {
@@ -212,3 +220,16 @@ function csp_write_opening_config() {
 }
 
 register_activation_hook(__FILE__, 'csp_activation');
+
+
+
+/**
+ * CSP Update Config on Update
+ */
+function csp_update_config() {
+    if ( 1===version_compare(TOOLKIT_VERSION, get_option('csp_toolkit_version')) ){
+        csp_write_options_to_config();
+        update_option('csp_toolkit_version',TOOLKIT_VERSION,true);
+    }
+}
+add_action('upgrader_process_complete','csp_update_config');
