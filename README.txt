@@ -12,7 +12,7 @@ parlez@charlesstpierre.com
 
 == Changelog ==
 
-= v.1.1.8 =
+= 1.1.8 =
 * Retrait des éditeurs de code, paramètrable
 * Refonte code de securite.php
 * Nouveau système de mise à jour
