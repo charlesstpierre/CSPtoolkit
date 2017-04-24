@@ -1,15 +1,21 @@
 === CSP Toolkit ===
+Requires at least: 4.0
+Tested up to: 4.7
+Stable tag: 4.7
+
+== Description ==
 
 Outils généraux pour les sites WordPress gérés et maintenus par Charles St-Pierre.
 
 Auteur: Charles St-Pierre
 parlez@charlesstpierre.com
 
-
 == Changelog ==
+
 = v.1.1.8 =
 * Retrait des éditeurs de code, paramètrable
 * Refonte code de securite.php
+* Nouveau système de mise à jour
 
 = 1.1.7 =
 * Correction de compatibilité avec Relevanssi

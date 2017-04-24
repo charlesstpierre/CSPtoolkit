@@ -14,7 +14,8 @@
   v.1.1.8
   Retrait des éditeurs de code, paramètrable
   Refonte code de securite.php
-  
+  Nouveau système de mise à jour
+
   v.1.1.7
   Correction de compatibilité avec Relevanssi
   Ajout de Related Posts (query et widget)
@@ -25,7 +26,7 @@
   v.1.1.6
   Widget Articles récents, ajout de filtre de pattern
   Amélioration de la sécurité
- 
+
   v.1.1.5
   Ré-écriture de la config
   Securité: Ajout d’un paramètre pour appliquer le blocage des IPs
@@ -146,21 +147,10 @@ function cspplugin_init() {
 
     //activating auto update from github
     if (is_admin()) {
-        include 'includes/GitHub-Plugin-Updater/updater.php';
-        $config = array(
-            'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
-            'proper_folder_name' => 'csptoolkit', // this is the name of the folder your plugin lives in
-            'api_url' => 'https://api.github.com/repos/charlesstpierre/csptoolkit', // the github API url of your github repo
-            'raw_url' => 'https://raw.github.com/charlesstpierre/csptoolkit/master', // the github raw url of your github repo
-            'github_url' => 'https://github.com/charlesstpierre/csptoolkit', // the github url of your github repo
-            'zip_url' => 'https://github.com/charlesstpierre/csptoolkit/zipball/master', // the zip url of the github repo
-            'sslverify' => true, // wether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
-            'requires' => '4.0', // which version of WordPress does your plugin require?
-            'tested' => '4.6', // which version of WordPress is your plugin tested up to?
-            'readme' => 'README.md', // which file to use as the readme for the version number
-            'access_token' => '', // Access private repositories by authorizing under Appearance > Github Updates when this example plugin is installed
+        require 'includes/plugin-update-checker/plugin-update-checker.php';
+        $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+                        'https://github.com/charlesstpierre/csptoolkit/', __FILE__, 'csptoolkit'
         );
-        new WP_GitHub_Updater($config);
     }
 }
 
@@ -195,7 +185,7 @@ function csp_write_options_to_config() {
     //$lines[] = 'define("CONSTANT",value);';
 
     $lines[] = '# Security';
-    
+
     $lines[] = 'if (!defined(\'DISALLOW_FILE_EDIT\')):';
     $lines[] = 'define("DISALLOW_FILE_EDIT",' . (defined('DISALLOW_FILE_EDIT') ? bool2string(DISALLOW_FILE_EDIT) : 'true') . ');';
     $lines[] = 'endif;';
@@ -253,22 +243,18 @@ function csp_write_opening_config() {
 
 register_activation_hook(__FILE__, 'csp_activation');
 
-
-
 /**
  * CSP Update Config on Update
  */
 function csp_update_config() {
-    if ( 1===version_compare(TOOLKIT_VERSION, get_option('csp_toolkit_version')) ){
+    if (1 === version_compare(TOOLKIT_VERSION, get_option('csp_toolkit_version'))) {
         csp_write_options_to_config();
-        update_option('csp_toolkit_version',TOOLKIT_VERSION,true);
+        update_option('csp_toolkit_version', TOOLKIT_VERSION, true);
     }
 }
-add_action('upgrader_process_complete','csp_update_config');
 
-
-
+add_action('upgrader_process_complete', 'csp_update_config');
 
 function bool2string($val) {
-    return var_export( (bool)$val , true);
+    return var_export((bool) $val, true);
 }
