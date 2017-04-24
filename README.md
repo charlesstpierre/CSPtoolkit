@@ -7,11 +7,25 @@ parlez@charlesstpierre.com
 
 
 == Changelog ==
+= v.1.1.8 =
+* Retrait des éditeurs de code, paramètrable
+* Refonte code de securite.php
+
+= 1.1.7 =
+* Correction de compatibilité avec Relevanssi
+* Ajout de Related Posts (query et widget)
+* Désactivation des Emojis
+* Amélioration de compatibilité Messages Système
+* Mise à jour compatibilité avec Google XML Sitemap
+
+= 1.1.6 =
+* Widget Articles récents, ajout de filtre de pattern
+* Amélioration de la sécurité
+
 = 1.1.5 =
 * Ré-écriture de la config
 * Securité: Ajout d’un paramètre pour appliquer le blocage des IPs
 * Compresse et archive les logs
-
 
 = 1.1.4 =
 * Ajout TinyMCE classe Clear.

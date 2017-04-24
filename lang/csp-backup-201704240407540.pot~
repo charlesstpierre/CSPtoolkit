@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support CharlesStPierre.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-24 04:07+0000\n"
+"POT-Creation-Date: 2017-04-24 04:06+0000\n"
 "POT-Revision-Date: Thu Jul 07 2016 11:07:12 GMT-0400 (EDT)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -498,7 +498,7 @@ msgstr ""
 
 #: includes/security.php:681 includes/security.php:681
 #, php-format
-msgid "Fichier «%s» manquant."
+msgid "Fichier “%s” manquant."
 msgstr ""
 
 #: includes/system-messages.php:16

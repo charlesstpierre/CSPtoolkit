@@ -5,8 +5,9 @@
  * Functions and tasks to make WP more secure
  */
 // Exit if accessed directly
-if (!defined('ABSPATH')) { exit; }
-
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 /**
  * Basic security actions and filters
@@ -34,6 +35,7 @@ function csp_security() {
         remove_action('wp_head', array($GLOBALS['sitepress'], 'meta_generator_tag'), 10);
     }
 }
+
 add_action('plugins_loaded', 'csp_security');
 
 /**
@@ -157,11 +159,9 @@ function csp_setup_security_htaccess() {
     $lines[] = 'Order deny,allow';
     $lines[] = 'Deny from all';
     // allowed file types
-    $allowed_mime_types = get_allowed_mime_types();
-    $allowed_file_types = array_merge(
-            array_keys($allowed_mime_types), array('svg', 'woff', 'woff2', 'ttf', 'eot', 'map')// fonts
-    );
-    $lines[] = '<Files ~ ".(' . implode('|', $allowed_file_types) . ')$">';
+    $file_types = csp_allowed_mime_types();
+
+    $lines[] = '<Files ~ ".(' . implode('|', $file_types) . ')$">';
     $lines[] = 'Allow from all';
     $lines[] = '</Files>';
     //$lines[] = '';
@@ -192,6 +192,21 @@ function csp_setup_security_htaccess() {
 
 
     // the END!
+}
+
+function csp_allowed_mime_types() {
+    // allowed file types
+    $allowed_mime_types = array_keys(get_allowed_mime_types());
+    $fonts_types = array('svg', 'woff', 'woff2', 'ttf', 'eot');
+
+    /**
+     * .map sass complement information
+     * .xsl XML stylesheet
+     */
+    $other_types = array('map', 'xsl');
+
+    $file_types = array_merge($allowed_mime_types, $fonts_types, $other_types);
+    return $file_types;
 }
 
 /**
@@ -246,7 +261,7 @@ function csp_update_nicename_from_nickname($user_id) {
     global $wpdb;
     $user = get_user_by('id', $user_id);
 
-    if ($user->user_nicename !== $user->user_login) {
+    if (strtolower($user->user_nicename) !== strtolower($user->user_login)) {
         // nicename is different
         return;
     } elseif ($user->nickname !== $user->user_login) {
@@ -297,35 +312,36 @@ function csp_security_enqueue_head($hook) {
         wp_enqueue_style('csp-security', TOOLKIT_URL . 'css/admin-security.css');
     }
 }
+
 add_action('admin_enqueue_scripts', 'csp_security_enqueue_head');
 
 /**
  * 
  */
 function csp_search_ip_blacklist() {
-    
+
     $response = array();
-    
+
     $ip = filter_var($_POST['ip'], FILTER_VALIDATE_IP);
-    if (empty($ip)){
+    if (empty($ip)) {
         $response['code'] = 'invalid';
-        $response['message'] = __('L’IP est invalide.','csp');
-    }else{
+        $response['message'] = __('L’IP est invalide.', 'csp');
+    } else {
         $blacklist = get_option('_blacklist' . csp_get_ip($ip));
-        if ( false === $blacklist){
+        if (false === $blacklist) {
             $response['code'] = 'missing';
-            $response['message'] = __('L’IP n’est pas sur la liste noir.','csp');
-        }else{
+            $response['message'] = __('L’IP n’est pas sur la liste noir.', 'csp');
+        } else {
             $response['code'] = 'found';
-            $response['message'] = __('L’IP est présent sur la liste noir.','csp');
+            $response['message'] = __('L’IP est présent sur la liste noir.', 'csp');
         }
     }
     $return = json_encode($response);
-    
+
     wp_die($return);
 }
-add_action('wp_ajax_search_ip_blacklist','csp_search_ip_blacklist');
 
+add_action('wp_ajax_search_ip_blacklist', 'csp_search_ip_blacklist');
 
 /**
  * Output Security interface
@@ -337,7 +353,7 @@ function csp_output_security_interface() {
 
     // submitted form
     if (isset($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], 'csp-security-interface')) {
-        
+
         if (!isset($_POST['what'])) {
             $_POST['what'] = false;
         }
@@ -363,7 +379,7 @@ function csp_output_security_interface() {
                 break;
             case 'delete_ip_blacklist':
                 if ($the_ip = filter_var($_POST['search_ip_blacklist'], FILTER_VALIDATE_IP)) {
-                    delete_option( '_blacklist' . csp_get_ip($the_ip));
+                    delete_option('_blacklist' . csp_get_ip($the_ip));
                     csp_gandalf_protocol_remove_ip($the_ip);
                 }
                 break;
@@ -406,7 +422,7 @@ function csp_output_security_interface() {
                             <p><?php _e('Les adresses IP de la liste blanche ne subiront aucune vérification de sécurité.', 'csp') ?></p>
                             <p>
                                 <input type="text" placeholder="###.###.###.###" name="add_ip_whitelist" />
-                                <button type="submit" name="what" value="add_ip_whitelist" class="button-primary"><?php _e('Ajouter','csp'); ?></button>
+                                <button type="submit" name="what" value="add_ip_whitelist" class="button-primary"><?php _e('Ajouter', 'csp'); ?></button>
                             </p>
                             <ul class="scroll-list">
                                 <?php if (empty($whitelist)): ?>
@@ -425,19 +441,19 @@ function csp_output_security_interface() {
                         <th scope="row"><?php _e('Liste noire', 'csp') ?></th>
                         <td>
                             <p><?php _e('Les adresses IP de la liste noire ne peuvent se connecter à l’admin et son passible d’un blocage complet à l’accès du site.', 'csp') ?></p>
-                            <p><em><?php printf( __('Il y a présentement %s adresses IP sur la liste noir.','csp'), '<b>'.$blacklist_count.'</b>') ?></em></p>
+                            <p><em><?php printf(__('Il y a présentement %s adresses IP sur la liste noir.', 'csp'), '<b>' . $blacklist_count . '</b>') ?></em></p>
                             <p>
                                 <input type="text" placeholder="###.###.###.###" name="search_ip_blacklist" id="search_ip_blacklist" />
-                                <button type="button" class="button-secondary" name="search_blacklist" value="search_blacklist" id="search_blacklist" ><?php _e('Chercher dans la liste noir','csp') ?></button>
+                                <button type="button" class="button-secondary" name="search_blacklist" value="search_blacklist" id="search_blacklist" ><?php _e('Chercher dans la liste noir', 'csp') ?></button>
                                 <span id="search_blacklist_code" class="dashicons"></span><i id="search_blacklist_reponse"></i>
-                                <button type="submit" class="button-primary hide-if-js" name="what" value="delete_ip_blacklist" id="delete_search_blacklist"><?php _e('Retirer de la liste noir','csp') ?></button>
+                                <button type="submit" class="button-primary hide-if-js" name="what" value="delete_ip_blacklist" id="delete_search_blacklist"><?php _e('Retirer de la liste noir', 'csp') ?></button>
                             </p>
-                            
-                            
-                            
+
+
+
                             <p>
                                 <input type="text" placeholder="###.###.###.###" name="add_ip_blacklist" />
-                                <button type="submit" name="what" value="add_ip_blacklist"  class="button-primary"><?php _e('Ajouter','csp'); ?></button>
+                                <button type="submit" name="what" value="add_ip_blacklist"  class="button-primary"><?php _e('Ajouter', 'csp'); ?></button>
                             </p>
                         </td>
                     </tr>
@@ -510,166 +526,138 @@ function csp_is_whitelist($ip = false) {
 /**
  * Add filters and actions only if IP is not whitelisted
  */
-if (false === csp_is_whitelist()) {
-    remove_filter('authenticate', 'wp_authenticate_username_password', 20);
-    add_filter('authenticate', 'csp_authenticate', 10, 3);
+if (CSP_DO_SECURITY && !csp_is_whitelist()) {
+    add_filter('authenticate', 'csp_authenticate_limit_access', 30, 3);
     add_action('wp', 'csp_security_404', 100);
 }
 
 /**
- * Authenticate user
  * 
- * On authenticate, pass through verification whitelist, blacklist, time delay and limited attempts
+ * Authenticate limit access
  * 
- * @since 1.0.0
- * @param null|WP_User $user
- * @param string $username
- * @param string $password
- * @return WP_User|WP_Error
+ * Run after WP official authentification procedure. 
+ * If IP is blacklisted, blocs authentification whatever the result was.
+ * Else, if authentification has failed, go through the attemps/wait/blacklist procedure.
+ *  
+ * @since 1.1.8
+ * @param WP_User|WP_Error|null $user     WP_User or WP_Error object from a previous callback. Default null.
+ * @param string                $username Username for authentication.
+ * @param string                $password Password for authentication.
+ * @return WP_User|WP_Error WP_User on success, WP_Error on failure.
  */
-function csp_authenticate($user, $username, $password) {
-    if ($user instanceof WP_User) {
+function csp_authenticate_limit_access($user, $username, $password) {
+
+    // if not trying to login pass through
+    if (empty($username) && empty($password)) {
         return $user;
     }
 
-    if (empty($username) || empty($password)) {
-        if (is_wp_error($user))
-            return $user;
-
-        $error = new WP_Error();
-
-        if (empty($username))
-            $error->add('empty_username', __('<strong>Erreur</strong>: L’identifiant est vide.'));
-
-        if (empty($password))
-            $error->add('empty_password', __('<strong>Erreur</strong>: Le mot de passe est vide.'));
-
-        return $error;
-    }
-
-    /**
-     * Filter whether the given user can be authenticated with the provided $password.
-     *
-     * @since 1.0.1
-     *
-     * @param WP_User|WP_Error $user     WP_User or WP_Error object if a previous
-     *                                   callback failed authentication.
-     * @param string           $password Password to check against the user.
-     */
-    $user = apply_filters('wp_authenticate_user', $user, $password);
-    if (is_wp_error($user)){
-        return $user;
-    }
-    
     $_ip = csp_get_ip();
-    $good_login = true;
+
+    // blacklist
     $blacklist = get_option('_blacklist' . $_ip);
-
-    // username exists?
-    $user = get_user_by('login', $username);
     if ($blacklist) {
-        $good_login = false;
-    } elseif ($user === false) {
-        $good_login = false;
-    }
-    // password correct?
-    elseif (!wp_check_password($password, $user->user_pass, $user->ID)) {
-        $good_login = false;
-    }
 
-    if (!$good_login && defined('CSP_DO_SECURITY') && CSP_DO_SECURITY) {
+        $blacklist++;
+        update_option('_blacklist' . $_ip, $blacklist);
 
-        // if whitelist go through
-        if (csp_is_whitelist()) {
-            return $user;
+        if (CSP_SECURITY_MAX_BLACKLIST < $blacklist) {
+            csp_gandalf_protocol_add_ip();
         }
+        return new WP_Error('blacklisted', __('Vous êtes sur la liste noir. Contactez l’administrateur du site.', 'csp'));
+    }
 
-        $error = new WP_Error();
+    // wait
+    $wait_login_obj = get_transient('wait' . $_ip);
 
-        $wait_login_obj = get_transient('wait' . $_ip);
-        $attempts = get_transient('attempt' . $_ip);
+    $mss_bad_cred = __('Mauvais identifiant ou mot de passe.', 'csp');
+    $mss_attemps = array(
+        __('Il vous reste 4 chances sur 5 de vous connecter. ', 'csp'),
+        __('Il vous reste 3 chances sur 5 de vous connecter. <a href="%1$s">Mot de passe oublié?</a>', 'csp'),
+        __('Il ne vous reste que 2 chances sur 5 de vous connecter. Nous vous suggerons fortement d’utiliser la fonction <a href="%1$s">Mot de passe oublié?</a>.', 'csp'),
+        __('Il ne vous reste qu’une seule chance de vous connecter. Vous devrez attendre 5 minutes avant de réessayer. <a href="%1$s">Réinitialiser votre mot de passe.</a>', 'csp'),
+        __('Vous avez atteint la limite de tentative de connexion. Vous devez maintenant attendre 5 minutes avant de réessayer. <a href="%1$s">Réinitialiser votre mot de passe.</a>', 'csp')
+    );
+    $mss_delay = __('Vous deviez attendre jusqu’à %1$s avant de tenter une connexion. Vous devez maintenant attendre %2$s minutes (jusqu’à %3$s) avant de tenter une connexion.', 'csp');
+    $mss_blacklist = __('Vous deviez attendre jusqu’à %s avant de tenter une connexion. Vous êtes maintenant sur la liste noir. Contactez l’administrateur du site.', 'csp');
 
-        // if blacklist full stop
-        if ($blacklist) {
-            $blacklist++;
-            $test_update = update_option('_blacklist' . $_ip, $blacklist);
+    if ($wait_login_obj !== false) {
 
-            if (CSP_SECURITY_MAX_BLACKLIST < $blacklist) {
-                csp_gandalf_protocol_add_ip($_SERVER['REMOTE_ADDR']);
-            }
-            $error->add('blacklisted', __('Vous êtes sur la liste noir. Contactez l’administrateur du site.', 'csp'));
-        }
+        // if it exists, it means that user should not have tried to log in, it was too soon.
+        $time_to_login = $wait_login_obj['time'];
 
-        // wait delay
-        elseif ($wait_login_obj !== false) {
-
-            // if it exists, it means that user should not have tried to log in, it was too soon.
-            $previous_delay = $wait_login_obj['delay'];
-            $time_to_login = $wait_login_obj['time'];
-
-            if ($previous_delay == 5) {
+        switch ($wait_login_obj['delay']) {
+            case 5:
                 $new_delay = 15;
-                $new_wait_login_obj = array(
-                    'delay' => $new_delay,
-                    'time' => $time_to_login + ( $new_delay * 60 )
-                );
-                set_transient('wait' . $_ip, $new_wait_login_obj, $new_delay * 60);
-                $error->add('wait_15', sprintf(
-                                __('<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez attendre jusqu’à %s avant de tenter une connexion. Vous devez maintenant 15 minutes (jusqu’à %s) avant de tenter une connexion.', 'csp'), date_i18n(_x('H\hi', 'Heure et minute', 'csp'), $time_to_login), date_i18n(_x('H\hi', 'Heure et minute', 'csp'), $time_to_login + ( $new_delay * 60 ))
-                ));
-            } elseif ($previous_delay == 15) {
+                break;
+            case 15:
                 $new_delay = 60;
-                $new_wait_login_obj = array(
-                    'delay' => $new_delay,
-                    'time' => $time_to_login + ( $new_delay * 60 )
-                );
-                set_transient('wait' . $_ip, $new_wait_login_obj, $new_delay * 60);
-                $error->add('wait_60', sprintf(
-                                __('<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez attendre jusqu’à %s avant de tenter une connexion. Vous devez maintenant 60 minutes (jusqu’à %s) avant de tenter une connexion.', 'csp'), date_i18n(_x('H\hi', 'Heure et minute', 'csp'), $time_to_login), date_i18n(_x('H\hi', 'Heure et minute', 'csp'), $time_to_login + ( $new_delay * 60 ))
-                ));
-            } elseif ($previous_delay == 60) {
+                break;
+            case 60:
                 delete_transient('wait' . $_ip);
                 // blacklist the son of a gun
                 update_option('_blacklist' . $_ip, 1);
-                $error->add('new_blacklist', sprintf(
-                                __('<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous deviez attendre jusqu’à %s avant de tenter une connexion. Vous êtes maintenant sur la liste noir. Contactez l’administrateur du site.', 'csp'), date_i18n(_x('H\hi', 'Heure et minute', 'csp'), $time_to_login)
-                ));
-            }
-        }
-
-        // if attemps show it
-        elseif ($attempts !== false) {
-            $attempt_messages = array(
-                1 => __('<strong>Mauvais identifiant ou mot de passe.</strong><br />Il vous reste 3 chances sur 5 de vous connecter. <a href="%1$s">Mot de passe oublié ?</a>', 'csp'),
-                2 => __('<strong>Mauvais identifiant ou mot de passe.</strong><br />Il ne vous reste que 2 chances sur 5 de vous connecter. Nous vous suggerons fortement d’utiliser la fonction <a href="%1$s">Mot de passe oublié ?</a>.', 'csp'),
-                3 => __('<strong>Mauvais identifiant ou mot de passe.</strong><br />Il ne vous reste qu’une seule chance de vous connecter. Vous devrez attendre 5 minutes avant de réessayer. <a href="%1$s">Mot de passe oublié ?</a>', 'csp'),
-                4 => __('<strong>Mauvais identifiant ou mot de passe.</strong><br />Vous avez atteint la limite de tentative de connexion. Vous devez maintenant attendre 5 minutes avant de réessayer. <a href="%1$s">Mot de passe oublié ?</a>', 'csp')
-            );
-            if ($attempts == 4) {
-
-                $new_wait_login_obj = array(
-                    'delay' => 5,
-                    'time' => time() + ( 5 * 60 )
+                csp_security_log('login', 'new_blacklist');
+                return new WP_Error(
+                        'blacklisted', '<strong>' . $mss_bad_cred . '</strong><br />'
+                        . sprintf(
+                                $mss_blacklist, date_i18n(_x('H\hi', 'Heure et minute', 'csp'), $time_to_login)
+                        )
                 );
-
-                delete_transient('attempt' . $_ip);
-                set_transient('wait' . $_ip, $new_wait_login_obj, 5 * 60);
-            } else {
-                set_transient('attempt' . $_ip, $attempts + 1, 60 * 60);
-            }
-            $error->add(
-                    'attempt', sprintf($attempt_messages[$attempts], wp_lostpassword_url()));
-        } else {
-            // first login error
-            set_transient('attempt' . $_ip, 1, 60 * 60);
-            $error->add(
-                    'attempt', sprintf(__('<strong>Mauvais identifiant ou mot de passe.</strong><br />Il vous reste 4 chances sur 5 de vous connecter. <a href="%1$s">Mot de passe oublié ?</a>', 'csp'), wp_lostpassword_url()));
         }
-        csp_security_log('login', $error->get_error_codes());
-        return $error;
+        $new_time_to_login = $time_to_login + ( $new_delay * MINUTE_IN_SECONDS );
+
+        set_transient('wait' . $_ip, array('delay' => $new_delay, 'time' => $new_time_to_login), $new_delay * MINUTE_IN_SECONDS);
+        csp_security_log('login', 'wait_' . $new_delay);
+        return new WP_Error(
+                'wait_' . $new_delay, '<strong>' . $mss_bad_cred . '</strong><br />'
+                . sprintf(
+                        $mss_delay, date_i18n(_x('H\hi', 'Heure et minute', 'csp'), $time_to_login), $new_delay, date_i18n(_x('H\hi', 'Heure et minute', 'csp'), $new_time_to_login)
+                )
+        );
     }
-    return $user;
+
+    // if already a WP_User, signon was a success, passthrough
+    if ($user instanceof WP_User) {
+        // delete transients
+        delete_transient('attempt' . $_ip);
+        delete_transient('wait' . $_ip);
+        return $user;
+    }
+    
+    // the login failed for some reason, start the Attempts procedure
+    $attempts = intval( get_transient('attempt' . $_ip) );
+    
+    if ($attempts === 4) {
+        delete_transient('attempt' . $_ip);
+        set_transient('wait' . $_ip, array('delay' => 5, 'time' => time() + ( 5 * MINUTE_IN_SECONDS )), 5 * MINUTE_IN_SECONDS);
+    } else {
+        set_transient('attempt' . $_ip, $attempts + 1, HOUR_IN_SECONDS);
+    }
+
+    csp_security_log('login', 'attempt ' . $attempts);
+    return new WP_Error(
+            'attempt', '<strong>' . $mss_bad_cred . '</strong><br />'
+            . sprintf(
+                    $mss_attemps[$attempts], wp_lostpassword_url()
+            )
+    );
 }
+
+/**
+ * Add CSP error messages to login Shake
+ * 
+ * @since 1.1.8
+ * @param array $shake_error_codes
+ * @return array
+ */
+function csp_add_shake_error_codes($shake_error_codes) {
+    $shake_error_codes = array_merge($shake_error_codes,array('wait_5','wait_15','wait_60','blacklisted','attempt'));
+    return $shake_error_codes;
+}
+add_filter('shake_error_codes','csp_add_shake_error_codes');
+
+
 
 /**
  * security 404
@@ -682,26 +670,27 @@ function csp_security_404() {
 
     if (csp_is_whitelist()) {
         return;
-    } elseif (is_main_query() && is_404()) {
+    }
+
+    if (is_main_query() && is_404()) {
 
         //not for media
         $uri = $_SERVER['REQUEST_URI'];
-        if (strpos($uri, '.jpg') || strpos($uri, '.gif') || strpos($uri, '.png') || strpos($uri, '.jpeg')) {
-            return;
+        $allowed_mime_types = implode('|',csp_allowed_mime_types());
+        if ( preg_match('/^.*\.('.$allowed_mime_types.')$/i',$uri)) {
+            wp_die( sprintf( __('Fichier «%s» manquant.','csp'), $uri), sprintf( __('Fichier «%s» manquant.','csp'), $uri), array('response'=>404));
         }
 
         // not for legitimate pages
         global $wpdb;
         // by id?
-        $pattern = '/(\?|&)p=(\d+)/';
-        if (preg_match($pattern, $uri, $matches)) {
+        if (preg_match('/(\?|&)p=(\d+)/', $uri, $matches)) {
             if (false !== get_post_status(intval($matches[2]))) {
                 return;
             }
         }
         // by slug?
-        $pattern = '/\/([\w-%]+)\/$/';
-        if (preg_match($pattern, $uri, $matches)) {
+        if (preg_match('/\/([\w-%]+)\/$/', $uri, $matches)) {
             $post_name = esc_sql($matches[1]);
             $sql = "SELECT ID, post_name, post_status, post_type
                     FROM $wpdb->posts
@@ -722,7 +711,7 @@ function csp_security_404() {
             $blacklist++;
             update_option('_blacklist' . $_ip, $blacklist);
             if (CSP_SECURITY_MAX_BLACKLIST < $blacklist) {
-                csp_gandalf_protocol_add_ip($_SERVER['REMOTE_ADDR']);
+                csp_gandalf_protocol_add_ip();
             }
         } elseif ($four_oh_four > CSP_SECURITY_MAX_404) {
             //blacklist
@@ -749,8 +738,9 @@ function csp_security_404() {
  */
 function csp_gandalf_protocol_add_ip($ip = false) {
 
-    if (!$ip)
-        return false;
+    if (!$ip) {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
 
     // add the ip to gandalf queue option
     $queue = get_option('csp_gandalf_queue', array());
@@ -915,13 +905,3 @@ function csp_security_log($log, $data = false) {
     error_log(implode(' ', $array_log) . "\n", 3, $security_log);
     return true;
 }
-
-/**
- * Temporary and utility function to run manual calls to functions on admin footer hook
- */
-function do_something() {
-    //csp_gandalf_protocol_add_ip();
-    //csp_gandalf_protocol_remove_ip( '200.200.200.200' );
-}
-
-add_action('admin_footer', 'do_something');

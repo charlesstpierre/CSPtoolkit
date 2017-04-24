@@ -4,13 +4,28 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.1.5
+  Version: 1.1.8
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
   Text Domain: csp
   Domain Path: /lang
 
   Changelog
+  v.1.1.8
+  Retrait des éditeurs de code, paramètrable
+  Refonte code de securite.php
+  
+  v.1.1.7
+  Correction de compatibilité avec Relevanssi
+  Ajout de Related Posts (query et widget)
+  Désactivation des Emojis
+  Amélioration de compatibilité Messages Système
+  Mise à jour compatibilité avec Google XML Sitemap
+
+  v.1.1.6
+  Widget Articles récents, ajout de filtre de pattern
+  Amélioration de la sécurité
+ 
   v.1.1.5
   Ré-écriture de la config
   Securité: Ajout d’un paramètre pour appliquer le blocage des IPs
@@ -89,13 +104,15 @@ function csp_include_files() {
     require_once 'includes/theme_helper.class.php';
 
     require_once 'includes/tinymce.php';
-    require_once 'includes/welcomeemail.php';
+    require_once 'includes/system-messages.php';
     require_once 'includes/dashboardwidget.php';
     require_once 'includes/emailshield.php';
     require_once 'includes/upload-processor.php';
 
     require_once 'includes/menu-items.php';
     require_once 'includes/wpml-compatibility.php';
+
+    require_once 'includes/related-posts.php';
 
     if (defined('CSP_DO_SOCIALMETAS') && CSP_DO_SOCIALMETAS) {
         require_once 'includes/socialmetas.php';
@@ -105,6 +122,9 @@ function csp_include_files() {
     }
     if (defined('CSP_DO_WIDGETS') && CSP_DO_WIDGETS) {
         require_once 'includes/better-widgets.php';
+    }
+    if (defined('CSP_DISABLE_EMOJIS') && CSP_DISABLE_EMOJIS) {
+        require_once 'includes/disable-emojis.php';
     }
 }
 
@@ -161,6 +181,13 @@ function csp_activation() {
     csp_delete_insecure_files();
 }
 
+/**
+ * Write options to configuration file
+ * 
+ * @since 1.0.0
+ * @update 1.1.5 Better writing of the config
+ * @update 1.1.8 Add OPTION DISALLOW_FILE_EDIT
+ */
 function csp_write_options_to_config() {
 
     $lines = array();
@@ -168,17 +195,22 @@ function csp_write_options_to_config() {
     //$lines[] = 'define("CONSTANT",value);';
 
     $lines[] = '# Security';
-    $lines[] = 'define("CSP_DO_SECURITY",' . (defined('CSP_DO_SECURITY') ? CSP_DO_SECURITY : 'true') . ');';
+    
+    $lines[] = 'if (!defined(\'DISALLOW_FILE_EDIT\')):';
+    $lines[] = 'define("DISALLOW_FILE_EDIT",' . (defined('DISALLOW_FILE_EDIT') ? bool2string(DISALLOW_FILE_EDIT) : 'true') . ');';
+    $lines[] = 'endif;';
+    $lines[] = 'define("CSP_DO_SECURITY",' . (defined('CSP_DO_SECURITY') ? bool2string(CSP_DO_SECURITY) : 'true') . ');';
     $lines[] = 'define("CSP_SECURITY_MAX_404",' . (defined('CSP_SECURITY_MAX_404') ? CSP_SECURITY_MAX_404 : '50') . ');';
     $lines[] = 'define("CSP_SECURITY_MAX_BLACKLIST",' . (defined('CSP_SECURITY_MAX_BLACKLIST') ? CSP_SECURITY_MAX_BLACKLIST : '50') . ');';
 
     $lines[] = '# pipe separated list of parked domains';
     $lines[] = 'define("CSP_SITE_DOMAINS","' . (defined('CSP_SITE_DOMAINS') ? CSP_SITE_DOMAINS : $_SERVER['SERVER_NAME']) . '" );';
 
-    $lines[] = 'define("CSP_DO_RSS",' . (defined('CSP_DO_RSS') ? CSP_DO_RSS : 'true') . ');';
-    $lines[] = 'define("CSP_DO_WIDGETS",' . (defined('CSP_DO_WIDGETS') ? CSP_DO_WIDGETS : 'true') . ');';
-    $lines[] = 'define("CSP_DO_GEOTAGGING",' . (defined('CSP_DO_GEOTAGGING') ? CSP_DO_GEOTAGGING : 'true') . ');';
-    $lines[] = 'define("CSP_DO_SOCIALMETAS",' . (defined('CSP_DO_SOCIALMETAS') ? CSP_DO_SOCIALMETAS : 'true') . ');';
+    $lines[] = 'define("CSP_DO_RSS",' . (defined('CSP_DO_RSS') ? bool2string(CSP_DO_RSS) : 'true') . ');';
+    $lines[] = 'define("CSP_DO_WIDGETS",' . (defined('CSP_DO_WIDGETS') ? bool2string(CSP_DO_WIDGETS) : 'true') . ');';
+    $lines[] = 'define("CSP_DO_GEOTAGGING",' . (defined('CSP_DO_GEOTAGGING') ? bool2string(CSP_DO_GEOTAGGING) : 'true') . ');';
+    $lines[] = 'define("CSP_DO_SOCIALMETAS",' . (defined('CSP_DO_SOCIALMETAS') ? bool2string(CSP_DO_SOCIALMETAS) : 'true') . ');';
+    $lines[] = 'define("CSP_DISABLE_EMOJIS",' . (defined('CSP_DISABLE_EMOJIS') ? bool2string(CSP_DISABLE_EMOJIS) : 'true') . ');';
 
     $lines[] = '# Developper’s email: Used to confirm identity of developper.';
     $lines[] = 'define("DEVELOPPER_EMAIL","' . (defined('DEVELOPPER_EMAIL') ? DEVELOPPER_EMAIL : 'parlez@charlesstpierre.com') . '");';
@@ -233,3 +265,10 @@ function csp_update_config() {
     }
 }
 add_action('upgrader_process_complete','csp_update_config');
+
+
+
+
+function bool2string($val) {
+    return var_export( (bool)$val , true);
+}

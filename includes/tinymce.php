@@ -153,3 +153,15 @@ function csp_tinymce_enqueue_head($hook) {
 
 add_action('admin_enqueue_scripts', 'csp_tinymce_enqueue_head');
 
+/**
+ * Encode numeric html entities before passing for index and excerpt
+ * 
+ * @uses Relevanssi plugin
+ * @param String $v
+ * @return String
+ */
+function csp_relevanssi_html_decode_pre_index($v) {
+    return html_entity_decode($v,ENT_COMPAT,'UTF-8');
+}
+add_filter('relevanssi_remove_punctuation', 'csp_relevanssi_html_decode_pre_index', 9);
+add_filter('relevanssi_pre_excerpt_content','csp_relevanssi_html_decode_pre_index');

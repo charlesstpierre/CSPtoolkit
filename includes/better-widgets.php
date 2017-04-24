@@ -19,6 +19,8 @@ function better_widgets_setup() {
     unregister_widget('WP_Widget_Search');
     register_widget('Better_Widget_Search');
     
+    register_widget('Better_Widget_Related_Posts');
+    
     register_widget('Better_Widget_TextNLink');
     register_widget('Better_Widget_Button');
 
@@ -60,8 +62,8 @@ class Better_Widget_Recent_Posts extends WP_Widget {
         extract($args);
 
         $title = apply_filters('widget_title', empty($instance['title']) ? __('Articles récents', 'csp') : $instance['title'], $instance, $this->id_base);
-        if (!$number = absint($instance['number']))
-            $number = 10;
+        
+        $number = absint($instance['number']) ? absint($instance['number']) : 10 ;
         $display_date = $instance['display_date'] ? true : false;
         $display_excerpt = $instance['display_excerpt'] ? true : false;
         $display_featureimg = $instance['display_featureimg'] ? true : false;
@@ -86,6 +88,10 @@ class Better_Widget_Recent_Posts extends WP_Widget {
             $query['tax_query'] = array(array('taxonomy' => $instance['taxonomy'], 'field' => 'id', 'terms' => $instance['term']));
         }
 
+        $pattern = apply_filters('bw_recent_post_pattern',
+                  '<a href="%post_url%" class="recent-post-title" title="%post_title_attr%">%post_title%</a>'
+                . '<a href="%post_url%" class="recent-post-feature" title="%post_title_attr%">%post_thumbnail%</a>'
+                . '<p>%post_date% — %post_excerpt%<p>', $instance, $args);
 
         $r = new WP_Query($query);
 
@@ -94,22 +100,29 @@ class Better_Widget_Recent_Posts extends WP_Widget {
             <?php echo $before_widget; ?>
             <?php if ($title) echo $before_title . $title . $after_title; ?>
             <ul>
-                <?php while ($r->have_posts()) : $r->the_post(); ?>
-                    <li class="recent_post_item">
-                        <a class="recent-post-title" href="<?php the_permalink() ?>" title="<?php echo esc_attr(get_the_title() ? get_the_title() : get_the_ID()); ?>"><?php if (get_the_title())
-                    the_title();
-                else
-                    the_ID();
-                ?></a>
-                        <?php if ($display_featureimg): ?>
-                            <span class="recent-post-featureimg"><?php the_post_thumbnail('bw_featureimg_size'); ?></span>
-                        <?php endif; ?>
-                        <?php if ($display_date): ?>
-                            <span class="recent-post-date"><?php echo get_the_date(); ?></span>
-                        <?php endif; ?>
-                    <?php if ($display_excerpt): ?>
-                            <span class="recent-post-excerpt"><?php the_excerpt(); ?></span>
-                <?php endif; ?>
+                <?php
+                while ($r->have_posts()) : $r->the_post();
+                    $search_n_replace = array(
+                        '%post_url%' => get_the_permalink(),
+                        '%post_title%' => get_the_title(),
+                        '%post_title_attr%' => esc_attr( get_the_title() )
+                    );
+                    
+                    if ($display_date){
+                        $search_n_replace['%post_date%'] = '<time datetime="' . get_the_date('c') . '" class="recent-post-date">' . get_the_date() . '</time>';
+                    }
+                    if ($display_featureimg){
+                        $search_n_replace['%post_thumbnail%'] = get_the_post_thumbnail(null, 'bw_featureimg_size');
+                    }
+                    if ($display_excerpt){
+                        $search_n_replace['%post_excerpt%'] = get_the_excerpt();
+                    }
+                    
+                    $search_n_replace = apply_filters('bw_recent_post_search_n_replace',$search_n_replace,$r,$instance,$args);
+                    
+                    ?>
+                    <li <?php post_class('recent_post_item', $r) ?> >
+                        <?php echo str_replace( array_keys($search_n_replace), array_values($search_n_replace), $pattern)  ?>
                     </li>
             <?php endwhile; ?>
             </ul>
@@ -201,6 +214,167 @@ class Better_Widget_Recent_Posts extends WP_Widget {
             </p>
         <?php endif; ?>
         <?php
+    }
+
+}
+
+/**
+ *  Recent posts widget
+ * 
+ * @since 1.0.10
+ */
+class Better_Widget_Related_Posts extends WP_Widget {
+
+    function __construct() {
+        $widget_ops = array(
+            'classname' => 'widget_better_related_posts',
+            'description' => __('Les contenus similaires à l’article actuellement affiché.', 'csp')
+        );
+        parent::__construct('better-related-posts', __('Articles similaires', 'csp'), $widget_ops);
+        $this->alt_option_name = 'widget_better_related_posts';
+
+        add_action('save_post', array(&$this, 'flush_widget_cache'));
+        add_action('deleted_post', array(&$this, 'flush_widget_cache'));
+        add_action('switch_theme', array(&$this, 'flush_widget_cache'));
+    }
+
+    function widget($args, $instance) {
+        $cache = wp_cache_get('widget_better_related_posts', 'widget');
+
+        if (!is_array($cache))
+            $cache = array();
+
+        if (isset($cache[$args['widget_id']])) {
+            echo $cache[$args['widget_id']];
+            return;
+        }
+
+        ob_start();
+        extract($args);
+
+        $title = apply_filters('widget_title', empty($instance['title']) ? __('Articles récents', 'csp') : $instance['title'], $instance, $this->id_base);
+        
+        $number = absint($instance['number']) ? absint($instance['number']) : 10 ;
+        $display_date = $instance['display_date'] ? true : false;
+        $display_excerpt = $instance['display_excerpt'] ? true : false;
+        $display_featureimg = $instance['display_featureimg'] ? true : false;
+
+        $taxonomy = taxonomy_exists($instance['taxonomy']) ? $instance['taxonomy'] : 'post_tag';
+        
+        $query = array(
+            'posts_per_page' => $number, 
+            'no_found_rows' => true, 
+            'post_status' => 'publish', 
+            'ignore_sticky_posts' => true, 
+            'suppress_filters' => false
+        );
+
+        $pattern = apply_filters('bw_recent_post_pattern',
+                  '<a href="%post_url%" class="recent-post-title" title="%post_title_attr%">%post_title%</a>'
+                . '<a href="%post_url%" class="recent-post-feature" title="%post_title_attr%">%post_thumbnail%</a>'
+                . '<p>%post_date% — %post_excerpt%<p>', $instance, $args);
+
+        $r = CSP_Related_Query($query,$taxonomy);
+
+        if ($r->have_posts()) :
+            ?>
+            <?php echo $before_widget; ?>
+            <?php if ($title) echo $before_title . $title . $after_title; ?>
+            <ul>
+                <?php
+                while ($r->have_posts()) : $r->the_post();
+                    $search_n_replace = array(
+                        '%post_url%' => get_the_permalink(),
+                        '%post_title%' => get_the_title(),
+                        '%post_title_attr%' => esc_attr( get_the_title() )
+                    );
+                    
+                    if ($display_date){
+                        $search_n_replace['%post_date%'] = '<time datetime="' . get_the_date('c') . '" class="recent-post-date">' . get_the_date() . '</time>';
+                    }
+                    if ($display_featureimg){
+                        $search_n_replace['%post_thumbnail%'] = get_the_post_thumbnail(null, 'bw_featureimg_size');
+                    }
+                    if ($display_excerpt){
+                        $search_n_replace['%post_excerpt%'] = get_the_excerpt();
+                    }
+                    
+                    $search_n_replace = apply_filters('bw_recent_post_search_n_replace',$search_n_replace,$r,$instance,$args);
+                    
+                    ?>
+                    <li <?php post_class('recent_post_item', $r) ?> >
+                        <?php echo str_replace( array_keys($search_n_replace), array_values($search_n_replace), $pattern)  ?>
+                    </li>
+            <?php endwhile; ?>
+            </ul>
+            <?php echo $after_widget; ?>
+            <?php
+            // Reset the global $the_post as this query will have stomped on it
+            wp_reset_postdata();
+
+        endif;
+
+        $cache[$args['widget_id']] = ob_get_flush();
+        wp_cache_set('widget_better_related_posts', $cache, 'widget');
+    }
+
+    function update($new_instance, $old_instance) {
+        $instance = $old_instance;
+        $instance['title'] = strip_tags($new_instance['title']);
+        $instance['number'] = (int) $new_instance['number'];
+        $instance['display_date'] = !empty($new_instance['display_date']) ? 1 : 0;
+        $instance['display_excerpt'] = !empty($new_instance['display_excerpt']) ? 1 : 0;
+        $instance['display_featureimg'] = !empty($new_instance['display_featureimg']) ? 1 : 0;
+        
+        $instance['taxonomy'] = taxonomy_exists( $new_instance['taxonomy'] ) ? $new_instance['taxonomy'] : 'post_tag';
+
+        $this->flush_widget_cache();
+
+        $alloptions = wp_cache_get('alloptions', 'options');
+        if (isset($alloptions['widget_better_related_posts']))
+            delete_option('widget_better_related_posts');
+
+        return $instance;
+    }
+
+    function flush_widget_cache() {
+        wp_cache_delete('widget_better_related_posts', 'widget');
+    }
+
+    function form($instance) {
+        $title = isset($instance['title']) ? esc_attr($instance['title']) : '';
+        $number = isset($instance['number']) ? absint($instance['number']) : 5;
+        $display_date = isset($instance['display_date']) ? (bool) $instance['display_date'] : false;
+        $display_excerpt = isset($instance['display_excerpt']) ? (bool) $instance['display_excerpt'] : false;
+        $display_featureimg = isset($instance['display_featureimg']) ? (bool) $instance['display_featureimg'] : false;
+        
+        $taxonomy = isset($instance['taxonomy']) ? esc_attr($instance['taxonomy']) : 'post_tag';
+
+        $available_taxonomies = get_taxonomies(array('public' => true, 'object_type' => 'post'), 'objects');
+        
+        
+        ?>
+        <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Titre:', 'csp'); ?></label>
+            <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></p>
+
+        <p><label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Nombre d’éléments à afficher:', 'csp'); ?></label>
+            <input id="<?php echo $this->get_field_id('number'); ?>" name="<?php echo $this->get_field_name('number'); ?>" type="text" value="<?php echo $number; ?>" size="3" /></p>
+
+        <p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_date'); ?>" name="<?php echo $this->get_field_name('display_date'); ?>"<?php checked($display_date); ?> /> <label for="<?php echo $this->get_field_id('display_date'); ?>"><?php _e('Afficher la date', 'csp'); ?></label></p>
+        <p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_excerpt'); ?>" name="<?php echo $this->get_field_name('display_excerpt'); ?>"<?php checked($display_excerpt); ?> /> <label for="<?php echo $this->get_field_id('display_excerpt'); ?>"><?php _e('Afficher l’extrait', 'csp'); ?></label></p>
+        <p><input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('display_featureimg'); ?>" name="<?php echo $this->get_field_name('display_featureimg'); ?>"<?php checked($display_featureimg); ?> /> <label for="<?php echo $this->get_field_id('display_featureimg'); ?>"><?php _e('Afficher l’image à la une', 'csp'); ?></label></p>
+
+        <?php if (!empty($available_taxonomies)): ?>
+            <p>
+                <label for="<?php echo $this->get_field_id('taxonomy'); ?>"><?php _e('Pertinence basé sur quelle taxonomie:', 'csp'); ?></label>
+                <select id="<?php echo $this->get_field_id('taxonomy'); ?>" name="<?php echo $this->get_field_name('taxonomy'); ?>">
+            <?php foreach ($available_taxonomies as $tax => $tax_object): ?>
+                        <option value="<?php echo $tax ?>" <?php selected($tax, $taxonomy); ?> ><?php echo $tax_object->label ?></option>
+            <?php endforeach; ?>
+                </select>
+            </p>
+        <?php
+        endif;
     }
 
 }
@@ -356,9 +530,9 @@ class Better_Widget_Search extends WP_Widget {
         if ($title)
             echo $before_title . $title . $after_title;
         $id = $this->id;
-        ?><form role="search" method="get" id="form-<?php echo $id ?>" action="<?php echo home_url('/') ?>" ><?php
+        ?><form class="search-form" role="search" method="get" id="form-<?php echo $id ?>" action="<?php echo home_url('/') ?>" ><?php
         ?><label class="screen-reader-text" for="s-<?php echo $id ?>"><?php _e('Recherche:', 'csp') ?></label><?php
-        ?><input type="text" value="<?php echo get_search_query() ?>" name="s" id="s-<?php echo $id ?>" /><?php
+        ?><input type="search" value="<?php echo get_search_query() ?>" name="s" id="s-<?php echo $id ?>" /><?php
                     if (count($post_type) > 1):
                         ?><span class="search_post_type_intro"><?php _ex('dans','Recherche... dans', 'csp'); ?></span><span class="search_post_type_list"><?php
                         foreach ($post_type as $pt):
