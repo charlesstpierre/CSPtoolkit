@@ -87,7 +87,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('TOOLKIT_VERSION', '1.1.4');
+define('TOOLKIT_VERSION', '1.1.8');
 define('TOOLKIT_URL', plugin_dir_url(__FILE__));
 define('TOOLKIT_CONFIG', WP_CONTENT_DIR . '/csp-config.php');
 
