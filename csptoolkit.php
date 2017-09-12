@@ -4,13 +4,16 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.1.8
+  Version: 1.1.9
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
   Text Domain: csp
   Domain Path: /lang
 
   Changelog
+  v.1.1.9
+  Sécurité: Ajout de l’ajout automatique à la liste blanche.
+  
   v.1.1.8
   Retrait des éditeurs de code, paramètrable
   Refonte code de securite.php
@@ -88,7 +91,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('TOOLKIT_VERSION', '1.1.8');
+define('TOOLKIT_VERSION', '1.1.9');
 define('TOOLKIT_URL', plugin_dir_url(__FILE__));
 define('TOOLKIT_CONFIG', WP_CONTENT_DIR . '/csp-config.php');
 
@@ -151,6 +154,8 @@ function cspplugin_init() {
         $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
                         'https://github.com/charlesstpierre/csptoolkit/', __FILE__, 'csptoolkit'
         );
+        
+        
     }
 }
 
@@ -192,6 +197,7 @@ function csp_write_options_to_config() {
     $lines[] = 'define("CSP_DO_SECURITY",' . (defined('CSP_DO_SECURITY') ? bool2string(CSP_DO_SECURITY) : 'true') . ');';
     $lines[] = 'define("CSP_SECURITY_MAX_404",' . (defined('CSP_SECURITY_MAX_404') ? CSP_SECURITY_MAX_404 : '50') . ');';
     $lines[] = 'define("CSP_SECURITY_MAX_BLACKLIST",' . (defined('CSP_SECURITY_MAX_BLACKLIST') ? CSP_SECURITY_MAX_BLACKLIST : '50') . ');';
+    $lines[] = 'define("CSP_SECURITY_LOGIN_TO_WHITELIST",' . (defined('CSP_SECURITY_LOGIN_TO_WHITELIST') ? CSP_SECURITY_LOGIN_TO_WHITELIST : '10') . ');';
 
     $lines[] = '# pipe separated list of parked domains';
     $lines[] = 'define("CSP_SITE_DOMAINS","' . (defined('CSP_SITE_DOMAINS') ? CSP_SITE_DOMAINS : $_SERVER['SERVER_NAME']) . '" );';

@@ -63,7 +63,7 @@ function csp_output_meta_descriptions_admin_interface() {
 
 
 function csp_save_meta_descriptions() {
-    if ( isset($_POST['_metadesc_nonce']) && wp_verify_nonce( filter_input(INPUT_POST,'_metadesc_nonce'), 'csp_meta_description_' . date('YMj') )){
+    if ( wp_verify_nonce( filter_input(INPUT_POST,'_metadesc_nonce'), 'csp_meta_description_' . date('YMj') ) ){
         
         $success = false;
         $default_language = apply_filters('wpml_default_language','fr');

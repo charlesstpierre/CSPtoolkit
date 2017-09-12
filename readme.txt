@@ -12,6 +12,9 @@ parlez@charlesstpierre.com
 
 == Changelog ==
 
+= 1.1.9 =
+* Sécurité: Ajout de l’ajout automatique à la liste blanche.
+
 = 1.1.8 =
 * Retrait des éditeurs de code, paramètrable
 * Refonte code de securite.php
