@@ -1,7 +1,7 @@
 === CSP Toolkit ===
 Requires at least: 4.0
-Tested up to: 4.7
-Stable tag: 4.7
+Tested up to: 4.8.1
+Stable tag: 4.8.1
 
 == Description ==
 
