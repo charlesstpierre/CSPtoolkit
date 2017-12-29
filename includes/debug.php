@@ -120,7 +120,7 @@ function csp_manual_maintenance() {
             && !current_user_can('manage_options')
         ){
         header( 'HTTP/1.1 Service Unavailable', true, 503);
-        header( 'Content-Type; text/html; charset=utf-8' );
+        header( 'Content-Type: text/html; charset=utf-8' );
         
         if ( file_exists( WP_CONTENT_DIR . '/maintenance.php') ){
             require_once( WP_CONTENT_DIR . '/maintenance.php' );
