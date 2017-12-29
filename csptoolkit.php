@@ -11,6 +11,9 @@
   Domain Path: /lang
 
   Changelog
+  v.1.1.10
+  Activation fiable d’un mode maintenance 
+  
   v.1.1.9
   Sécurité: Ajout de l’ajout automatique à la liste blanche.
   

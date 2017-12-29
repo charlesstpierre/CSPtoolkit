@@ -106,3 +106,48 @@ function csp_compress_log_files() {
     }
 }
 add_action('wp_dashboard_setup','csp_compress_log_files');
+
+
+
+
+function csp_manual_maintenance() {
+    global $pagenow;
+    if (
+            defined('IN_MAINTENANCE')
+            && IN_MAINTENANCE
+            && $pagenow !== 'wp-login.php'
+            && !is_user_logged_in()
+            && !current_user_can('manage_options')
+        ){
+        header( 'HTTP/1.1 Service Unavailable', true, 503);
+        header( 'Content-Type; text/html; charset=utf-8' );
+        
+        if ( file_exists( WP_CONTENT_DIR . '/maintenance.php') ){
+            require_once( WP_CONTENT_DIR . '/maintenance.php' );
+            die();
+        }
+        //else
+        
+	wp_load_translations_early();
+
+	$protocol = wp_get_server_protocol();
+	header( "$protocol 503 Service Unavailable", true, 503 );
+	header( 'Content-Type: text/html; charset=utf-8' );
+?>
+	<!DOCTYPE html>
+	<html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) echo ' dir="rtl"'; ?>>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title><?php _e( 'Maintenance' ); ?></title>
+
+	</head>
+	<body>
+		<h1><?php _e( 'Briefly unavailable for scheduled maintenance. Check back in a minute.' ); ?></h1>
+	</body>
+	</html>
+<?php        
+        die();
+    }
+    
+}
+add_action('plugins_loaded','csp_manual_maintenance');
