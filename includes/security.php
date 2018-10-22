@@ -636,7 +636,7 @@ function csp_authenticate_limit_access($user, $username, $password) {
         
         // log in successful login to whitelist IP
         $hashed_username = md5($user->user_login);
-        $successful_login = get_option('_successful_login' . $_ip);
+        $successful_login = get_option('_successful_login' . $_ip, array());
         if ( !in_array( $hashed_username, $successful_login) ){
             $successful_login[] = $hashed_username;
             update_option('_successful_login' . $_ip, $successful_login);

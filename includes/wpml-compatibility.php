@@ -12,15 +12,37 @@ function csp_WPML_init() {
         add_filter('wp_nav_menu', 'filter_language_menu_item');
         add_action('admin_head', 'csp_wpml_remove_icl_metabox');
     }
+    add_filter('option_icl_sitepress_settings', 'csp_prevent_WPML_from_gettext_scanning', 10, 1);
 }
 add_action('init', 'csp_WPML_init', 100); 
 
+/**
+ * Force Theme Localization type to "Don't use String Translation to translate themes and plugins"
+ * @since 1.2.0
+ * @param array $wpml_option
+ * @return array
+ */
+function csp_prevent_WPML_from_gettext_scanning($wpml_option) {
+
+    $wpml_option['theme_localization_type'] = 2;
+    return $wpml_option;
+}
+
+
+/**
+ * Remove WPML metabox
+ */
 function csp_wpml_remove_icl_metabox() {
     $screen = get_current_screen();
     remove_meta_box('icl_div_config',$screen->post_type,'normal');
 }
 
-
+/**
+ * WPML 
+ * 
+ * @param type $args
+ * @return type
+ */
 function wpml_language_select($args = '') {
     if (defined('ICL_SITEPRESS_VERSION')) {
 
@@ -67,12 +89,24 @@ function wpml_language_select($args = '') {
     }
 }
 
-
+/**
+ * Add language code to body class
+ * 
+ * @param array $classes
+ * @return type
+ */
 function add_lang_to_body_class($classes) {
     $classes[] = ICL_LANGUAGE_CODE;
     return $classes;
 }
 
+/**
+ * 
+ * @global type $wp_query
+ * @global type $sitepress
+ * @param type $nav_menu
+ * @return type
+ */
 function filter_language_menu_item($nav_menu) {
     if (function_exists('icl_get_languages')) {
         preg_match_all('/#lang_(\w\w)#/', $nav_menu, $langs);

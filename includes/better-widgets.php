@@ -76,22 +76,20 @@ class Better_Widget_Recent_Posts extends WP_Widget {
         }
         if (isset($instance['taxonomy'], $instance['term']) && !empty($instance['taxonomy']) && !empty($instance['term'])) {
 
-            if (function_exists('icl_object_id')) {
-                $terms = explode(',', $instance['term']);
-                $icl_terms = array();
-                foreach ($terms as $term) {
-                    $icl_terms[] = icl_object_id($term, 'category');
+                $base_terms = explode(',', $instance['term']);
+                $terms = array();
+                foreach ($base_terms as $term) {
+                    $terms[] = apply_filters('wpml_object_id',$term,$instance['taxonomy'],true);
                 }
-                $instance['term'] = implode(',', $icl_terms);
-            }
+                $instance['term'] = $terms;
 
             $query['tax_query'] = array(array('taxonomy' => $instance['taxonomy'], 'field' => 'id', 'terms' => $instance['term']));
         }
 
         $pattern = apply_filters('bw_recent_post_pattern',
-                  '<a href="%post_url%" class="recent-post-title" title="%post_title_attr%">%post_title%</a>'
-                . '<a href="%post_url%" class="recent-post-feature" title="%post_title_attr%">%post_thumbnail%</a>'
-                . '<p>%post_date% — %post_excerpt%<p>', $instance, $args);
+                  '%post_title%'
+                . '%post_thumbnail%'
+                . '<p>%post_date%%post_excerpt%<p>', $instance, $args);
 
         $r = new WP_Query($query);
 
@@ -102,17 +100,21 @@ class Better_Widget_Recent_Posts extends WP_Widget {
             <ul>
                 <?php
                 while ($r->have_posts()) : $r->the_post();
+                
                     $search_n_replace = array(
                         '%post_url%' => get_the_permalink(),
-                        '%post_title%' => get_the_title(),
-                        '%post_title_attr%' => esc_attr( get_the_title() )
+                        '%post_title%' => '<a href="'.get_the_permalink().'" title="'.esc_attr( get_the_title() ).'" class="recent-post-title">' . get_the_title() . '</a>',
+                        '%post_title_attr%' => esc_attr( get_the_title() ),
+                        '%post_thumbnail%' => '',
+                        '%post_date%' => '',
+                        '%post_excerpt%' => ''
                     );
                     
-                    if ($display_date){
-                        $search_n_replace['%post_date%'] = '<time datetime="' . get_the_date('c') . '" class="recent-post-date">' . get_the_date() . '</time>';
-                    }
                     if ($display_featureimg){
-                        $search_n_replace['%post_thumbnail%'] = get_the_post_thumbnail(null, 'bw_featureimg_size');
+                        $search_n_replace['%post_thumbnail%'] = '<a class="recent-post-thumbnail" href="'.get_the_permalink().'" title="'.esc_attr( get_the_title() ).'">'.get_the_post_thumbnail(null, 'bw_featureimg_size').'</a>';
+                    }
+                    if ($display_date){
+                        $search_n_replace['%post_date%'] = '<time datetime="' . get_the_date('c') . '" class="recent-post-date">' . get_the_date() . '</time> — ';
                     }
                     if ($display_excerpt){
                         $search_n_replace['%post_excerpt%'] = get_the_excerpt();
@@ -121,7 +123,7 @@ class Better_Widget_Recent_Posts extends WP_Widget {
                     $search_n_replace = apply_filters('bw_recent_post_search_n_replace',$search_n_replace,$r,$instance,$args);
                     
                     ?>
-                    <li <?php post_class('recent_post_item', $r) ?> >
+                    <li <?php post_class('recent-post-item') ?> >
                         <?php echo str_replace( array_keys($search_n_replace), array_values($search_n_replace), $pattern)  ?>
                     </li>
             <?php endwhile; ?>
@@ -270,9 +272,9 @@ class Better_Widget_Related_Posts extends WP_Widget {
         );
 
         $pattern = apply_filters('bw_recent_post_pattern',
-                  '<a href="%post_url%" class="recent-post-title" title="%post_title_attr%">%post_title%</a>'
-                . '<a href="%post_url%" class="recent-post-feature" title="%post_title_attr%">%post_thumbnail%</a>'
-                . '<p>%post_date% — %post_excerpt%<p>', $instance, $args);
+                  '%post_title%'
+                . '%post_thumbnail%'
+                . '<p>%post_date%%post_excerpt%<p>', $instance, $args);
 
         $r = CSP_Related_Query($query,$taxonomy);
 
@@ -283,17 +285,21 @@ class Better_Widget_Related_Posts extends WP_Widget {
             <ul>
                 <?php
                 while ($r->have_posts()) : $r->the_post();
+                
                     $search_n_replace = array(
                         '%post_url%' => get_the_permalink(),
-                        '%post_title%' => get_the_title(),
-                        '%post_title_attr%' => esc_attr( get_the_title() )
+                        '%post_title%' => '<a href="'.get_the_permalink().'" title="'.esc_attr( get_the_title() ).'" class="recent-post-title">' . get_the_title() . '</a>',
+                        '%post_title_attr%' => esc_attr( get_the_title() ),
+                        '%post_thumbnail%' => '',
+                        '%post_date%' => '',
+                        '%post_excerpt%' => ''
                     );
                     
-                    if ($display_date){
-                        $search_n_replace['%post_date%'] = '<time datetime="' . get_the_date('c') . '" class="recent-post-date">' . get_the_date() . '</time>';
-                    }
                     if ($display_featureimg){
-                        $search_n_replace['%post_thumbnail%'] = get_the_post_thumbnail(null, 'bw_featureimg_size');
+                        $search_n_replace['%post_thumbnail%'] = '<a class="recent-post-thumbnail" href="'.get_the_permalink().'" title="'.esc_attr( get_the_title() ).'">'.get_the_post_thumbnail(null, 'bw_featureimg_size').'</a>';
+                    }
+                    if ($display_date){
+                        $search_n_replace['%post_date%'] = '<time datetime="' . get_the_date('c') . '" class="recent-post-date">' . get_the_date() . '</time> — ';
                     }
                     if ($display_excerpt){
                         $search_n_replace['%post_excerpt%'] = get_the_excerpt();
@@ -302,7 +308,7 @@ class Better_Widget_Related_Posts extends WP_Widget {
                     $search_n_replace = apply_filters('bw_recent_post_search_n_replace',$search_n_replace,$r,$instance,$args);
                     
                     ?>
-                    <li <?php post_class('recent_post_item', $r) ?> >
+                    <li <?php post_class('related-post-item') ?> >
                         <?php echo str_replace( array_keys($search_n_replace), array_values($search_n_replace), $pattern)  ?>
                     </li>
             <?php endwhile; ?>
@@ -350,8 +356,7 @@ class Better_Widget_Related_Posts extends WP_Widget {
         
         $taxonomy = isset($instance['taxonomy']) ? esc_attr($instance['taxonomy']) : 'post_tag';
 
-        $available_taxonomies = get_taxonomies(array('public' => true, 'object_type' => 'post'), 'objects');
-        
+        $available_taxonomies = get_taxonomies(array('public' => true, 'object_type' => array('post')), 'objects');
         
         ?>
         <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Titre:', 'csp'); ?></label>

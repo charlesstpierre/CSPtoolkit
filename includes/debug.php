@@ -8,20 +8,18 @@ if (!defined('ABSPATH')) {
 /**
  * Is Developper?
  * 
- * Verify if current user is the developper based on his email address.
+ * Verify if current user is the developper based on his IP address.
  * 
+ * @since 1.2.0 Change basis of validation from current user email to IP address
  * @since 1.0.0
- * @global object $current_user
+ * @global array $csp_dev_ips
  * @return boolean
  */
 function is_dev() {
-    global $current_user;
+    global $csp_dev_ips;
 
-    if (CSP_IS_DEBUG || $current_user->user_email === DEVELOPPER_EMAIL) {
-        return true;
-    } else {
-        return false;
-    }
+    return in_array( $_SERVER['REMOTE_ADDR'], $csp_dev_ips) ;
+
 }
 
 /**

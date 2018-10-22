@@ -12,6 +12,12 @@ parlez@charlesstpierre.com
 
 == Changelog ==
 
+= 1.2.0 =
+* Reconstruction des widgets
+* Debug accomode plusieurs developpeurs en se basant sur des adresses IP
+* Ajout de Date et Time format au wpml-config.xml
+* Force WPML à ne pas scanner le code pour extraire les éléments textes
+
 = 1.1.10 =
 * Activation fiable d’un mode maintenance
 

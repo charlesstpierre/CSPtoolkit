@@ -4,13 +4,19 @@
   Plugin Name: Support CharlesStPierre.com
   Plugin URI: http://charlesstpierre.com
   Description: Fonctionnalités de support et personnalisation
-  Version: 1.1.10
+  Version: 1.2.0
   Author: Charles St-Pierre
   Author URI: http://charlesstpierre.com
   Text Domain: csp
   Domain Path: /lang
 
   Changelog
+  v.1.2.0
+  Reconstruction des widgets
+  Debug accomode plusieurs developpeurs en se basant sur des adresses IP
+  Ajout de Date et Time format au wpml-config.xml
+  Force WPML à ne pas scanner le code pour extraire les éléments textes
+  
   v.1.1.10
   Activation fiable d’un mode maintenance 
   
@@ -94,7 +100,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('TOOLKIT_VERSION', '1.1.9');
+define('TOOLKIT_VERSION', '1.2.0');
 define('TOOLKIT_URL', plugin_dir_url(__FILE__));
 define('TOOLKIT_CONFIG', WP_CONTENT_DIR . '/csp-config.php');
 
@@ -212,7 +218,7 @@ function csp_write_options_to_config() {
     $lines[] = 'define("CSP_DISABLE_EMOJIS",' . (defined('CSP_DISABLE_EMOJIS') ? bool2string(CSP_DISABLE_EMOJIS) : 'true') . ');';
 
     $lines[] = '# Developper’s email: Used to confirm identity of developper.';
-    $lines[] = 'define("DEVELOPPER_EMAIL","' . (defined('DEVELOPPER_EMAIL') ? DEVELOPPER_EMAIL : 'parlez@charlesstpierre.com') . '");';
+    $lines[] = '$csp_dev_ips = array(\'' . (isset($csp_dev_ips) && is_array($csp_dev_ips) ? implode("','",$csp_dev_ips) : '') . '\');';
 
     $lines[] = '# Twitter account name: Define twitter account name for the site, or site owner';
     if (defined('CSP_twittername')) {

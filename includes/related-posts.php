@@ -13,8 +13,6 @@ if (!defined('ABSPATH')) {
 function CSP_Related_Query($raw_query = array(), $related_tax = 'post_tag') {
     global $post;
 
-    debug($post->ID);
-
     $default_query = array(
         'post_type' => 'post',
         'posts_per_page' => 5,

@@ -738,9 +738,9 @@ function the_breadcrumb() {
  * 
  * @global CSP_theme_helper $csp_theme_helper
  */
-function get_breadcrumb() {
+function get_breadcrumb($param) {
     global $csp_theme_helper;
-    return $csp_theme_helper->get_breadcrumb($param);
+    return $csp_theme_helper->get_breadcrumb();
 }
 
 /**
